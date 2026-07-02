@@ -1,0 +1,42 @@
+capability: get_retirement_plan
+domain: benefits
+method: GET
+path: /benefits/401k/{employee_id}
+summary: Retrieve an employee's 401(k) plan details including contribution rates,
+  employer match, balance, and vesting status
+description: This API returns the full picture of an employee's 401(k) retirement
+  plan, including their current contribution percentage, the employer match rate,
+  year-to-date contribution and match amounts, total plan balance, and vesting percentage.
+  It is used by HR, payroll, and financial wellness tools to give employees and administrators
+  a clear view of retirement savings progress and employer benefit utilization. Benefits
+  teams use it to identify employees who are not capturing the full employer match
+  or who are under-contributing relative to plan limits. It directly answers questions
+  about how much the company is contributing on an employee's behalf and how much
+  of those contributions the employee has earned through vesting.
+side_effect: read
+preconditions:
+- Employee must exist in the HR system with a valid employee_id
+- Employee must be enrolled in or eligible for the company 401(k) plan
+- Caller must have benefits administration or employee self-service access permissions
+- Payroll must have processed at least one pay period for YTD figures to be meaningful
+produces:
+- Employee's current 401(k) contribution percentage of salary
+- Employer match percentage and matching formula
+- Year-to-date employee contribution amount in dollars
+- Year-to-date employer match amount in dollars
+- Total current plan balance
+- Employee's current vesting percentage for employer contributions
+use_cases:
+- Is this employee contributing enough to their 401(k) to receive the full employer
+  match?
+- How much has the company contributed in 401(k) matching funds for this employee
+  so far this year?
+- What percentage of the employer's 401(k) contributions has this employee vested
+  into, and how does that relate to their tenure?
+related:
+- "get_life_events \u2014 a qualifying life event such as marriage may prompt an employee\
+  \ to review and update their 401(k) beneficiary designations or contribution rate"
+- "get_employee_bonuses \u2014 bonus payouts may affect an employee's decision to\
+  \ increase 401(k) contributions, and some plans allow bonus contribution elections"
+- "get_employee_equity \u2014 together with equity grants, 401(k) data forms a complete\
+  \ picture of long-term wealth accumulation for total rewards analysis"

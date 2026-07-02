@@ -1,0 +1,261 @@
+openapi: 3.0.3
+info:
+  title: Learning Management API
+  version: 1.0.0
+  x-domain: learning
+paths:
+  /learning/courses:
+    get:
+      operationId: list_courses
+      summary: List available training courses
+      parameters:
+      - name: category
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: mandatory
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courses:
+                    type: string
+                  course_id:
+                    type: string
+                  title:
+                    type: string
+                  category:
+                    type: string
+                  duration_hours:
+                    type: number
+                  mandatory:
+                    type: boolean
+  /learning/courses/{course_id}:
+    get:
+      operationId: get_course_details
+      summary: Get course details and syllabus
+      parameters:
+      - name: course_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  modules:
+                    type: string
+                  prerequisites:
+                    type: string
+                  delivery_method:
+                    type: string
+  /learning/enrollments/{employee_id}:
+    get:
+      operationId: get_employee_enrollments
+      summary: Get employee course enrollments
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  enrollments:
+                    type: string
+                  course_id:
+                    type: string
+                  course_title:
+                    type: string
+                  enrolled_date:
+                    type: string
+                  status:
+                    type: string
+                  progress_pct:
+                    type: number
+    post:
+      operationId: enroll_employee_in_course
+      summary: Enroll employee in a course
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_id:
+                  type: string
+                due_date:
+                  type: string
+      responses:
+        '201':
+          description: Enrolled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  enrollment_id:
+                    type: string
+                  status:
+                    type: string
+  /learning/completions/{employee_id}:
+    get:
+      operationId: get_learning_completions
+      summary: Get completed courses and transcripts
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  completions:
+                    type: string
+                  course_id:
+                    type: string
+                  course_title:
+                    type: string
+                  completed_date:
+                    type: string
+                  score:
+                    type: number
+                  certificate_url:
+                    type: string
+  /learning/certifications/{employee_id}:
+    get:
+      operationId: get_employee_certifications
+      summary: Get active certifications and expiry dates
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  certifications:
+                    type: string
+                  certification_id:
+                    type: string
+                  name:
+                    type: string
+                  issued_date:
+                    type: string
+                  expiry_date:
+                    type: string
+                  status:
+                    type: string
+  /learning/compliance-training/{employee_id}:
+    get:
+      operationId: get_compliance_training_status
+      summary: Get mandatory compliance training status
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  required_courses:
+                    type: string
+                  course_name:
+                    type: string
+                  due_date:
+                    type: string
+                  completed:
+                    type: boolean
+                  overdue:
+                    type: boolean
+  /learning/compliance-training/overdue:
+    get:
+      operationId: get_overdue_training_report
+      summary: Get report of overdue mandatory training
+      parameters:
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  overdue_count:
+                    type: integer
+                  employees:
+                    type: string
+                  employee_id:
+                    type: string
+                  employee_name:
+                    type: string
+                  course_name:
+                    type: string
+                  days_overdue:
+                    type: integer

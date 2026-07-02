@@ -1,0 +1,32 @@
+capability: get_pay_schedule
+domain: payroll
+method: GET
+path: /payroll/pay-schedule
+summary: Retrieve pay frequency, upcoming pay dates, and current pay period boundaries
+  for a pay group
+description: Returns the payroll calendar details for a given pay group, including
+  how frequently employees are paid (weekly, bi-weekly, semi-monthly, monthly), the
+  next scheduled pay date, and the start and end dates of the current pay period.
+  This API is essential for coordinating payroll processing deadlines, communicating
+  pay dates to employees, and ensuring that compensation changes or new hires are
+  captured within the correct pay period. It answers operational questions about when
+  money will move and what work period that payment covers.
+side_effect: read
+preconditions:
+- A valid pay_group identifier must be provided
+- The pay group must be configured and active in the payroll system
+- The caller must have read access to payroll schedule data
+produces:
+- Pay frequency classification for the specified pay group
+- The exact date of the next scheduled payroll disbursement
+- The start date of the current or upcoming pay period
+- The end date of the current or upcoming pay period
+use_cases:
+- When will employees in the bi-weekly pay group receive their next paycheck?
+- What are the pay period start and end dates I need to use when submitting timesheets
+  for approval?
+- If I onboard a new employee today, which pay period will their first paycheck cover?
+related:
+- operation_id: get_direct_deposit
+  reason: Pay schedule context is needed to determine whether a direct deposit account
+    change will be applied before the next disbursement date.

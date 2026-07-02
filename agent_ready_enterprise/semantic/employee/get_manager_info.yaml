@@ -1,0 +1,45 @@
+capability: get_manager_info
+domain: employee
+method: GET
+path: /employee/{employee_id}/manager
+summary: Retrieve the direct manager's identity and contact details for a given employee
+description: This API returns the name, email, employee ID, and department of the
+  direct manager currently assigned to a given employee. It is used whenever a workflow
+  needs to route approvals, notifications, or escalations to the correct person in
+  the management chain. Common use cases include triggering manager approval steps
+  in compensation changes, training compliance alerts, and job requisition workflows.
+  It also helps HR teams quickly identify accountability for an employee's performance,
+  onboarding, or offboarding activities.
+side_effect: read
+preconditions:
+- The employee_id must exist and be active in the HR system
+- The employee must have a manager assigned; unmanaged or top-level executives may
+  return no result
+- The requesting user must have at least read-level access to employee organizational
+  data
+produces:
+- Name and contact email of the employee's current direct manager
+- Manager's employee ID for use in downstream API calls
+- Department the manager belongs to, indicating organizational alignment
+use_cases:
+- Who should I notify or route this approval to for this employee's compensation change?
+- Which manager is responsible for ensuring this employee completes their overdue
+  compliance training?
+- Who is the hiring manager I should contact about a new job requisition tied to this
+  employee's team?
+related:
+- operation_id: get_org_chart
+  reason: Org chart provides the broader reporting chain and peer context beyond just
+    the immediate manager returned by this API.
+- operation_id: get_job_history
+  reason: Job history may reveal manager changes over time, complementing the current
+    manager snapshot this API provides.
+- operation_id: get_overdue_training_report
+  reason: Overdue training reports need manager info to route compliance alerts and
+    accountability notifications to the right person.
+- operation_id: submit_merit_increase
+  reason: Merit increase submissions typically require manager identification for
+    approval routing and budget attribution.
+- operation_id: create_job_posting
+  reason: Creating a job posting requires associating the requisition with a hiring
+    manager, which this API helps identify.

@@ -1,0 +1,44 @@
+capability: get_estimated_tax_liability
+domain: tax
+method: GET
+path: /tax/estimated-liability/{employee_id}
+summary: Calculate an employee's projected annual tax liability compared to their
+  current withholding pace
+description: "This API computes a forward-looking estimate of an employee's total\
+  \ annual tax liability and compares it against the current pace of withholding,\
+  \ projecting whether the employee is on track for a refund, will break even, or\
+  \ may owe taxes when they file. It depends on year-to-date earnings and current\
+  \ withholding data to extrapolate through year end, and returns an actionable recommendation\
+  \ \u2014 such as adjusting W-4 allowances \u2014 to help the employee avoid surprises.\
+  \ This is a high-value tool for employee financial wellness programs, proactive\
+  \ HR support, and mid-year tax planning conversations."
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- get_ytd_earnings must return successfully to provide the earnings baseline for projection
+- get_tax_withholding must return successfully to provide the current withholding
+  pace
+- The employee must have sufficient payroll history in the current year to make a
+  meaningful projection
+produces:
+- The employee's projected total annual tax liability across all jurisdictions
+- The annualized withholding amount based on the current pace of deductions
+- A projected refund amount (positive) or amount owed (negative) at year end
+- A plain-language recommendation for whether the employee should adjust their withholding
+use_cases:
+- Is this employee withholding enough taxes, or are they at risk of owing a large
+  amount when they file in April?
+- "An employee just got a significant raise mid-year \u2014 how does that change their\
+  \ projected tax liability and should they update their W-4?"
+- Which employees across our workforce are significantly under-withheld and should
+  be proactively notified to adjust their withholding elections?
+related:
+- operation_id: get_tax_ytd_summary
+  reason: YTD withholding totals are a direct input to the liability estimate, establishing
+    the baseline from which the year-end projection is extrapolated.
+- operation_id: get_w2_preview
+  reason: Employees often use the W-2 preview alongside the liability estimate to
+    understand the full picture of their tax situation before filing.
+- operation_id: get_tax_rates
+  reason: Accurate liability estimation requires applying the correct marginal tax
+    rates for each jurisdiction the employee is subject to.

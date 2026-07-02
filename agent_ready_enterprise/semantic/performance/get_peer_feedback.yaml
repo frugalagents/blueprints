@@ -1,0 +1,45 @@
+capability: get_peer_feedback
+domain: performance
+method: GET
+path: /performance/feedback/{employee_id}
+summary: Retrieve 360-degree peer feedback submitted for an employee during a given
+  review period
+description: This API retrieves all peer and cross-functional feedback submitted for
+  a specific employee within a defined review period, including the reviewer's relationship
+  to the employee, their ratings, and qualitative comments. It is used during performance
+  review cycles to give managers and HR a holistic, multi-perspective view of an employee's
+  contributions and behaviors beyond what a direct manager observes. The API helps
+  answer questions about how an employee is perceived across teams and whether their
+  self-assessment aligns with peer observations. It is a core input for calibration
+  sessions and promotion decisions.
+side_effect: read
+preconditions:
+- The employee must exist in the system with a valid employee_id
+- A review period must have been completed or be in the feedback collection phase
+- At least one peer must have submitted feedback for the specified employee and period
+- The caller must have appropriate permissions (manager, HR, or the employee themselves
+  depending on visibility settings)
+produces:
+- A collection of peer feedback entries with ratings and qualitative comments
+- Reviewer relationship context (e.g., peer, cross-functional partner, direct report)
+  for each feedback entry
+- Submission dates enabling recency analysis of feedback
+- Aggregated sentiment and rating signals across multiple reviewers for a given period
+use_cases:
+- How is this employee perceived by their peers in terms of collaboration and communication?
+- Does the employee's self-rating align with the feedback submitted by colleagues
+  during this review cycle?
+- Which employees have received consistently high peer ratings and may be ready for
+  promotion consideration?
+related:
+- operation_id: get_performance_reviews
+  reason: Peer feedback is a direct input to formal performance reviews; this dependency
+    ensures feedback is contextualized within the broader review record
+- operation_id: submit_interview_feedback
+  reason: Both APIs involve structured feedback collection about individuals; peer
+    feedback patterns may inform how internal candidates are evaluated during internal
+    hiring processes
+- operation_id: submit_employee_referral
+  reason: Employees with strong peer feedback records are often prime candidates for
+    referral programs; this relationship supports identifying high-performers for
+    referral incentives

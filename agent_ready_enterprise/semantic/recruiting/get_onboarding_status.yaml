@@ -1,0 +1,40 @@
+capability: get_onboarding_status
+domain: recruiting
+method: GET
+path: /recruiting/onboarding/{employee_id}
+summary: Retrieve the overall onboarding progress summary for a new hire
+description: This API returns a high-level snapshot of where a new employee stands
+  in their onboarding journey, including how many tasks have been completed versus
+  the total required, what items are still pending, and whether an onboarding buddy
+  has been assigned. Use this when an HR coordinator, manager, or recruiter needs
+  a quick health check on a new hire's readiness before or after their start date.
+  It helps answer questions like 'Is our new hire on track to be fully onboarded by
+  the end of their first week?' and 'What's still blocking their setup?'
+side_effect: read
+preconditions:
+- The employee must exist in the HR system with a valid employee_id, meaning their
+  offer has been accepted and they have been converted from applicant to employee
+- An onboarding record must have been initiated for the employee
+produces:
+- A count of completed versus total onboarding tasks, giving a percentage-complete
+  view of onboarding progress
+- A list of pending items that are blocking or delaying full onboarding completion
+- The employee's official start date for timeline context
+- Whether an onboarding buddy has been assigned to support the new hire's integration
+use_cases:
+- "An HR manager asks: 'We have five new hires starting Monday \u2014 which ones still\
+  \ have critical onboarding tasks incomplete that we need to resolve before day one?'"
+- A department head wants to know if their new team member has been fully onboarded
+  and is ready to start contributing, or if IT and access provisioning tasks are still
+  pending.
+- A recruiter is closing out a hiring cycle and needs to confirm that all accepted
+  offers have transitioned into active onboarding with no stalled cases.
+related:
+- "create_offer_letter \u2014 onboarding is the direct downstream process after an\
+  \ offer is accepted; this API confirms that the post-offer transition to employee\
+  \ status has been properly initiated"
+- "get_onboarding_tasks \u2014 provides the granular task-level detail behind the\
+  \ summary counts returned here; use get_onboarding_status for a quick overview and\
+  \ get_onboarding_tasks to drill into specifics"
+- "get_offer_status \u2014 confirms the offer was accepted before onboarding begins;\
+  \ the two APIs together trace the full candidate-to-employee journey"

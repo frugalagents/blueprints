@@ -1,0 +1,47 @@
+capability: search_employees
+domain: employee
+method: GET
+path: /employee/search
+summary: Search and filter employees by name, department, or location
+description: This API searches the employee directory using free-text or structured
+  filters such as name, department, or office location, returning a list of matching
+  employees with key identifying details. It serves as the primary lookup mechanism
+  for resolving employee identities before performing downstream HR operations. Use
+  it when you need to find a specific person or enumerate a group of employees sharing
+  a common attribute. It helps answer workforce composition questions and is a prerequisite
+  for most employee-specific workflows.
+side_effect: read
+preconditions:
+- Caller has read access to the employee directory
+- At least one search parameter (q) must be provided
+- The HR system is available and employee records are populated
+produces:
+- A ranked list of matching employees with their unique IDs
+- Employee names, departments, and job titles for identification
+- Enough context to select the correct employee before taking further action
+use_cases:
+- Who are all the employees in the Engineering department in Austin?
+- What is the employee ID for Jane Smith so I can pull her compensation details?
+- Which employees have 'Manager' in their job title across all locations?
+related:
+- operation_id: get_compensation_budget
+  reason: Employee IDs returned from search are used to scope or filter compensation
+    budget queries for specific teams or individuals.
+- operation_id: get_overdue_training_report
+  reason: Search results identify the employee population whose overdue training status
+    needs to be reviewed.
+- operation_id: get_rating_calibration
+  reason: Employee search is used to identify the cohort of employees whose performance
+    ratings are being calibrated.
+- operation_id: list_job_postings
+  reason: Searching for employees helps identify internal candidates or hiring managers
+    associated with open job postings.
+- operation_id: create_job_posting
+  reason: Employee search is used to resolve the hiring manager's employee ID before
+    creating a new job posting.
+- operation_id: get_recruiting_pipeline_metrics
+  reason: Employee search helps identify the recruiter or hiring manager whose pipeline
+    metrics are being analyzed.
+- operation_id: list_hiring_requisitions
+  reason: Employee search resolves the requesting manager's identity before filtering
+    open hiring requisitions by owner.

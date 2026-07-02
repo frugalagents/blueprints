@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codebase Business Logic — Dashboard</title>
+<style>
+/* ============================================================
+   CSS Custom Properties — Light & Dark Theme
+   ============================================================ */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f3f5;
+  --bg-input: #ffffff;
+  --bg-badge: #e9ecef;
+  --bg-code: #f4f4f5;
+  --bg-tab-active: #4361ee;
+  --bg-tab-inactive: transparent;
+  --border-color: #dee2e6;
+  --border-light: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --text-on-primary: #ffffff;
+  --accent-blue: #4361ee;
+  --accent-green: #2ec4b6;
+  --accent-orange: #ff6b35;
+  --accent-purple: #7209b7;
+  --accent-red: #e63946;
+  --accent-yellow: #f4a261;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-card: #1c2128;
+    --bg-card-hover: #262c36;
+    --bg-input: #1c2128;
+    --bg-badge: #30363d;
+    --bg-code: #1c2128;
+    --bg-tab-active: #4361ee;
+    --bg-tab-inactive: transparent;
+    --border-color: #30363d;
+    --border-light: #21262d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #484f58;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+  }
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 24px 32px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header h1 .icon { font-size: 1.8rem; }
+
+.header-meta {
+  display: flex;
+  gap: 20px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 32px 48px;
+}
+
+/* ============================================================
+   Stats Cards
+   ============================================================ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.stat-card .stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.stat-card.blue .stat-value { color: var(--accent-blue); }
+.stat-card.green .stat-value { color: var(--accent-green); }
+.stat-card.orange .stat-value { color: var(--accent-orange); }
+.stat-card.purple .stat-value { color: var(--accent-purple); }
+.stat-card.red .stat-value { color: var(--accent-red); }
+
+/* ============================================================
+   Tabs
+   ============================================================ */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: none;
+}
+
+.tab-btn {
+  background: var(--bg-tab-inactive);
+  border: none;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+
+.tab-btn.active {
+  background: var(--bg-tab-active);
+  color: var(--text-on-primary);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* ============================================================
+   Search & Filter Bar
+   ============================================================ */
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 260px;
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--accent-blue);
+}
+
+.filter-select {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.result-count {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
+/* ============================================================
+   Badges
+   ============================================================ */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge.business { background: #d4edda; color: #155724; }
+.badge.technical { background: #cce5ff; color: #004085; }
+.badge.glue { background: #fff3cd; color: #856404; }
+.badge.unknown { background: var(--bg-badge); color: var(--text-secondary); }
+
+@media (prefers-color-scheme: dark) {
+  .badge.business { background: #1a3a2a; color: #6ee7b7; }
+  .badge.technical { background: #1a2a4a; color: #93c5fd; }
+  .badge.glue { background: #3a2a1a; color: #fcd34d; }
+  .badge.unknown { background: var(--bg-badge); color: var(--text-secondary); }
+}
+
+/* ============================================================
+   Domain Cards
+   ============================================================ */
+.domain-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.domain-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.domain-header:hover { background: var(--bg-card-hover); }
+
+.domain-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.domain-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.domain-body {
+  display: none;
+  padding: 0 24px 20px;
+  border-top: 1px solid var(--border-light);
+}
+
+.domain-card.expanded .domain-body { display: block; }
+
+.domain-card.expanded .chevron { transform: rotate(180deg); }
+
+.chevron {
+  transition: transform 0.2s;
+  color: var(--text-muted);
+}
+
+.func-list {
+  list-style: none;
+  margin-top: 12px;
+}
+
+.func-list li {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.func-list li:hover { background: var(--bg-card-hover); }
+
+.func-name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.func-path {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   BDD Rule Cards
+   ============================================================ */
+.rule-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-green);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.rule-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rule-domain-tag {
+  font-size: 0.75rem;
+  background: var(--bg-badge);
+  padding: 2px 10px;
+  border-radius: 12px;
+  color: var(--text-secondary);
+}
+
+.bdd-clause {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.bdd-keyword {
+  display: inline-block;
+  font-weight: 800;
+  min-width: 60px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bdd-keyword.given { color: var(--accent-blue); }
+.bdd-keyword.when { color: var(--accent-orange); }
+.bdd-keyword.then { color: var(--accent-green); }
+
+/* ============================================================
+   Flow Visualization
+   ============================================================ */
+.flow-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.flow-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flow-steps {
+  position: relative;
+  padding-left: 40px;
+}
+
+.flow-steps::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.flow-step {
+  position: relative;
+  padding: 10px 0 10px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.step-number {
+  position: absolute;
+  left: -40px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  color: var(--text-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  z-index: 1;
+}
+
+.step-number.business { background: var(--accent-green); }
+.step-number.technical { background: var(--accent-blue); }
+.step-number.glue { background: var(--accent-yellow); }
+
+.step-content {
+  flex: 1;
+}
+
+.step-func-name {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.step-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Functions Table
+   ============================================================ */
+.func-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.func-table th {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--border-color);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  position: sticky;
+  top: 0;
+  background: var(--bg-primary);
+  z-index: 10;
+}
+
+.func-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+}
+
+.func-table tr:hover td {
+  background: var(--bg-card-hover);
+}
+
+.func-table .mono {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.func-table .path-cell {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Empty State
+   ============================================================ */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+
+/* ============================================================
+   Scrollable containers
+   ============================================================ */
+.scroll-container {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  .header { padding: 16px; }
+  .main-content { padding: 16px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .filter-bar { flex-direction: column; }
+  .search-input { min-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     Header
+     ============================================================ -->
+<div class="header">
+  <div class="header-top">
+    <h1><span class="icon">🧠</span> Codebase Business Logic Dashboard</h1>
+    <div class="header-meta">
+      <span id="meta-generated">Generated: —</span>
+      <span id="meta-repo">Repo: —</span>
+    </div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="domains">Domains</button>
+    <button class="tab-btn" data-tab="rules">Business Rules</button>
+    <button class="tab-btn" data-tab="flows">Business Flows</button>
+    <button class="tab-btn" data-tab="functions">All Functions</button>
+  </div>
+</div>
+
+<div class="main-content">
+
+  <!-- ============================================================
+       TAB: Overview
+       ============================================================ -->
+  <div class="tab-panel active" id="panel-overview">
+    <div class="stats-row" id="stats-row"></div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+      <div>
+        <h3 style="margin-bottom:12px;">📊 Classification Breakdown</h3>
+        <div id="classification-breakdown"></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:12px;">🏢 Top Domains</h3>
+        <div id="top-domains"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TAB: Domains
+       ============================================================ -->
+  <div class="tab-panel" id="panel-domains">
+    <div class="filter-bar">
+      <input class="search-input" id="domain-search" placeholder="Search domains…" />
+      <span class="result-count" id="domain-count"></span>
+    </div>
+    <div id="domain-list"></div>
+  </div>
+
+  <!-- ============================================================
+       TAB: Business Rules
+       ============================================================ -->
+  <div class="tab-panel" id="panel-rules">
+    <div class="filter-bar">
+      <input class="search-input" id="rule-search" placeholder="Search rules…" />
+      <select class="filter-select" id="rule-domain-filter">
+        <option value="">All Domains</option>
+      </select>
+      <span class="result-count" id="rule-count"></span>
+    </div>
+    <div class="scroll-container" id="rule-list"></div>
+  </div>
+
+  <!-- ============================================================
+       TAB: Business Flows
+       ============================================================ -->
+  <div class="tab-panel" id="panel-flows">
+    <div class="filter-bar">
+      <input class="search-input" id="flow-search" placeholder="Search flows…" />
+      <span class="result-count" id="flow-count"></span>
+    </div>
+    <div class="scroll-container" id="flow-list"></div>
+  </div>
+
+  <!-- ============================================================
+       TAB: All Functions
+       ============================================================ -->
+  <div class="tab-panel" id="panel-functions">
+    <div class="filter-bar">
+      <input class="search-input" id="func-search" placeholder="Search functions…" />
+      <select class="filter-select" id="func-class-filter">
+        <option value="">All Classifications</option>
+        <option value="business">Business</option>
+        <option value="technical">Technical</option>
+        <option value="glue">Glue</option>
+      </select>
+      <select class="filter-select" id="func-domain-filter">
+        <option value="">All Domains</option>
+      </select>
+      <select class="filter-select" id="func-kind-filter">
+        <option value="">All Kinds</option>
+      </select>
+      <span class="result-count" id="func-count"></span>
+    </div>
+    <div class="scroll-container">
+      <table class="func-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>File</th>
+            <th>Domain</th>
+            <th>Classification</th>
+            <th>Kind</th>
+            <th>Lines</th>
+          </tr>
+        </thead>
+        <tbody id="func-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     JavaScript — Data Loading & Rendering
+     ============================================================ -->
+<script>
+(function() {
+  'use strict';
+
+  let DATA = null;
+
+  // ------------------------------------------------------------------
+  // Data Loading
+  // ------------------------------------------------------------------
+  async function loadData() {
+    try {
+      const resp = await fetch('./data.json');
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      DATA = await resp.json();
+      renderAll();
+    } catch (err) {
+      document.querySelector('.main-content').innerHTML =
+        `<div class="empty-state">
+           <div class="icon">⚠️</div>
+           <h3>Could not load data.json</h3>
+           <p style="margin-top:8px;color:var(--text-muted)">${err.message}<br>
+           Make sure <code>data.json</code> is in the same directory as this file.</p>
+         </div>`;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Tab Switching
+  // ------------------------------------------------------------------
+  document.getElementById('tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+
+  // ------------------------------------------------------------------
+  // Render All
+  // ------------------------------------------------------------------
+  function renderAll() {
+    if (!DATA) return;
+
+    // Meta
+    if (DATA.metadata) {
+      const m = DATA.metadata;
+      document.getElementById('meta-generated').textContent = 'Generated: ' + (m.generated_at || '—');
+      document.getElementById('meta-repo').textContent = 'Repo: ' + (m.repo_path || '—');
+    }
+
+    renderStats();
+    renderOverview();
+    renderDomains();
+    renderRules();
+    renderFlows();
+    renderFunctions();
+    populateFilters();
+    bindFilters();
+  }
+
+  // ------------------------------------------------------------------
+  // Stats Row
+  // ------------------------------------------------------------------
+  function renderStats() {
+    const s = DATA.stats || {};
+    const funcs = DATA.functions || [];
+    const rules = DATA.business_rules || [];
+    const flows = DATA.flows || [];
+    const domains = DATA.domains || [];
+
+    const totalFuncs = s.total_functions || funcs.length;
+    const bizFuncs = s.business_functions || funcs.filter(f => f.classification === 'business').length;
+    const totalRules = s.business_rules || rules.length;
+    const totalFlows = s.total_flows || flows.length;
+    const totalDomains = s.total_domains || domains.length;
+    const callEdges = s.call_edges || 0;
+
+    const cards = [
+      { value: totalFuncs, label: 'Total Functions', cls: 'blue' },
+      { value: bizFuncs, label: 'Business Functions', cls: 'green' },
+      { value: totalRules, label: 'Business Rules', cls: 'orange' },
+      { value: totalFlows, label: 'Business Flows', cls: 'purple' },
+      { value: totalDomains, label: 'Domains', cls: 'red' },
+      { value: callEdges, label: 'Call Edges', cls: 'blue' },
+    ];
+
+    document.getElementById('stats-row').innerHTML = cards.map(c =>
+      `<div class="stat-card ${c.cls}">
+         <div class="stat-value">${c.value.toLocaleString()}</div>
+         <div class="stat-label">${c.label}</div>
+       </div>`
+    ).join('');
+  }
+
+  // ------------------------------------------------------------------
+  // Overview Tab
+  // ------------------------------------------------------------------
+  function renderOverview() {
+    const funcs = DATA.functions || [];
+
+    // Classification breakdown
+    const counts = { business: 0, technical: 0, glue: 0, unknown: 0 };
+    funcs.forEach(f => {
+      const c = f.classification || 'unknown';
+      counts[c] = (counts[c] || 0) + 1;
+    });
+    const total = funcs.length || 1;
+    const colors = { business: 'var(--accent-green)', technical: 'var(--accent-blue)', glue: 'var(--accent-yellow)', unknown: 'var(--text-muted)' };
+
+    let breakdownHtml = '';
+    for (const [cls, count] of Object.entries(counts)) {
+      if (count === 0) continue;
+      const pct = ((count / total) * 100).toFixed(1);
+      breakdownHtml += `
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;">
+            <span style="font-weight:600;text-transform:capitalize;">${cls}</span>
+            <span style="color:var(--text-secondary)">${count} (${pct}%)</span>
+          </div>
+          <div style="height:8px;background:var(--bg-badge);border-radius:4px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${colors[cls] || 'var(--text-muted)'};border-radius:4px;"></div>
+          </div>
+        </div>`;
+    }
+    document.getElementById('classification-breakdown').innerHTML = breakdownHtml;
+
+    // Top domains
+    const domainMap = {};
+    funcs.forEach(f => {
+      if (f.domain) domainMap[f.domain] = (domainMap[f.domain] || 0) + 1;
+    });
+    const sorted = Object.entries(domainMap).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const maxCount = sorted.length ? sorted[0][1] : 1;
+
+    let domainsHtml = '';
+    sorted.forEach(([name, count]) => {
+      const pct = ((count / maxCount) * 100).toFixed(0);
+      domainsHtml += `
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;">
+            <span style="font-weight:600;">${name}</span>
+            <span style="color:var(--text-secondary)">${count} functions</span>
+          </div>
+          <div style="height:8px;background:var(--bg-badge);border-radius:4px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:var(--accent-purple);border-radius:4px;"></div>
+          </div>
+        </div>`;
+    });
+    document.getElementById('top-domains').innerHTML = domainsHtml || '<p style="color:var(--text-muted)">No domains detected.</p>';
+  }
+
+  // ------------------------------------------------------------------
+  // Domains Tab
+  // ------------------------------------------------------------------
+  function renderDomains(filter = '') {
+    const domains = DATA.domains || [];
+    const funcs = DATA.functions || [];
+    const lf = filter.toLowerCase();
+
+    const filtered = domains.filter(d =>
+      !lf || (d.name || '').toLowerCase().includes(lf) || (d.description || '').toLowerCase().includes(lf)
+    );
+
+    if (!filtered.length) {
+      document.getElementById('domain-list').innerHTML =
+        '<div class="empty-state"><div class="icon">🏢</div><p>No domains found.</p></div>';
+      document.getElementById('domain-count').textContent = '0 domains';
+      return;
+    }
+
+    document.getElementById('domain-count').textContent = filtered.length + ' domains';
+    document.getElementById('domain-list').innerHTML = filtered.map(d => {
+      const dFuncs = funcs.filter(f => f.domain === d.name);
+      const bizCount = dFuncs.filter(f => f.classification === 'business').length;
+      return `
+        <div class="domain-card" onclick="this.classList.toggle('expanded')">
+          <div class="domain-header">
+            <div class="domain-name">
+              <span>🏢</span> ${esc(d.name)}
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div class="domain-stats">
+                <span>${dFuncs.length} functions</span>
+                <span>${bizCount} business</span>
+              </div>
+              <span class="chevron">▼</span>
+            </div>
+          </div>
+          <div class="domain-body">
+            ${d.description ? `<p style="margin-bottom:12px;color:var(--text-secondary);font-size:0.9rem;">${esc(d.description)}</p>` : ''}
+            <ul class="func-list">
+              ${dFuncs.slice(0, 30).map(f => `
+                <li>
+                  <div>
+                    <span class="func-name">${esc(f.name)}</span>
+                    <span class="func-path">${esc(f.file_path || '')}</span>
+                  </div>
+                  <span class="badge ${f.classification || 'unknown'}">${f.classification || '?'}</span>
+                </li>
+              `).join('')}
+              ${dFuncs.length > 30 ? `<li style="color:var(--text-muted);text-align:center;">… and ${dFuncs.length - 30} more</li>` : ''}
+            </ul>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ------------------------------------------------------------------
+  // Business Rules Tab
+  // ------------------------------------------------------------------
+  function renderRules(filter = '', domainFilter = '') {
+    const rules = DATA.business_rules || [];
+    const lf = filter.toLowerCase();
+
+    const filtered = rules.filter(r => {
+      if (domainFilter && (r.domain || '') !== domainFilter) return false;
+      if (lf) {
+        const text = [r.title, r.given_clause, r.when_clause, r.then_clause, r.domain].join(' ').toLowerCase();
+        if (!text.includes(lf)) return false;
+      }
+      return true;
+    });
+
+    document.getElementById('rule-count').textContent = filtered.length + ' rules';
+
+    if (!filtered.length) {
+      document.getElementById('rule-list').innerHTML =
+        '<div class="empty-state"><div class="icon">📜</div><p>No business rules found.</p></div>';
+      return;
+    }
+
+    document.getElementById('rule-list').innerHTML = filtered.map(r => `
+      <div class="rule-card">
+        <div class="rule-title">
+          <span>${esc(r.title || 'Untitled Rule')}</span>
+          ${r.domain ? `<span class="rule-domain-tag">${esc(r.domain)}</span>` : ''}
+        </div>
+        <div class="bdd-clause"><span class="bdd-keyword given">Given</span> ${esc(r.given_clause || '—')}</div>
+        <div class="bdd-clause"><span class="bdd-keyword when">When</span> ${esc(r.when_clause || '—')}</div>
+        <div class="bdd-clause"><span class="bdd-keyword then">Then</span> ${esc(r.then_clause || '—')}</div>
+      </div>
+    `).join('');
+  }
+
+  // ------------------------------------------------------------------
+  // Business Flows Tab
+  // ------------------------------------------------------------------
+  function renderFlows(filter = '') {
+    const flows = DATA.flows || [];
+    const lf = filter.toLowerCase();
+
+    const filtered = flows.filter(f => {
+      if (!lf) return true;
+      const text = [f.name, f.entry_point, ...(f.steps || []).map(s => s.function_name)].join(' ').toLowerCase();
+      return text.includes(lf);
+    });
+
+    document.getElementById('flow-count').textContent = filtered.length + ' flows';
+
+    if (!filtered.length) {
+      document.getElementById('flow-list').innerHTML =
+        '<div class="empty-state"><div class="icon">🔀</div><p>No business flows found.</p></div>';
+      return;
+    }
+
+    document.getElementById('flow-list').innerHTML = filtered.map(f => `
+      <div class="flow-card">
+        <div class="flow-title">🔀 ${esc(f.name || f.entry_point || 'Flow')}</div>
+        <div class="flow-steps">
+          ${(f.steps || []).map((step, i) => `
+            <div class="flow-step">
+              <div class="step-number ${step.classification || ''}">${i + 1}</div>
+              <div class="step-content">
+                <div class="step-func-name">${esc(step.function_name || step.name || '?')}</div>
+                <div class="step-meta">
+                  ${step.file_path ? esc(step.file_path) : ''}
+                  ${step.classification ? ` · <span class="badge ${step.classification}">${step.classification}</span>` : ''}
+                  ${step.summary ? `<br/>${esc(step.summary)}` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ------------------------------------------------------------------
+  // All Functions Tab
+  // ------------------------------------------------------------------
+  function renderFunctions(filter = '', classFilter = '', domainFilter = '', kindFilter = '') {
+    const funcs = DATA.functions || [];
+    const lf = filter.toLowerCase();
+
+    const filtered = funcs.filter(f => {
+      if (classFilter && (f.classification || '') !== classFilter) return false;
+      if (domainFilter && (f.domain || '') !== domainFilter) return false;
+      if (kindFilter && (f.kind || '') !== kindFilter) return false;
+      if (lf) {
+        const text = [f.name, f.file_path, f.domain, f.docstring, f.summary].join(' ').toLowerCase();
+        if (!text.includes(lf)) return false;
+      }
+      return true;
+    });
+
+    document.getElementById('func-count').textContent = filtered.length + ' functions';
+
+    const tbody = document.getElementById('func-tbody');
+    // Render max 500 for performance
+    const shown = filtered.slice(0, 500);
+
+    tbody.innerHTML = shown.map(f => `
+      <tr>
+        <td class="mono">${esc(f.name)}</td>
+        <td class="path-cell" title="${esc(f.file_path || '')}">${esc(f.file_path || '—')}</td>
+        <td>${esc(f.domain || '—')}</td>
+        <td><span class="badge ${f.classification || 'unknown'}">${esc(f.classification || '—')}</span></td>
+        <td>${esc(f.kind || '—')}</td>
+        <td style="text-align:right">${f.line_count || f.end_line && f.start_line ? (f.end_line - f.start_line + 1) : '—'}</td>
+      </tr>
+    `).join('');
+
+    if (filtered.length > 500) {
+      tbody.innerHTML += `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:16px;">Showing 500 of ${filtered.length} — refine your search</td></tr>`;
+    }
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px;">No functions match your filters.</td></tr>`;
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Populate filter dropdowns
+  // ------------------------------------------------------------------
+  function populateFilters() {
+    const funcs = DATA.functions || [];
+    const rules = DATA.business_rules || [];
+
+    // Collect unique domains and kinds
+    const domains = [...new Set(funcs.map(f => f.domain).filter(Boolean))].sort();
+    const kinds = [...new Set(funcs.map(f => f.kind).filter(Boolean))].sort();
+    const ruleDomains = [...new Set(rules.map(r => r.domain).filter(Boolean))].sort();
+
+    // Function domain filter
+    const fdFilter = document.getElementById('func-domain-filter');
+    domains.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = d;
+      fdFilter.appendChild(opt);
+    });
+
+    // Function kind filter
+    const fkFilter = document.getElementById('func-kind-filter');
+    kinds.forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = k;
+      fkFilter.appendChild(opt);
+    });
+
+    // Rule domain filter
+    const rdFilter = document.getElementById('rule-domain-filter');
+    ruleDomains.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = d;
+      rdFilter.appendChild(opt);
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Bind filter events
+  // ------------------------------------------------------------------
+  function bindFilters() {
+    // Domain search
+    document.getElementById('domain-search').addEventListener('input', e => {
+      renderDomains(e.target.value);
+    });
+
+    // Rule filters
+    const ruleSearch = document.getElementById('rule-search');
+    const ruleDomain = document.getElementById('rule-domain-filter');
+    function updateRules() {
+      renderRules(ruleSearch.value, ruleDomain.value);
+    }
+    ruleSearch.addEventListener('input', updateRules);
+    ruleDomain.addEventListener('change', updateRules);
+
+    // Flow search
+    document.getElementById('flow-search').addEventListener('input', e => {
+      renderFlows(e.target.value);
+    });
+
+    // Function filters
+    const funcSearch = document.getElementById('func-search');
+    const funcClass = document.getElementById('func-class-filter');
+    const funcDomain = document.getElementById('func-domain-filter');
+    const funcKind = document.getElementById('func-kind-filter');
+    function updateFuncs() {
+      renderFunctions(funcSearch.value, funcClass.value, funcDomain.value, funcKind.value);
+    }
+    funcSearch.addEventListener('input', updateFuncs);
+    funcClass.addEventListener('change', updateFuncs);
+    funcDomain.addEventListener('change', updateFuncs);
+    funcKind.addEventListener('change', updateFuncs);
+  }
+
+  // ------------------------------------------------------------------
+  // Utility
+  // ------------------------------------------------------------------
+  function esc(s) {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // Make esc available globally for inline handlers
+  window.esc = esc;
+
+  // ------------------------------------------------------------------
+  // Boot
+  // ------------------------------------------------------------------
+  loadData();
+})();
+</script>
+</body>
+</html>

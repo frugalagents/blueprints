@@ -1,0 +1,202 @@
+openapi: 3.0.3
+info:
+  title: Employee API
+  version: 1.0.0
+  x-domain: employee
+paths:
+  /employee/{employee_id}:
+    get:
+      operationId: get_employee_profile
+      summary: Get employee profile, classification, and work location
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employee_id:
+                    type: string
+                  name:
+                    type: string
+                  department:
+                    type: string
+                  job_title:
+                    type: string
+                  job_level:
+                    type: string
+                  manager_id:
+                    type: string
+                  hire_date:
+                    type: string
+                  work_location:
+                    type: string
+                  state:
+                    type: string
+                  employment_type:
+                    type: string
+                  flsa_status:
+                    type: string
+  /employee/{employee_id}/job-history:
+    get:
+      operationId: get_job_history
+      summary: Get job title and position change history
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: string
+                  effective_date:
+                    type: string
+                  job_title:
+                    type: string
+                  department:
+                    type: string
+                  reason:
+                    type: string
+  /employee/{employee_id}/manager:
+    get:
+      operationId: get_manager_info
+      summary: Get direct manager details
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  manager_id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  department:
+                    type: string
+  /employee/{employee_id}/org-chart:
+    get:
+      operationId: get_org_chart
+      summary: Get org chart and reporting chain
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reporting_chain:
+                    type: string
+                  direct_reports:
+                    type: string
+  /employee/{employee_id}/documents:
+    get:
+      operationId: get_employee_documents
+      summary: Get employee documents (offer letter, I-9, W-4)
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  documents:
+                    type: string
+                  doc_type:
+                    type: string
+                  upload_date:
+                    type: string
+                  status:
+                    type: string
+  /employee/{employee_id}/emergency-contacts:
+    get:
+      operationId: get_emergency_contacts
+      summary: Get emergency contact information
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contacts:
+                    type: string
+                  name:
+                    type: string
+                  relationship:
+                    type: string
+                  phone:
+                    type: string
+  /employee/search:
+    get:
+      operationId: search_employees
+      summary: Search employees by name, department, or location
+      parameters:
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: string
+                  employee_id:
+                    type: string
+                  name:
+                    type: string
+                  department:
+                    type: string
+                  job_title:
+                    type: string

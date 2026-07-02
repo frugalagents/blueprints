@@ -1,0 +1,39 @@
+capability: get_learning_completions
+domain: learning
+method: GET
+path: /learning/completions/{employee_id}
+summary: Retrieve an employee's completed learning courses, scores, and certificates
+  for a given year
+description: This API returns a full transcript of courses an employee has completed,
+  including completion dates, scores achieved, and links to any certificates earned.
+  It is used when managers, HR business partners, or employees themselves need to
+  review learning history for performance reviews, promotion decisions, or audit purposes.
+  It can be filtered by year to focus on recent development activity. It helps answer
+  questions about whether an employee has invested in skill-building and what qualifications
+  they have demonstrated through formal learning.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active or historical employee record in the
+  system
+- The requesting user must have permission to view the specified employee's learning
+  records
+- The year parameter, if provided, must be a valid calendar year within the system's
+  data retention range
+produces:
+- A list of all courses the employee has completed within the specified period
+- Completion dates showing when each course was finished
+- Scores or grades achieved on each completed course
+- Downloadable or linkable certificates of completion for eligible courses
+use_cases:
+- What training courses has this employee completed this year, and did they pass?
+- Can I get a learning transcript to include in this employee's promotion package?
+- Which employees have completed the leadership development program and received certificates?
+related:
+- operation_id: get_employee_certifications
+  reason: Certifications are often earned as a result of completing specific courses;
+    together these APIs provide a full picture of an employee's formal qualifications
+    and learning achievements.
+- operation_id: get_compliance_training_status
+  reason: Compliance training completions are a subset of overall learning completions;
+    cross-referencing these APIs confirms whether mandatory courses appear in the
+    employee's transcript.

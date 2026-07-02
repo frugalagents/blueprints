@@ -1,0 +1,40 @@
+capability: get_benefits_elections
+domain: benefits
+method: GET
+path: /benefits/elections/{employee_id}
+summary: Retrieve an employee's current active benefits elections across medical,
+  dental, vision, FSA, and HSA plans
+description: This API returns a complete snapshot of the benefits plans an employee
+  is currently enrolled in, including the specific plan names, employee and employer
+  cost contributions, and any flexible or health savings account elections. It answers
+  the fundamental question of 'what benefits does this employee have right now?' and
+  is the authoritative source for current coverage status. Use it when verifying coverage
+  before a medical claim, preparing a total compensation statement, or auditing payroll
+  deductions against elected plans. It serves as a foundational data source for downstream
+  cost and deduction calculations.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active employee with at least one completed
+  enrollment period
+- The caller must have HR, payroll, or benefits administrator permissions, or be the
+  employee themselves
+- The employee must have passed any applicable waiting period before elections are
+  active
+produces:
+- The names and tiers of currently active medical, dental, and vision plans
+- Per-paycheck employee and employer cost contributions for each elected plan
+- Current FSA and HSA election amounts for the plan year
+- A consolidated view of all active benefit enrollments in one response
+use_cases:
+- What health insurance plan is this employee currently enrolled in?
+- Is this employee contributing to an HSA or FSA this year, and how much?
+- What benefits is this employee receiving as part of their total compensation package?
+related:
+- 'get_benefits_costs: Directly depends on elections data to calculate the per-paycheck
+  cost breakdown by plan'
+- 'get_deduction_breakdown: Uses elections to determine which payroll deductions should
+  appear on a paycheck'
+- 'get_benefits_changes: Provides the historical record of how the current elections
+  were arrived at over time'
+- 'get_benefits_dependents: Complements elections by showing who is covered under
+  the elected plans'

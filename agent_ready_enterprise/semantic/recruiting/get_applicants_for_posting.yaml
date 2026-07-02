@@ -1,0 +1,43 @@
+capability: get_applicants_for_posting
+domain: recruiting
+method: GET
+path: /recruiting/applicants/{posting_id}
+summary: Retrieve all applicants and their pipeline stages for a specific job posting
+description: Returns the list of candidates who have applied to a specific job posting,
+  including each applicant's current pipeline stage, application date, and rating.
+  This API is the primary way to monitor candidate flow for an open role and identify
+  who is ready for the next step in the hiring process. It can be filtered by stage
+  to focus on candidates at a specific point in the funnel, such as those awaiting
+  interviews or pending offers. Recruiters and hiring managers use this to answer
+  questions about candidate volume, pipeline health, and who needs action taken on
+  their application.
+side_effect: read
+preconditions:
+- The specified posting_id corresponds to an existing job posting
+- Caller has read access to applicant data for the given posting
+- The posting has received at least one application (otherwise returns empty list)
+produces:
+- A list of applicants with their names, application dates, current pipeline stages,
+  and ratings
+- Applicant identifiers needed to schedule interviews or generate offer letters
+- A stage-filtered view of the candidate pipeline for a specific role
+use_cases:
+- How many candidates are currently in the interview stage for our open Product Manager
+  role?
+- Which applicants for the Senior Engineer posting have been rated and are ready to
+  move to offer?
+- Who applied to the Marketing Director role in the last two weeks and what stage
+  are they in?
+related:
+- operation_id: list_job_postings
+  reason: You must first identify the posting_id from the list of job postings before
+    retrieving its applicants.
+- operation_id: schedule_interview
+  reason: After identifying qualified applicants, the next step is scheduling interviews
+    using the applicant_id returned here.
+- operation_id: create_offer_letter
+  reason: Applicants who clear the interview stage become candidates for offer letters,
+    which require the applicant_id from this response.
+- operation_id: submit_interview_feedback
+  reason: Interview feedback is tied to specific applicants; this API provides the
+    applicant context needed to validate feedback submissions.

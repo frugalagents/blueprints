@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  title: Benefits API
+  version: 1.0.0
+  x-domain: benefits
+paths:
+  /benefits/changes/{employee_id}:
+    get:
+      operationId: get_benefits_changes
+      summary: Get recent benefits changes (elections, life events, open enrollment)
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: since
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  changes:
+                    type: string
+                  change_type:
+                    type: string
+                  plan:
+                    type: string
+                  previous_coverage:
+                    type: string
+                  new_coverage:
+                    type: string
+                  effective_date:
+                    type: string
+                  reason:
+                    type: string
+  /benefits/elections/{employee_id}:
+    get:
+      operationId: get_benefits_elections
+      summary: Get current benefits elections (medical, dental, vision, FSA, HSA)
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  medical_plan:
+                    type: string
+                  dental_plan:
+                    type: string
+                  vision_plan:
+                    type: string
+                  employee_cost:
+                    type: number
+                  employer_cost:
+                    type: number
+                  fsa_amount:
+                    type: number
+                  hsa_amount:
+                    type: number
+  /benefits/eligibility/{employee_id}:
+    get:
+      operationId: get_benefits_eligibility
+      summary: Get benefits eligibility and enrollment windows
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      x-depends-on:
+      - get_employee_profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  eligible:
+                    type: string
+                  enrollment_window:
+                    type: string
+                  life_event_eligible:
+                    type: string
+                  waiting_period_end:
+                    type: string
+  /benefits/dependents/{employee_id}:
+    get:
+      operationId: get_benefits_dependents
+      summary: Get dependents covered under plans
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dependents:
+                    type: string
+                  name:
+                    type: string
+                  relationship:
+                    type: string
+                  plans_covered:
+                    type: string
+  /benefits/costs/{employee_id}:
+    get:
+      operationId: get_benefits_costs
+      summary: Get per-paycheck benefits cost breakdown
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      x-depends-on:
+      - get_benefits_elections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_employee_cost:
+                    type: number
+                  total_employer_cost:
+                    type: number
+                  by_plan:
+                    type: string
+  /benefits/life-events/{employee_id}:
+    get:
+      operationId: get_life_events
+      summary: Get qualifying life events (marriage, birth, etc.)
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: string
+                  event_type:
+                    type: string
+                  event_date:
+                    type: string
+                  enrollment_deadline:
+                    type: string
+                  changes_made:
+                    type: string
+  /benefits/401k/{employee_id}:
+    get:
+      operationId: get_retirement_plan
+      summary: Get 401k plan details, contributions, employer match
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contribution_pct:
+                    type: number
+                  employer_match_pct:
+                    type: number
+                  ytd_401k_amount:
+                    type: number
+                  ytd_employer_match_amount:
+                    type: number
+                  plan_balance:
+                    type: number
+                  vesting_pct:
+                    type: number

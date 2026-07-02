@@ -1,0 +1,40 @@
+capability: get_leave_balance
+domain: time
+method: GET
+path: /time/leave/{employee_id}
+summary: Retrieve current accrued leave balances for PTO, sick time, and personal
+  days
+description: This API returns the current available leave balances for an employee
+  across all leave categories, including paid time off (PTO), sick leave, and personal
+  days. It reflects accrued hours minus any leave already used, giving a real-time
+  snapshot of what an employee has available to take. Use this API when an employee
+  or manager wants to plan upcoming time off, when HR needs to verify leave eligibility
+  before approving a request, or when running end-of-year leave liability reports.
+  It answers questions about how much time off an employee has earned, how much they've
+  used, and whether they are at risk of losing accrued leave due to caps or use-it-or-lose-it
+  policies.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- Leave accrual rules must be configured for the employee's leave plan
+- Caller must have read access to the employee's leave records
+- Leave balances must have been initialized at hire or plan enrollment
+produces:
+- Current available PTO hours the employee can use
+- Current available sick leave hours
+- Current available personal day hours
+- A snapshot of leave liability the organization carries for this employee
+use_cases:
+- "How many PTO hours does this employee have left before the end of the year \u2014\
+  \ are they at risk of losing any due to a use-it-or-lose-it policy?"
+- Does this employee have enough sick leave to cover their upcoming medical leave
+  request?
+- What is the total accrued leave liability across all employees for our end-of-year
+  financial reporting?
+related:
+- operation_id: get_time_entries
+  reason: Leave taken is recorded as time entries; cross-referencing leave balances
+    with time entries confirms that leave usage has been correctly deducted from balances.
+- operation_id: get_work_schedule
+  reason: An employee's scheduled hours per week determine how leave hours translate
+    to days off, which is needed to interpret leave balances in practical terms.

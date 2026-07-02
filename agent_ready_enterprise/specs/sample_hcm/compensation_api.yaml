@@ -1,0 +1,305 @@
+openapi: 3.0.3
+info:
+  title: Compensation API
+  version: 1.0.0
+  x-domain: compensation
+paths:
+  /compensation/salary-bands:
+    get:
+      operationId: get_salary_bands
+      summary: Get salary bands by job level and location
+      parameters:
+      - name: job_level
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: job_family
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bands:
+                    type: string
+                  job_level:
+                    type: string
+                  job_family:
+                    type: string
+                  min_salary:
+                    type: number
+                  mid_salary:
+                    type: number
+                  max_salary:
+                    type: number
+                  location:
+                    type: string
+  /compensation/equity/{employee_id}:
+    get:
+      operationId: get_employee_equity
+      summary: Get employee equity grants and vesting
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  grants:
+                    type: string
+                  grant_id:
+                    type: string
+                  grant_date:
+                    type: string
+                  shares_granted:
+                    type: integer
+                  shares_vested:
+                    type: integer
+                  vesting_schedule:
+                    type: string
+                  current_value:
+                    type: number
+  /compensation/bonuses/{employee_id}:
+    get:
+      operationId: get_employee_bonuses
+      summary: Get bonus history and pending bonuses
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bonuses:
+                    type: string
+                  bonus_id:
+                    type: string
+                  type:
+                    type: string
+                  amount:
+                    type: number
+                  date:
+                    type: string
+                  status:
+                    type: string
+  /compensation/merit-increases/{employee_id}:
+    get:
+      operationId: get_merit_increase_history
+      summary: Get salary increase history
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  increases:
+                    type: string
+                  effective_date:
+                    type: string
+                  previous_salary:
+                    type: number
+                  new_salary:
+                    type: number
+                  increase_pct:
+                    type: number
+                  reason:
+                    type: string
+    post:
+      operationId: submit_merit_increase
+      summary: Submit a merit increase recommendation
+      x-depends-on:
+      - get_performance_reviews
+      - get_salary_bands
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                proposed_salary:
+                  type: number
+                increase_pct:
+                  type: number
+                effective_date:
+                  type: string
+                justification:
+                  type: string
+      responses:
+        '201':
+          description: Submitted for approval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                  status:
+                    type: string
+                  approval_chain:
+                    type: string
+  /compensation/total-rewards/{employee_id}:
+    get:
+      operationId: get_total_rewards_statement
+      summary: Get comprehensive total rewards statement
+      x-depends-on:
+      - get_employee_equity
+      - get_employee_bonuses
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employee_id:
+                    type: string
+                  base_salary:
+                    type: number
+                  bonus_total:
+                    type: number
+                  equity_value:
+                    type: number
+                  benefits_value:
+                    type: number
+                  retirement_contribution:
+                    type: number
+                  total_compensation:
+                    type: number
+  /compensation/budget/{department}:
+    get:
+      operationId: get_compensation_budget
+      summary: Get department compensation budget and utilization
+      parameters:
+      - name: department
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fiscal_year
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  department:
+                    type: string
+                  total_budget:
+                    type: number
+                  utilized:
+                    type: number
+                  remaining:
+                    type: number
+                  headcount:
+                    type: integer
+                  avg_salary:
+                    type: number
+  /compensation/market-data/{job_family}:
+    get:
+      operationId: get_market_compensation_data
+      summary: Get market compensation benchmarks
+      parameters:
+      - name: job_family
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: percentile
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_family:
+                    type: string
+                  location:
+                    type: string
+                  p25:
+                    type: number
+                  p50:
+                    type: number
+                  p75:
+                    type: number
+                  p90:
+                    type: number
+                  data_source:
+                    type: string
+                  survey_date:
+                    type: string

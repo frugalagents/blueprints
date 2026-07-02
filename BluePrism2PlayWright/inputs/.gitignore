@@ -1,0 +1,4 @@
+# PII input files — never commit
+*.json
+*.csv
+*.xlsx

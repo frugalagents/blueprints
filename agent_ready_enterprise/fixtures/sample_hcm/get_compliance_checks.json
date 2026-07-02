@@ -1,0 +1,10 @@
+{
+  "employee_id": "EMP-1042",
+  "checks": [
+    {"rule_id": "CA-OT-001", "category": "overtime", "status": "compliant", "description": "California overtime threshold (8hrs/day)", "last_checked": "2026-05-15"},
+    {"rule_id": "CA-MW-001", "category": "minimum_wage", "status": "compliant", "description": "California minimum wage ($16.00/hr)", "last_checked": "2026-05-15"},
+    {"rule_id": "SF-LT-001", "category": "local_tax", "status": "compliant", "description": "San Francisco local tax withholding", "last_checked": "2026-05-15"},
+    {"rule_id": "FED-W4-001", "category": "tax_forms", "status": "compliant", "description": "W-4 on file and current", "last_checked": "2026-05-01"}
+  ],
+  "overall_status": "compliant"
+}

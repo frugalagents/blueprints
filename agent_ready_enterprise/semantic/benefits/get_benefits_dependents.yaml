@@ -1,0 +1,39 @@
+capability: get_benefits_dependents
+domain: benefits
+method: GET
+path: /benefits/dependents/{employee_id}
+summary: Retrieve the list of dependents covered under an employee's benefits plans
+description: This API returns all dependents that an employee has enrolled under their
+  benefits coverage, including each dependent's name, relationship to the employee,
+  and which specific plans they are covered under. It is essential for verifying dependent
+  eligibility during audits, confirming coverage for a family member before a medical
+  event, or ensuring that dependent information is accurate and up to date. Use it
+  when an employee reports a coverage issue for a family member, or during annual
+  dependent eligibility verification campaigns. It also supports compliance checks
+  to ensure only eligible dependents are enrolled.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active employee with at least one benefits
+  election that includes dependent coverage
+- The caller must have HR or benefits administrator permissions, or be the employee
+  themselves
+- Dependent records must have been previously submitted and approved during an enrollment
+  period
+produces:
+- A list of all dependents currently enrolled under the employee's benefits plans
+- Each dependent's name and relationship to the employee (spouse, child, domestic
+  partner, etc.)
+- The specific benefits plans each dependent is covered under
+- A complete picture of who in the employee's household has employer-sponsored coverage
+use_cases:
+- Is this employee's spouse currently covered under the company's medical plan?
+- How many dependents does this employee have enrolled, and under which plans?
+- Which employees have dependents enrolled in the dental plan who may be affected
+  by a plan change?
+related:
+- 'get_benefits_elections: Provides the plan-level enrollment context that determines
+  which plans dependents can be added to'
+- 'get_benefits_costs: Dependent enrollment directly affects per-paycheck costs, particularly
+  for family vs. employee-only tier pricing'
+- 'get_benefits_changes: Dependent additions or removals are captured as benefits
+  changes, making this a useful companion for auditing dependent history'

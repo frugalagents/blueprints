@@ -1,0 +1,45 @@
+capability: get_employee_equity
+domain: compensation
+method: GET
+path: /compensation/equity/{employee_id}
+summary: Retrieve an employee's equity grant history, vesting schedule, and current
+  estimated value
+description: This API returns all equity grants awarded to an employee, including
+  grant dates, the number of shares granted and vested, the vesting schedule, and
+  the current estimated value of their equity holdings. It is used by HR, finance,
+  and total rewards teams to give employees and managers a transparent view of equity
+  compensation as a component of total pay. Equity data is particularly important
+  during retention conversations, offer negotiations, and annual total rewards reviews,
+  where unvested equity represents a meaningful financial incentive to remain with
+  the company. It answers questions about how much equity an employee has accumulated,
+  how much remains unvested as a retention lever, and what their total equity position
+  is worth today.
+side_effect: read
+preconditions:
+- Employee must exist in the HR system with a valid employee_id
+- Employee must have been awarded at least one equity grant
+- Caller must have compensation administration or employee self-service access permissions
+- Current share price or valuation data must be available for current_value calculation
+  to be accurate
+produces:
+- List of all equity grants with unique identifiers and grant dates
+- Number of shares granted per award
+- Number of shares vested to date per award
+- Vesting schedule details (cliff, ratable, performance-based, etc.)
+- Current estimated market or fair value of the employee's equity position
+use_cases:
+- How much unvested equity does this employee stand to lose if they resign today,
+  and is it enough to deter them from leaving?
+- What is the total current value of all equity grants for an employee we are preparing
+  a retention package for?
+- When does the next vesting cliff occur for this employee, and should we time a promotion
+  or retention conversation accordingly?
+related:
+- "get_total_rewards_statement \u2014 equity value is a core component of the total\
+  \ rewards statement, which aggregates all forms of compensation including salary,\
+  \ bonus, and equity"
+- "get_employee_bonuses \u2014 bonuses and equity together represent the variable\
+  \ and long-term incentive components of total compensation, often analyzed side\
+  \ by side"
+- "get_retirement_plan \u2014 alongside 401(k) balance and vesting, equity vesting\
+  \ data completes the picture of an employee's long-term financial stake in the company"

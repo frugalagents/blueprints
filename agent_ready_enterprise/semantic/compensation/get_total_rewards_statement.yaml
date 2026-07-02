@@ -1,0 +1,50 @@
+capability: get_total_rewards_statement
+domain: compensation
+method: GET
+path: /compensation/total-rewards/{employee_id}
+summary: Retrieve a comprehensive total compensation and rewards statement for an
+  employee
+description: Returns a complete picture of an employee's total compensation for a
+  given year, aggregating base salary, bonuses, equity value, benefits valuation,
+  and employer retirement contributions into a single total compensation figure. This
+  API is used by HR teams, managers, and employees themselves to understand the full
+  economic value of an employment relationship beyond just base pay. It is particularly
+  valuable during retention conversations, offer negotiations, and annual compensation
+  communications. It helps answer the question of what an employee truly earns when
+  all forms of compensation are considered.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active or former employee with compensation
+  records
+- The specified year must have closed or partially completed payroll and benefits
+  data available
+- Equity and bonus data must have been calculated and recorded for the requested year
+- The caller must have appropriate permissions to view total compensation details
+  for the specified employee
+produces:
+- Annual base salary for the specified year
+- Total bonus payments received during the year
+- Estimated value of equity awards (vested or granted)
+- Monetary value of employer-provided benefits
+- Employer retirement contribution amounts
+- A single aggregated total compensation figure combining all reward components
+use_cases:
+- What is the true total value of this employee's compensation package when equity
+  and benefits are included?
+- How do I communicate the full economic value of employment to a high performer who
+  is considering leaving for a higher base salary elsewhere?
+- What did we spend in total rewards for this employee last year across all compensation
+  components?
+related:
+- operation_id: get_employee_equity
+  reason: Equity value is a core component of the total rewards statement and must
+    be retrieved and aggregated to produce an accurate total compensation figure.
+- operation_id: get_employee_bonuses
+  reason: Bonus totals for the year are a required input to the total rewards calculation
+    and are fetched as a dependency before the statement is assembled.
+- operation_id: get_merit_increase_history
+  reason: Understanding how base salary has changed over the year provides context
+    for interpreting the base salary component shown in the total rewards statement.
+- operation_id: get_compensation_budget
+  reason: Total rewards data per employee can be aggregated to assess how department-level
+    compensation spend compares against the approved budget.

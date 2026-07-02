@@ -1,0 +1,40 @@
+capability: get_offer_status
+domain: recruiting
+method: GET
+path: /recruiting/offers/{offer_id}
+summary: Retrieve the current status and details of an extended job offer
+description: This API fetches the real-time status of a specific offer letter that
+  has been sent to a candidate, including whether it has been accepted, declined,
+  or is still pending. It returns key details such as the candidate's name, offered
+  salary, and the date of acceptance if applicable. Use this when a recruiter or hiring
+  manager needs to check where a candidate stands in the offer process. It answers
+  questions like 'Did the candidate accept our offer?' and 'When did they formally
+  accept?'
+side_effect: read
+preconditions:
+- A valid offer_id must exist, meaning an offer must have already been created via
+  create_offer_letter
+- The caller must have permission to view offer details for the associated posting
+  or candidate
+produces:
+- The current lifecycle status of the offer (e.g., sent, accepted, declined, expired)
+- The candidate's name associated with the offer for quick identification
+- The salary terms included in the offer for reference and record-keeping
+- The date the candidate formally accepted the offer, if applicable
+use_cases:
+- "A recruiter asks: 'It's been three days since we sent the offer to our top candidate\
+  \ \u2014 have they accepted yet or do we need to follow up?'"
+- A hiring manager wants to confirm an acceptance before announcing the new hire to
+  the team and initiating onboarding paperwork.
+- An HR analyst is auditing offer acceptance rates and needs to pull the status and
+  acceptance dates for all offers extended in the last quarter.
+related:
+- "create_offer_letter \u2014 this is the originating action that creates the offer\
+  \ whose status is being retrieved; get_offer_status is the natural follow-up to\
+  \ monitor what was created"
+- "get_onboarding_status \u2014 once an offer shows as accepted, the next logical\
+  \ step is to check whether onboarding has been triggered and is on track for the\
+  \ new hire's start date"
+- "get_recruiting_pipeline_metrics \u2014 offer acceptance rate is a key pipeline\
+  \ metric; individual offer statuses feed into the aggregate acceptance rate reported\
+  \ by the pipeline metrics API"

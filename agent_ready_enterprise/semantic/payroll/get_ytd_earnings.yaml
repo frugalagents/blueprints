@@ -1,0 +1,48 @@
+capability: get_ytd_earnings
+domain: payroll
+method: GET
+path: /payroll/ytd/{employee_id}
+summary: Retrieve year-to-date gross pay, net pay, tax withholdings, and retirement
+  contributions
+description: This API returns cumulative year-to-date payroll figures for an employee,
+  including total gross pay, net pay, federal and state tax withheld, and 401k contributions
+  made so far in the calendar year. It provides the high-level financial summary needed
+  for tax planning, benefits compliance, and compensation reporting. Use this when
+  an employee wants to understand their total tax burden for the year, when verifying
+  that 401k contribution limits are not being exceeded, or when generating year-end
+  compensation summaries. It serves as the primary input for estimated tax liability
+  calculations.
+side_effect: read
+preconditions:
+- The employee_id must be valid and have at least one payroll record processed in
+  the current calendar year
+- The requesting user must have payroll read access for the specified employee
+- The payroll system must have finalized at least one pay period in the current year
+  to return meaningful YTD data
+produces:
+- Cumulative gross and net pay totals for the current calendar year, enabling full-year
+  compensation projections
+- Total federal and state income tax withheld year-to-date, supporting tax planning
+  and W-2 preparation
+- Year-to-date 401k contribution amount, allowing employees and administrators to
+  track progress toward annual IRS contribution limits
+use_cases:
+- How much federal income tax has been withheld from this employee's paychecks so
+  far this year, and is it on track to cover their estimated liability?
+- Has this employee reached or is approaching the IRS annual 401k contribution limit
+  based on their YTD contributions?
+- What is this employee's total gross compensation year-to-date for use in a mid-year
+  compensation benchmarking report?
+related:
+- operation_id: get_estimated_tax_liability
+  reason: YTD earnings and withholdings are the direct inputs used to estimate whether
+    an employee will owe additional taxes or receive a refund at year-end.
+- operation_id: get_payroll_history
+  reason: Payroll history provides the period-by-period records that aggregate into
+    the YTD totals, and is useful for reconciling or auditing those cumulative figures.
+- operation_id: get_deduction_breakdown
+  reason: Per-period deduction breakdowns, when summed, should reconcile to the YTD
+    tax and retirement figures returned by this API.
+- operation_id: get_paystub
+  reason: Individual paystubs typically display a YTD summary column; this API provides
+    the authoritative source for those same cumulative figures.

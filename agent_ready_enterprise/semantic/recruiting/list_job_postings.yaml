@@ -1,0 +1,42 @@
+capability: list_job_postings
+domain: recruiting
+method: GET
+path: /recruiting/job-postings
+summary: List and filter active or historical job postings across the organization
+description: Retrieves a list of job postings filtered by department and/or status,
+  providing a snapshot of the organization's current and past hiring activity. Use
+  this API to audit open roles, understand hiring volume by department, or feed downstream
+  workflows like pipeline reporting and requisition management. It serves as the foundational
+  data source for understanding what positions the company is actively trying to fill.
+  Business stakeholders use this to answer headcount planning questions and track
+  whether approved requisitions have been converted into live postings.
+side_effect: read
+preconditions:
+- Caller has read access to recruiting data
+- At least one job posting exists in the system
+- Optional filters (department, status) must match valid enumerated values if provided
+produces:
+- A filterable list of job postings with their titles, departments, locations, and
+  current statuses
+- Posting identifiers needed to retrieve applicants or take action on specific roles
+- A view of hiring activity segmented by department or status for reporting purposes
+use_cases:
+- Which open roles are currently posted across the Engineering department?
+- How many job postings are in 'draft' vs 'published' status right now?
+- What positions has the Sales department posted in the last quarter?
+related:
+- operation_id: list_hiring_requisitions
+  reason: Requisitions are the approved headcount requests that precede job postings;
+    comparing the two reveals which approved roles have or haven't been posted yet.
+- operation_id: get_applicants_for_posting
+  reason: Once a posting is identified, this API retrieves the candidates who have
+    applied to it.
+- operation_id: get_recruiting_pipeline_metrics
+  reason: Pipeline metrics aggregate data across postings to show funnel health; listing
+    postings provides the input set for that analysis.
+- operation_id: create_job_posting
+  reason: Creating a new posting should reference existing postings to avoid duplicates
+    and ensure consistency in titles and departments.
+- operation_id: get_compensation_budget
+  reason: Budget availability by department informs which postings can be actively
+    pursued or need to be paused.

@@ -1,0 +1,44 @@
+capability: get_salary_bands
+domain: compensation
+method: GET
+path: /compensation/salary-bands
+summary: Retrieve approved salary bands (min, mid, max) for a given job level, job
+  family, and location
+description: "This API returns the structured salary range \u2014 minimum, midpoint,\
+  \ and maximum \u2014 for a specific combination of job level, job family, and geographic\
+  \ location, reflecting the company's approved compensation framework. It is used\
+  \ by HR business partners, compensation analysts, recruiters, and managers to ensure\
+  \ that offers, promotions, and merit increases fall within sanctioned pay ranges\
+  \ and remain competitive with the market. The data supports pay equity analysis\
+  \ by providing the benchmark against which individual salaries can be compared.\
+  \ It answers critical questions about whether a given employee or candidate is paid\
+  \ within the appropriate range for their role and location."
+side_effect: read
+preconditions:
+- Valid job_level must exist in the compensation framework
+- Valid job_family must be defined in the job architecture
+- Location must correspond to a geography for which salary bands have been established
+- Caller must have compensation administration or HR business partner access permissions
+- Salary bands must have been published for the current compensation cycle
+produces:
+- Minimum salary for the specified job level, family, and location
+- Midpoint (target) salary representing the market reference point
+- Maximum salary defining the ceiling for the pay range
+- Confirmation of the job level, job family, and location the band applies to
+use_cases:
+- Is the salary we are offering a candidate for a Senior Engineer role in Austin within
+  the approved pay band for that level and location?
+- Which employees in the Data Science job family are paid below the midpoint of their
+  salary band, indicating potential retention risk?
+- What is the maximum salary we can offer when promoting an employee from Level 3
+  to Level 4 in the Finance job family in New York?
+related:
+- "get_market_compensation_data \u2014 salary bands are calibrated against external\
+  \ market data, so both APIs are used together to validate internal ranges against\
+  \ competitive benchmarks"
+- "submit_merit_increase \u2014 merit increases must be validated against salary bands\
+  \ to ensure the resulting salary does not exceed the band maximum"
+- "create_job_posting \u2014 job postings require salary range disclosures in many\
+  \ jurisdictions, which are derived directly from salary band data"
+- "get_employee_profile \u2014 employee profile provides the job level and location\
+  \ needed to look up the correct salary band for a specific individual"

@@ -1,0 +1,13 @@
+{
+  "state": "CA",
+  "overtime_threshold_hours": 8.0,
+  "minimum_wage": 16.0,
+  "local_tax_jurisdictions": ["San Francisco", "Los Angeles", "San Jose"],
+  "rules": [
+    {"rule_id": "CA-OT-001", "description": "Daily overtime after 8 hours", "category": "overtime"},
+    {"rule_id": "CA-OT-002", "description": "Double time after 12 hours", "category": "overtime"},
+    {"rule_id": "CA-MW-001", "description": "Minimum wage $16.00/hr effective 2024", "category": "minimum_wage"},
+    {"rule_id": "CA-ML-001", "description": "Meal break required after 5 hours", "category": "meal_break"},
+    {"rule_id": "CA-LT-001", "description": "Local tax withholding for SF/LA/SJ", "category": "local_tax"}
+  ]
+}

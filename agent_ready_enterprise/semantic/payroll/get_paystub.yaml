@@ -1,0 +1,57 @@
+capability: get_paystub
+domain: payroll
+method: GET
+path: /payroll/paystub/{employee_id}
+summary: Retrieve a detailed paystub showing gross pay, net pay, deductions, taxes,
+  and earnings for a specific pay period
+description: This API returns a complete breakdown of an employee's compensation for
+  a specific pay period, including gross earnings, all deductions such as benefits
+  and retirement contributions, tax withholdings, and final net pay. It is used by
+  employees reviewing their own pay, payroll administrators investigating discrepancies,
+  and HR teams responding to compensation queries. It depends on time entry and overtime
+  data to accurately reflect hours-based earnings and feeds into downstream processes
+  like deduction audits and payroll reconciliation. It helps answer questions about
+  exactly how an employee's take-home pay was calculated for any given period.
+side_effect: read
+preconditions:
+- The employee_id must correspond to a valid employee with an active or historical
+  payroll record
+- The pay_period must correspond to a payroll cycle that has been processed and finalized
+  in the payroll system
+- Time entries and overtime hours for the specified period must have been submitted
+  and approved prior to payroll processing
+- The requesting user must have authorization to view payroll data for the specified
+  employee
+produces:
+- Gross pay showing total earnings before any deductions or taxes
+- An itemized list of all deductions including benefits premiums, retirement contributions,
+  and garnishments
+- A breakdown of federal, state, and local tax withholdings applied during the pay
+  period
+- Net pay representing the actual amount deposited or paid to the employee
+- An earnings detail showing base pay, overtime, bonuses, or other compensation components
+use_cases:
+- "Why is my take-home pay lower this period than last period \u2014 what changed\
+  \ in my deductions or taxes?"
+- Can you pull the paystub for this employee to verify their reported income for a
+  mortgage application or benefits audit?
+- Did this employee's overtime hours from last week get correctly reflected in their
+  most recent paycheck?
+related:
+- operation_id: get_payroll_history
+  reason: Payroll history provides the longitudinal context across multiple pay periods
+    that a single paystub cannot, enabling trend analysis and year-to-date comparisons.
+- operation_id: get_time_entries
+  reason: Time entries are a direct input to paystub calculations for hourly or overtime-eligible
+    employees; discrepancies in the paystub often require reviewing the underlying
+    time records.
+- operation_id: get_overtime_hours
+  reason: Overtime hours directly affect gross pay calculations on the paystub; this
+    API is used to verify that overtime earnings are correctly reflected.
+- operation_id: get_deduction_breakdown
+  reason: When the paystub shows unexpected deduction totals, the deduction breakdown
+    API provides the granular detail needed to identify the source of the discrepancy.
+- operation_id: get_payroll_adjustments
+  reason: Payroll adjustments such as corrections or one-time payments appear on the
+    paystub; this API explains why a specific period's pay differs from the standard
+    amount.

@@ -1,0 +1,48 @@
+capability: create_job_posting
+domain: recruiting
+method: POST
+path: /recruiting/job-postings
+summary: Create and publish a new job posting with compensation and requirements details
+description: Creates a new job posting by capturing the role title, department, location,
+  job description, requirements, and salary range, then publishes it to the recruiting
+  system. This API should be called after a hiring requisition has been approved and
+  compensation benchmarks have been validated against salary bands and market data.
+  It ensures that posted salary ranges are compliant with state pay transparency laws
+  and internally consistent with existing compensation structures. Use this when a
+  hiring manager is ready to begin sourcing candidates for an approved headcount need.
+side_effect: write
+preconditions:
+- A hiring requisition for this role has been approved
+- Salary range has been validated against current salary bands and market compensation
+  data
+- State-specific pay transparency and posting rules have been reviewed
+- The department and location fields correspond to valid organizational entities
+- Caller has write access to recruiting data
+produces:
+- A new job posting record with a unique posting ID
+- A published status and publication timestamp indicating when the role went live
+- A posting that can immediately receive applicants and be referenced in pipeline
+  reporting
+use_cases:
+- "We have an approved requisition for a Senior Data Engineer \u2014 how do we get\
+  \ the role posted with the right salary range?"
+- Our team needs to hire two new Account Executives in Texas; what do we need to ensure
+  the posting is compliant and competitive?
+- Can we create a job posting for a backfill role that matches the compensation structure
+  of the person who left?
+related:
+- operation_id: list_hiring_requisitions
+  reason: A posting should only be created after a requisition is approved; this API
+    confirms the headcount has been authorized.
+- operation_id: get_salary_bands
+  reason: Salary bands define the allowable compensation range for the role level,
+    which must be reflected in the posting's salary range fields.
+- operation_id: get_market_compensation_data
+  reason: Market data ensures the posted salary range is competitive enough to attract
+    qualified candidates.
+- operation_id: get_state_rules
+  reason: State-specific rules govern pay transparency requirements and what compensation
+    information must be disclosed in the posting.
+- operation_id: list_job_postings
+  reason: Reviewing existing postings before creation prevents duplicate roles and
+    ensures title and department naming consistency.

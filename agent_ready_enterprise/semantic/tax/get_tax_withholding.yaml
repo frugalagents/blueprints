@@ -1,0 +1,42 @@
+capability: get_tax_withholding
+domain: tax
+method: GET
+path: /tax/withholding/{employee_id}
+summary: Retrieve an employee's current federal W-4 tax withholding elections
+description: This API returns the current federal income tax withholding configuration
+  for an employee, including their filing status, number of allowances claimed, any
+  additional flat-dollar withholding amounts, and whether the employee has claimed
+  exempt status. It reflects the employee's most recently submitted W-4 form and is
+  used by payroll systems to calculate the correct amount of federal income tax to
+  withhold from each paycheck. HR and payroll teams use this to respond to employee
+  inquiries about their tax setup, validate payroll accuracy, and identify employees
+  whose withholding may be misaligned with their tax liability. It is also a prerequisite
+  for estimating an employee's annual tax liability.
+side_effect: read
+preconditions:
+- The employee must exist in the system with a valid employee_id
+- The employee must have a W-4 on file; newly onboarded employees may not yet have
+  submitted their elections
+- The calling user must have payroll or tax administration permissions to access withholding
+  data
+produces:
+- Employee's federal filing status (e.g., single, married filing jointly)
+- Number of withholding allowances claimed
+- Any additional flat-dollar amount the employee has elected to withhold per pay period
+- Whether the employee has claimed tax-exempt status
+- The date the withholding elections were last updated
+use_cases:
+- "Why is this employee's federal tax withholding so low \u2014 are they claiming\
+  \ too many allowances?"
+- Which employees currently have exempt withholding status, and when did they last
+  update their W-4?
+- "I need to verify this employee's withholding setup before running the next payroll\
+  \ cycle \u2014 what are their current elections?"
+related:
+- operation_id: get_estimated_tax_liability
+  reason: Withholding elections are a direct input to estimating an employee's annual
+    tax liability, making this a required precursor to that calculation.
+- operation_id: get_tax_jurisdiction_changes
+  reason: Changes in tax jurisdiction may require employees to revisit their withholding
+    elections, so these two APIs are frequently reviewed together during location
+    changes.

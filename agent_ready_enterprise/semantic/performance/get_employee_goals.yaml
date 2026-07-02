@@ -1,0 +1,46 @@
+capability: get_employee_goals
+domain: performance
+method: GET
+path: /performance/goals/{employee_id}
+summary: Retrieve an employee's goals and OKRs with current progress and status
+description: Returns all goals and objectives (OKRs) associated with a specific employee,
+  optionally filtered by status (active, completed, at-risk, cancelled), including
+  each goal's title, target completion date, current progress percentage, and status.
+  This API is used by managers and employees during check-ins, mid-year reviews, and
+  performance calibration sessions to assess whether an individual is on track to
+  meet their commitments. It helps answer questions about goal alignment, execution
+  velocity, and whether development areas from prior reviews are being actively addressed
+  through measurable objectives.
+side_effect: read
+preconditions:
+- The employee must exist in the HR system with a valid employee_id
+- The employee must have at least one goal created in the performance management system
+- The caller must have performance read permissions for the target employee
+- If filtering by status, the status value must match a valid goal status in the system
+produces:
+- A list of goals and OKRs assigned to or created by the employee
+- Unique goal identifiers for referencing or updating specific goals
+- Goal titles describing the objective or key result
+- Target completion dates for each goal
+- Current progress percentage indicating how far along each goal is
+- Status classification for each goal (e.g., on track, at risk, completed)
+use_cases:
+- How many of this employee's goals are currently at risk of missing their target
+  date?
+- Has this employee made measurable progress on the development goals set during their
+  last performance review?
+- Which employees on my team have no active goals set for this performance cycle?
+related:
+- operation_id: get_review_details
+  reason: Development areas documented in a review are frequently translated into
+    goals; comparing review details with current goals shows whether feedback has
+    been acted upon.
+- operation_id: create_employee_goal
+  reason: After reviewing existing goals, create_employee_goal is used to add new
+    objectives, ensuring no duplication and proper alignment with current progress.
+- operation_id: get_performance_reviews
+  reason: Goal completion rates and progress are often factored into overall performance
+    ratings; reviewing both together provides a full performance picture.
+- operation_id: create_job_posting
+  reason: An employee's goal history and skill development trajectory may inform internal
+    mobility decisions and the competency requirements defined in a new job posting.

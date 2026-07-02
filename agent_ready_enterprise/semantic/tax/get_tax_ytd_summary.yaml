@@ -1,0 +1,42 @@
+capability: get_tax_ytd_summary
+domain: tax
+method: GET
+path: /tax/ytd/{employee_id}
+summary: Retrieve year-to-date tax withholdings across all jurisdictions for an employee
+description: This API returns a comprehensive breakdown of all taxes withheld from
+  an employee's paychecks since the start of the current calendar year, including
+  federal, state, local, Social Security, and Medicare taxes. It is typically used
+  during payroll reconciliation, employee tax inquiries, or when preparing for year-end
+  tax filings. It helps payroll administrators and employees understand exactly how
+  much has been withheld to date and whether withholding is on track. This is a foundational
+  read for any tax compliance or employee self-service tax question.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- At least one payroll run must have been processed for the employee in the current
+  calendar year
+- The current tax year must be active or recently closed
+produces:
+- Total federal income tax withheld year-to-date
+- Total state income tax withheld year-to-date
+- Total local/municipal tax withheld year-to-date
+- Social Security tax contributions year-to-date
+- Medicare tax contributions year-to-date
+- Aggregate total of all taxes withheld year-to-date
+use_cases:
+- How much federal and state tax has been withheld from this employee so far this
+  year?
+- Is this employee's total tax withholding consistent with what should appear on their
+  W-2 at year end?
+- What is the breakdown of payroll tax obligations for this employee across all tax
+  types year-to-date?
+related:
+- operation_id: get_w2_preview
+  reason: The W-2 preview draws directly from YTD tax withholding data; comparing
+    the two helps validate that year-end tax documents will be accurate.
+- operation_id: get_estimated_tax_liability
+  reason: Estimated tax liability uses YTD withholding as a key input to project whether
+    the employee will owe taxes or receive a refund at year end.
+- operation_id: get_tax_jurisdictions
+  reason: Understanding which jurisdictions apply to an employee explains why certain
+    state or local tax line items appear in the YTD summary.

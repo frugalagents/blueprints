@@ -1,0 +1,49 @@
+capability: get_market_compensation_data
+domain: compensation
+method: GET
+path: /compensation/market-data/{job_family}
+summary: Retrieve external market compensation benchmarks for a job family and location
+description: Returns percentile-based market compensation data (P25, P50, P75, P90)
+  for a specified job family and geographic location, sourced from external compensation
+  surveys. This API is used by compensation analysts, HR business partners, and talent
+  acquisition teams to benchmark internal pay against the external labor market and
+  ensure the organization remains competitive. It informs decisions about salary band
+  design, offer construction, and merit increase sizing. It helps answer whether the
+  company is paying above, at, or below market for specific roles and locations.
+side_effect: read
+preconditions:
+- The job family must correspond to a recognized classification in the compensation
+  survey data
+- A valid location must be provided to return geographically relevant market data
+- External survey data must be available and current for the requested job family
+  and location combination
+- The caller must have access to compensation benchmarking data, which may be restricted
+  to HR and compensation roles
+produces:
+- Market pay rates at the 25th, 50th, 75th, and 90th percentiles for the specified
+  job family and location
+- The data source and survey date so consumers can assess recency and credibility
+  of the benchmarks
+- A competitive positioning reference point for evaluating internal salaries against
+  external market rates
+use_cases:
+- Are we paying our senior software engineers in Austin competitively relative to
+  the market, or are we at risk of losing them to competitors?
+- What should we set as the salary range for a new product manager role in New York
+  to attract qualified candidates?
+- Is our P50 base salary for data scientists in line with the market median, or do
+  we need to adjust our salary bands?
+related:
+- operation_id: get_salary_bands
+  reason: Market data is the primary external input used to validate and update internal
+    salary bands, ensuring bands reflect current competitive pay ranges.
+- operation_id: create_job_posting
+  reason: Market benchmarks inform the salary range displayed on job postings, helping
+    attract candidates while staying within competitive and budgeted pay levels.
+- operation_id: submit_merit_increase
+  reason: Market data provides external justification for merit increase amounts,
+    particularly when an employee's pay has fallen below market median and retention
+    is a concern.
+- operation_id: get_total_rewards_statement
+  reason: Comparing an employee's total rewards value against market benchmarks helps
+    assess overall competitiveness of the compensation package, not just base salary.

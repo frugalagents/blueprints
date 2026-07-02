@@ -1,0 +1,5 @@
+{
+  "changes": [
+    {"type": "new_local_tax", "locality": "San Francisco", "impact": 15.0, "description": "SF local payroll tax applied this period"}
+  ]
+}

@@ -1,0 +1,33 @@
+# ============================================================================
+# Codebase Business Logic Extractor — Configuration
+# ============================================================================
+
+# Model settings
+llm:
+  model_id: "global.anthropic.claude-sonnet-4-6"
+  region: "us-east-1"
+  max_tokens: 4096
+  temperature: 0.0
+
+# Graph database
+graph:
+  db_path: "output/code_graph.db"
+
+# Parser settings
+parser:
+  languages: ["python"]  # Supported: python, javascript, java, etc.
+  exclude_patterns: ["__pycache__", "node_modules", ".git", "venv", ".env"]
+  exclude_files: ["__init__.py", "setup.py", "conftest.py"]
+  min_function_lines: 3  # Skip trivial functions
+
+# Classification
+classifier:
+  batch_size: 5
+  skip_technical: false  # If true, skip classifying obvious infra functions
+
+# Output
+output:
+  dir: "output"
+  generate_dashboard: true
+  generate_bdd: true
+  export_json: true

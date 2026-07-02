@@ -1,0 +1,46 @@
+capability: create_offer_letter
+domain: recruiting
+method: POST
+path: /recruiting/offers
+summary: Generate and send a formal offer letter to a selected job applicant
+description: "This API creates and dispatches an official employment offer letter\
+  \ to a candidate who has been selected for a position. It packages compensation\
+  \ details \u2014 including base salary, signing bonus, and equity \u2014 along with\
+  \ a proposed start date into a formal offer document. Use this when a hiring decision\
+  \ has been finalized and the recruiter or hiring manager is ready to extend an offer.\
+  \ It helps answer questions like 'Has the candidate received their offer yet?' and\
+  \ 'What were the compensation terms we extended to this hire?'"
+side_effect: write
+preconditions:
+- The applicant must exist in the system and be associated with an active job posting
+- The job posting must be open and in a state that allows offers to be extended
+- Compensation figures (salary, bonus, equity) must be within approved budget thresholds
+- No active improvement plan conflict exists that would block the hire (validated
+  via get_improvement_plan)
+- The recruiter or hiring manager must have authorization to extend offers for the
+  given posting
+produces:
+- A unique offer identifier for tracking the offer through its lifecycle
+- The current status of the offer (e.g., sent, pending, accepted, declined)
+- An expiration date by which the candidate must respond to the offer
+use_cases:
+- "A recruiter wants to formally extend a job offer to a finalist candidate after\
+  \ the hiring panel has made a decision \u2014 what compensation package and start\
+  \ date should be included?"
+- "A hiring manager asks: 'We've selected our candidate for the senior engineer role\
+  \ \u2014 can we get the offer out today with a $150K salary and $10K signing bonus?'"
+- An HR coordinator needs to track which offers have been sent this week and confirm
+  that all selected candidates have received their offer letters before the weekend.
+related:
+- "get_offer_status \u2014 directly tracks the outcome of the offer created by this\
+  \ API, allowing recruiters to monitor whether the candidate has accepted, declined,\
+  \ or let the offer expire"
+- "get_onboarding_status \u2014 once an offer is accepted, onboarding begins; this\
+  \ API confirms whether the new hire's onboarding has been initiated and is progressing"
+- "get_applicants_for_posting \u2014 used to identify and validate the candidate being\
+  \ offered the role, ensuring the applicant_id corresponds to a qualified finalist\
+  \ for the posting"
+- "get_improvement_plan / create_improvement_plan \u2014 checked as a precondition\
+  \ to ensure no existing performance or HR issues would block or complicate the hire"
+- "get_compensation_budget \u2014 implicitly relevant to validate that the salary\
+  \ and bonus terms in the offer fall within approved departmental budget limits"

@@ -1,0 +1,44 @@
+capability: get_tax_jurisdiction_changes
+domain: tax
+method: GET
+path: /tax/jurisdiction-changes/{employee_id}
+summary: Retrieve recent tax jurisdiction and rate changes affecting a specific employee
+description: This API returns a history of tax jurisdiction and rate changes for a
+  given employee since a specified date, capturing shifts in applicable tax rules
+  due to relocation, remote work policy changes, or legislative updates. Each change
+  record includes the affected jurisdiction, tax type, the old and new rates, and
+  the effective date of the change. Payroll administrators and tax compliance teams
+  use this to ensure payroll calculations reflect the most current tax obligations
+  and to audit whether prior payroll runs were processed correctly. It is especially
+  critical for employees who have recently moved, changed work locations, or operate
+  across multiple tax jurisdictions.
+side_effect: read
+preconditions:
+- The employee must exist in the system with a valid employee_id
+- The 'since' date parameter must be a valid date in the past
+- Tax jurisdiction data must be configured and maintained for the employee's work
+  and home locations
+produces:
+- A list of tax jurisdiction changes with old and new rate comparisons
+- The specific tax types affected (e.g., state income, local, SUI)
+- Effective dates for each rate or jurisdiction change
+- An audit trail for payroll compliance and retroactive correction purposes
+use_cases:
+- "This employee moved to a new state last month \u2014 have their tax withholding\
+  \ jurisdictions been updated correctly?"
+- Were there any tax rate changes affecting this employee's paycheck since the start
+  of the year?
+- "We need to audit payroll for employees who changed work locations \u2014 which\
+  \ ones had jurisdiction changes in Q3?"
+related:
+- operation_id: get_employee_profile
+  reason: Employee profile contains work location and home address data that determines
+    which tax jurisdictions apply, making it essential context for interpreting jurisdiction
+    changes.
+- operation_id: submit_merit_increase
+  reason: Merit increases that change compensation may interact with updated tax jurisdictions,
+    requiring a review of current rates before processing payroll adjustments.
+- operation_id: get_tax_withholding
+  reason: Jurisdiction changes often necessitate a review of withholding elections
+    to ensure the employee's W-4 settings are still appropriate under the new tax
+    rules.

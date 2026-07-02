@@ -1,0 +1,44 @@
+capability: get_review_details
+domain: performance
+method: GET
+path: /performance/reviews/{review_id}/details
+summary: Retrieve full competency scores, strengths, development areas, and manager
+  comments for a specific performance review
+description: Returns the complete narrative and scored content of a single performance
+  review identified by its review_id, including individual competency scores, documented
+  strengths, identified development areas, and the manager's written comments. This
+  API is used when a deeper qualitative and quantitative understanding of a specific
+  review cycle is needed, such as when calibrating compensation decisions, preparing
+  for a career development conversation, or evaluating a candidate's internal track
+  record during a promotion process. It transforms a high-level rating into actionable
+  insight about what the employee excels at and where growth is expected.
+side_effect: read
+preconditions:
+- A valid review_id must be provided, typically obtained from get_performance_reviews
+- The review must exist and be in a submitted or finalized state
+- The caller must have permission to view detailed review content for the associated
+  employee
+produces:
+- Scores for each evaluated competency (e.g., communication, leadership, technical
+  skills)
+- Documented strengths identified by the reviewer for the review period
+- Development areas or improvement opportunities noted by the reviewer
+- Manager's written narrative comments summarizing the employee's performance
+- The employee ID associated with the review for cross-referencing
+use_cases:
+- What specific competencies did this employee score lowest on in their last review,
+  and what development areas were identified?
+- What did the manager write about this employee's leadership skills before we consider
+  them for a promotion?
+- How do this employee's competency scores compare to the feedback submitted during
+  their interview process?
+related:
+- operation_id: get_performance_reviews
+  reason: get_performance_reviews must be called first to obtain the review_id required
+    as input to this API.
+- operation_id: get_employee_goals
+  reason: Development areas identified in a review are often directly linked to goals
+    set for the next period; comparing both provides a complete development narrative.
+- operation_id: submit_interview_feedback
+  reason: Interview feedback submissions may reference prior review competency scores
+    to establish a baseline for internal candidates being considered for new roles.

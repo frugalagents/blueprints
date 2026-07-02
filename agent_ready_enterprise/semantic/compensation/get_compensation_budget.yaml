@@ -1,0 +1,51 @@
+capability: get_compensation_budget
+domain: compensation
+method: GET
+path: /compensation/budget/{department}
+summary: Retrieve compensation budget allocation and utilization for a department
+description: Returns the total approved compensation budget for a department in a
+  given fiscal year, along with how much has been utilized, how much remains, current
+  headcount, and average salary figures. This API is used by finance partners, HR
+  business partners, and department heads to monitor whether compensation spending
+  is on track relative to plan. It is a critical input for decisions about hiring,
+  merit increases, and promotions, as it establishes the financial envelope within
+  which those decisions must fit. It also supports workforce planning by connecting
+  headcount to compensation cost.
+side_effect: read
+preconditions:
+- The department identifier must correspond to a valid organizational unit in the
+  system
+- A compensation budget must have been approved and loaded for the specified fiscal
+  year
+- Employee salary and headcount data must be current and reconciled with payroll records
+- The caller must have financial or HR leadership permissions for the specified department
+produces:
+- Total approved compensation budget for the department and fiscal year
+- Amount of budget already utilized based on current salary commitments
+- Remaining budget available for new hires, increases, or promotions
+- Current headcount within the department
+- Average salary across all employees in the department
+use_cases:
+- How much compensation budget does the engineering department have left to fund new
+  hires this fiscal year?
+- Are we over or under budget on total compensation spend for the sales team at the
+  halfway point of the fiscal year?
+- What is the average salary in the product department, and how does our headcount
+  compare to what was budgeted?
+related:
+- operation_id: submit_merit_increase
+  reason: Before approving a merit increase, the department's remaining compensation
+    budget must be verified to ensure the increase is financially feasible.
+- operation_id: list_hiring_requisitions
+  reason: Open requisitions represent future compensation commitments, and budget
+    availability directly determines whether new requisitions can be approved or funded.
+- operation_id: create_job_posting
+  reason: Creating a job posting requires confirming that budget exists to fund the
+    role's salary range within the department's compensation plan.
+- operation_id: get_rating_calibration
+  reason: Calibration outcomes determine the distribution of merit increases, which
+    must be modeled against available budget to ensure the total cost of increases
+    is affordable.
+- operation_id: get_recruiting_pipeline_metrics
+  reason: Pipeline velocity and offer acceptance rates affect how quickly budget will
+    be consumed by new hires, making budget visibility essential for pipeline planning.

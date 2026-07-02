@@ -1,0 +1,9 @@
+{
+  "employee_id": "EMP-1042",
+  "changes": [
+    {"benefit": "medical", "from": "PPO Individual", "to": "PPO Premium Family", "delta": 160.0, "reason": "Open enrollment qualifying life event"},
+    {"benefit": "dental", "from": "Individual", "to": "Family", "delta": 22.5, "reason": "Open enrollment"},
+    {"benefit": "FSA", "from": "None", "to": "Healthcare FSA", "delta": 96.0, "reason": "Open enrollment"},
+    {"benefit": "vision", "from": "None", "to": "VSP Basic", "delta": 12.0, "reason": "Open enrollment"}
+  ]
+}

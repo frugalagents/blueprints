@@ -1,0 +1,150 @@
+communities:
+- community: payroll
+  capabilities:
+  - get_pay_schedule
+  domains:
+  - payroll
+  size: 1
+  description: This cluster provides payroll management capabilities that enable businesses
+    to process employee compensation, manage wage calculations, and handle payroll
+    administration functions. It supports core HR and finance operations by automating
+    salary processing and related payroll workflows.
+- community: recruiting
+  capabilities:
+  - create_employee_goal
+  - create_job_posting
+  - get_compensation_budget
+  - get_course_details
+  - get_employee_profile
+  - get_job_history
+  - get_manager_info
+  - get_market_compensation_data
+  - get_overdue_training_report
+  - get_rating_calibration
+  - get_recruiting_pipeline_metrics
+  - get_salary_bands
+  - get_state_rules
+  - get_tax_rates
+  - list_courses
+  - list_hiring_requisitions
+  - list_job_postings
+  - search_employees
+  domains:
+  - compensation
+  - compliance
+  - employee
+  - learning
+  - performance
+  - recruiting
+  - tax
+  size: 18
+  description: This recruiting cluster integrates talent acquisition with broader
+    human resources management functions across compensation, compliance, employee
+    administration, learning, performance management, and tax domains. It enables
+    organizations to manage the full employee lifecycle from recruitment through onboarding,
+    while ensuring alignment with compensation structures, regulatory compliance requirements,
+    and performance tracking systems. The cluster supports coordinated workflows between
+    hiring decisions and downstream HR processes like benefits administration, tax
+    withholding, and employee development.
+- community: performance
+  capabilities:
+  - create_improvement_plan
+  - get_benefits_changes
+  - get_performance_reviews
+  - get_tax_jurisdiction_changes
+  - submit_merit_increase
+  domains:
+  - benefits
+  - compensation
+  - performance
+  - tax
+  size: 5
+  description: This cluster enables management of employee performance data and its
+    financial implications across benefits, compensation, and tax domains. It allows
+    organizations to track, evaluate, and process performance-related information
+    that directly impacts compensation decisions, benefit eligibility, and tax reporting
+    obligations. The integration across these domains ensures performance metrics
+    drive accurate payroll, benefits administration, and compliance with tax requirements.
+- community: recruiting_3
+  capabilities:
+  - create_offer_letter
+  - get_applicants_for_posting
+  - get_background_check_status
+  - get_offer_status
+  - get_peer_feedback
+  - get_review_details
+  - schedule_interview
+  - submit_employee_referral
+  - submit_interview_feedback
+  domains:
+  - performance
+  - recruiting
+  size: 9
+  description: I don't have enough information to provide an accurate summary. The
+    cluster "recruiting_3" shows domains for performance and recruiting, but the capabilities
+    list is empty. Without knowing what specific API functions are included in this
+    cluster, I cannot describe what business functions it performs.
+- community: payroll_4
+  capabilities:
+  - enroll_employee_in_course
+  - get_audit_trail
+  - get_benefits_costs
+  - get_benefits_dependents
+  - get_benefits_elections
+  - get_benefits_eligibility
+  - get_compliance_checks
+  - get_compliance_training_status
+  - get_compliance_violations
+  - get_deduction_breakdown
+  - get_direct_deposit
+  - get_emergency_contacts
+  - get_employee_bonuses
+  - get_employee_certifications
+  - get_employee_documents
+  - get_employee_enrollments
+  - get_employee_equity
+  - get_employee_goals
+  - get_estimated_tax_liability
+  - get_garnishments
+  - get_improvement_plan
+  - get_learning_completions
+  - get_leave_balance
+  - get_life_events
+  - get_merit_increase_history
+  - get_onboarding_status
+  - get_onboarding_tasks
+  - get_org_chart
+  - get_overtime_hours
+  - get_payroll_adjustments
+  - get_payroll_history
+  - get_paystub
+  - get_retirement_plan
+  - get_tax_jurisdictions
+  - get_tax_withholding
+  - get_tax_ytd_summary
+  - get_time_entries
+  - get_total_rewards_statement
+  - get_w2_preview
+  - get_work_schedule
+  - get_ytd_earnings
+  domains:
+  - benefits
+  - compensation
+  - compliance
+  - employee
+  - learning
+  - payroll
+  - performance
+  - recruiting
+  - tax
+  - time
+  size: 41
+  description: This cluster provides comprehensive payroll and HR data retrieval capabilities
+    that enable organizations to access employee compensation details, tax withholdings,
+    benefits elections, compliance status, and performance information across the
+    entire employee lifecycle. It supports critical business functions including payroll
+    processing, tax compliance, benefits administration, employee onboarding, and
+    performance management by surfacing detailed breakdowns of earnings, deductions,
+    benefits costs, and regulatory requirements. The APIs facilitate both employee
+    self-service inquiries and HR/payroll operations by consolidating data from compensation,
+    time tracking, learning, and compliance domains.

@@ -1,0 +1,48 @@
+capability: get_compliance_checks
+domain: compliance
+method: GET
+path: /compliance/checks/{employee_id}
+summary: Run and retrieve compliance check results for a specific employee across
+  HR, payroll, and benefits rules
+description: "This API evaluates an employee against applicable compliance rules \u2014\
+  \ including state labor laws, training requirements, and classification standards\
+  \ \u2014 and returns a structured pass/fail result for each check. It is used when\
+  \ HR teams need to verify that an employee is fully compliant before a status change,\
+  \ audit, or regulatory review. The results can be filtered by category (e.g., payroll,\
+  \ benefits, training) to focus on specific compliance domains. It helps answer whether\
+  \ an employee is currently at risk of a compliance violation and what specific areas\
+  \ require remediation."
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- Employee must have a work location and state assigned (required for state rule evaluation)
+- State rules must be available for the employee's work state via get_state_rules
+- Training course catalog must be available via list_courses for training compliance
+  checks
+produces:
+- Per-check pass/fail compliance status for the employee
+- Overall compliance status indicating whether the employee is fully compliant
+- Categorized breakdown of compliance results (e.g., payroll, training, benefits)
+- Identification of specific rules or requirements the employee fails to meet
+use_cases:
+- Is this employee fully compliant before we process their promotion or role change?
+- Which employees in my department are currently failing payroll or training compliance
+  checks?
+- What specific compliance issues does this employee need to resolve before their
+  next performance review?
+related:
+- operation_id: get_state_rules
+  reason: get_compliance_checks depends on state rules to evaluate whether an employee
+    meets jurisdiction-specific labor, wage, and overtime requirements.
+- operation_id: list_courses
+  reason: get_compliance_checks uses the course catalog to verify whether an employee
+    has completed all mandatory training required for compliance.
+- operation_id: get_compliance_violations
+  reason: Violations are the downstream result of failed compliance checks; reviewing
+    both together gives a complete picture of an employee's compliance posture.
+- operation_id: get_audit_trail
+  reason: The audit trail provides historical context for how and when compliance-relevant
+    changes occurred, helping explain why a check is currently failing.
+- operation_id: get_employee_profile
+  reason: Employee classification, work location, and FLSA status are foundational
+    inputs that determine which compliance rules apply during checks.

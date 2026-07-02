@@ -1,0 +1,40 @@
+capability: schedule_interview
+domain: recruiting
+method: POST
+path: /recruiting/interviews
+summary: Schedule an interview between an applicant and one or more interviewers
+description: Creates an interview event by associating an applicant with one or more
+  interviewers, a scheduled date and time, and an interview type (e.g., phone screen,
+  technical, panel). The API returns a calendar link and interview ID that can be
+  shared with participants. Use this when a candidate has been reviewed and is ready
+  to advance to a structured interview step in the hiring process. It ensures that
+  interviews are formally tracked in the system, enabling downstream feedback collection
+  and pipeline stage progression.
+side_effect: write
+preconditions:
+- The applicant_id corresponds to an active applicant in the system
+- The posting_id is valid and the applicant is associated with that posting
+- All interviewer_ids correspond to valid employees with calendar availability
+- The scheduled_date is in the future
+- Caller has write access to recruiting and calendar data
+produces:
+- A unique interview ID used to track the interview and collect feedback afterward
+- A calendar link that can be distributed to the applicant and all interviewers
+- A confirmed interview record that advances the applicant's pipeline stage
+use_cases:
+- "We want to schedule a technical interview for a software engineer candidate with\
+  \ three members of the engineering team \u2014 how do we set that up?"
+- Can we book a final-round panel interview for our top candidate for the VP of Sales
+  role?
+- How do we schedule a phone screen for a new applicant who just passed the resume
+  review stage?
+related:
+- operation_id: get_applicants_for_posting
+  reason: Applicant IDs and current pipeline stages must be retrieved before scheduling
+    to confirm the candidate is ready for an interview.
+- operation_id: submit_interview_feedback
+  reason: After the interview occurs, the interview_id generated here is required
+    to submit structured feedback and scorecards.
+- operation_id: list_job_postings
+  reason: The posting context (role, department, interview type norms) informs what
+    kind of interview should be scheduled.

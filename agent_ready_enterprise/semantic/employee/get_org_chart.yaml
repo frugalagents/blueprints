@@ -1,0 +1,38 @@
+capability: get_org_chart
+domain: employee
+method: GET
+path: /employee/{employee_id}/org-chart
+summary: Retrieve the full reporting chain and direct reports for an employee
+description: This API returns both the upward reporting chain (from the employee to
+  the top of the hierarchy) and the downward list of direct reports for a given employee.
+  It is used to understand organizational structure, span of control, and management
+  layers for planning, restructuring, or communication purposes. HR leaders and executives
+  use this data to evaluate team sizes, identify reporting bottlenecks, and plan headcount
+  changes. It is also valuable for onboarding new employees who need to understand
+  where they sit within the broader organization.
+side_effect: read
+preconditions:
+- The employee_id must be valid and present in the HR system
+- The employee must be part of an established organizational hierarchy
+- The requesting user must have organizational visibility permissions
+produces:
+- Full upward reporting chain from the employee to the executive level
+- List of all direct reports currently assigned under the employee
+- Organizational depth and span of control metrics for the given node
+use_cases:
+- How many layers of management exist between this employee and the CEO?
+- Who are all the direct reports under this manager, and how large is their team?
+- What does the reporting structure look like for this department during a reorganization?
+related:
+- operation_id: get_manager_info
+  reason: Manager info provides a focused single-level lookup, while org chart gives
+    the full hierarchical context above and below the employee.
+- operation_id: get_job_history
+  reason: Job history combined with org chart helps trace how an employee's position
+    within the hierarchy has changed over time.
+- operation_id: get_compensation_budget
+  reason: Compensation budgets are often allocated by team or reporting chain, making
+    org chart data essential for scoping budget calculations.
+- operation_id: list_hiring_requisitions
+  reason: Hiring requisitions are tied to specific teams and reporting structures,
+    which the org chart helps validate and contextualize.

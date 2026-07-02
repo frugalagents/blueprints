@@ -1,0 +1,31 @@
+capability: get_direct_deposit
+domain: payroll
+method: GET
+path: /payroll/direct-deposit/{employee_id}
+summary: Retrieve an employee's direct deposit bank account allocations
+description: Returns the complete direct deposit configuration for a specific employee,
+  including all linked bank accounts, account types (checking/savings), and the percentage
+  or fixed-amount allocation assigned to each account. Use this API when verifying
+  where an employee's paycheck is being deposited, auditing payroll disbursement records,
+  or supporting an employee who reports a payment issue. It helps payroll administrators
+  confirm that funds are being routed correctly before and after a pay run.
+side_effect: read
+preconditions:
+- The employee must exist in the HR system with a valid employee_id
+- The employee must have at least one direct deposit account on file
+- The caller must have payroll read permissions for the target employee
+produces:
+- List of bank accounts associated with the employee's payroll disbursement
+- Bank institution details for each linked account
+- Account type classification (checking or savings) per account
+- Percentage or dollar allocation assigned to each account
+use_cases:
+- Where is this employee's paycheck being deposited, and is it split across multiple
+  accounts?
+- Did the employee's recent bank account update take effect before the last pay run?
+- Which employees have direct deposit allocations that don't sum to 100% and need
+  correction?
+related:
+- operation_id: get_pay_schedule
+  reason: Knowing the next pay date helps contextualize whether a direct deposit change
+    will take effect in time for the upcoming pay run.

@@ -1,0 +1,434 @@
+{
+  "release_name": "DemoPortal_Registration_v1",
+  "process_name": "Demo Portal Registration",
+  "input_schema": [
+    {
+      "name": "CompanyLegalName",
+      "kind": "scalar",
+      "datatype": "text"
+    },
+    {
+      "name": "FEIN",
+      "kind": "scalar",
+      "datatype": "text"
+    },
+    {
+      "name": "EntityType",
+      "kind": "scalar",
+      "datatype": "text"
+    },
+    {
+      "name": "ContactFirstName",
+      "kind": "scalar",
+      "datatype": "text"
+    },
+    {
+      "name": "ContactLastName",
+      "kind": "scalar",
+      "datatype": "text"
+    },
+    {
+      "name": "ContactEmail",
+      "kind": "scalar",
+      "datatype": "text"
+    }
+  ],
+  "objects": [
+    {
+      "name": "01.LoadPortal",
+      "url": "https://demoqa.com/automation-practice-form",
+      "element_count": 0,
+      "subsheets": [
+        {
+          "id": "aaf694af-9130-48a2-8566-55b4309ec48c",
+          "name": "LoadPortal",
+          "type": "Normal",
+          "stages": [
+            {
+              "id": "cc34518e-658a-41e0-9a2f-7bb3d3bb7cb8",
+              "name": "LoadPortal",
+              "type": "SubSheetInfo",
+              "subsheet_id": "aaf694af-9130-48a2-8566-55b4309ec48c"
+            },
+            {
+              "id": "8df194cf-0ae9-4f27-9f02-d6117160e508",
+              "name": "Start",
+              "type": "Start",
+              "subsheet_id": "aaf694af-9130-48a2-8566-55b4309ec48c"
+            },
+            {
+              "id": "dc02c5b0-b7ca-4ea1-a1e2-d93e1bec9272",
+              "name": "NavigateToPortal",
+              "type": "Navigate",
+              "subsheet_id": "aaf694af-9130-48a2-8566-55b4309ec48c",
+              "navigate_steps": [
+                {
+                  "action": "Launch",
+                  "arguments": {
+                    "URL": "https://demoqa.com/automation-practice-form"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "afc55254-edb1-4b55-b63f-c81f3a3580bd",
+              "name": "End",
+              "type": "End",
+              "subsheet_id": "aaf694af-9130-48a2-8566-55b4309ec48c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02.CompanyIdentity",
+      "url": null,
+      "element_count": 5,
+      "subsheets": [
+        {
+          "id": "abd1dc7f-f655-40a9-b9c9-e7318775d727",
+          "name": "EnterCompanyID",
+          "type": "Normal",
+          "stages": [
+            {
+              "id": "7b801631-6056-43ec-995b-9311103753fb",
+              "name": "EnterCompanyID",
+              "type": "SubSheetInfo",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727"
+            },
+            {
+              "id": "30c23458-8694-4f77-87fb-a526ad799ac3",
+              "name": "Start",
+              "type": "Start",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727"
+            },
+            {
+              "id": "64d3817f-534d-45a9-9fd2-627b94510eac",
+              "name": "WriteCompanyName",
+              "type": "Write",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727",
+              "write": {
+                "expr": "[CompanyInfo.LegalName]",
+                "element": "Company Legal Name"
+              }
+            },
+            {
+              "id": "cf4ee033-d89c-445d-84e7-9704713b26c5",
+              "name": "WriteFEIN",
+              "type": "Write",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727",
+              "write": {
+                "expr": "[CompanyInfo.FEIN]",
+                "element": "Federal Employer ID"
+              }
+            },
+            {
+              "id": "69c8d4e7-9251-4cf0-81f0-8ce5097fb112",
+              "name": "WriteConfirmFEIN",
+              "type": "Write",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727",
+              "write": {
+                "expr": "[CompanyInfo.FEIN]",
+                "element": "Confirm FEIN"
+              }
+            },
+            {
+              "id": "6b9c6e94-abad-4666-bec2-3459688a2d33",
+              "name": "SelectEntityType",
+              "type": "Navigate",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727",
+              "navigate_steps": [
+                {
+                  "element": "Entity Type Dropdown",
+                  "action": "UIASelect",
+                  "arguments": {
+                    "Value": "[CompanyInfo.EntityType]"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "ccc557c7-af59-4628-9537-3c44061bf084",
+              "name": "ClickNext",
+              "type": "Navigate",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727",
+              "navigate_steps": [
+                {
+                  "element": "Next Button",
+                  "action": "WebClick"
+                }
+              ]
+            },
+            {
+              "id": "b5f13d49-862d-4c18-96ac-bf47eaaa87c7",
+              "name": "End",
+              "type": "End",
+              "subsheet_id": "abd1dc7f-f655-40a9-b9c9-e7318775d727"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03.ContactInfo",
+      "url": null,
+      "element_count": 6,
+      "subsheets": [
+        {
+          "id": "e0613de5-4422-40aa-9fc7-a401d5832a80",
+          "name": "EnterContactInfo",
+          "type": "Normal",
+          "stages": [
+            {
+              "id": "5e6ce489-5f6e-4806-901a-95e3ff243109",
+              "name": "EnterContactInfo",
+              "type": "SubSheetInfo",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80"
+            },
+            {
+              "id": "6badabcd-b8cf-498f-a2d7-c7ca9e3bc819",
+              "name": "Start",
+              "type": "Start",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80"
+            },
+            {
+              "id": "51698a87-9edc-4c98-9130-880b0e91735b",
+              "name": "WriteFirstName",
+              "type": "Write",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80",
+              "write": {
+                "expr": "[ContactInfo.FirstName]",
+                "element": "Contact First Name"
+              }
+            },
+            {
+              "id": "7f7990c6-4183-4817-9e1d-61472d00dd87",
+              "name": "WriteLastName",
+              "type": "Write",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80",
+              "write": {
+                "expr": "[ContactInfo.LastName]",
+                "element": "Contact Last Name"
+              }
+            },
+            {
+              "id": "a948f1cc-5b61-4286-af48-39bf132dc500",
+              "name": "WriteEmail",
+              "type": "Write",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80",
+              "write": {
+                "expr": "[ContactInfo.Email]",
+                "element": "Contact Email"
+              }
+            },
+            {
+              "id": "7be090c0-d8fe-41cb-adc7-b83775089ff1",
+              "name": "WritePhone",
+              "type": "Write",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80",
+              "write": {
+                "expr": "[ContactInfo.Phone]",
+                "element": "Contact Phone"
+              }
+            },
+            {
+              "id": "6dc30845-a8b1-4aa4-8330-9fbdc8926afe",
+              "name": "WriteTitle",
+              "type": "Write",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80",
+              "write": {
+                "expr": "[ContactInfo.Title]",
+                "element": "Contact Title"
+              }
+            },
+            {
+              "id": "5c90d4a2-10f9-4a93-8dd1-620d4437fbe3",
+              "name": "ClickNext",
+              "type": "Navigate",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80",
+              "navigate_steps": [
+                {
+                  "element": "Next Button",
+                  "action": "WebClick"
+                }
+              ]
+            },
+            {
+              "id": "c97a847a-3354-4fa1-92f2-6a71bcc757c1",
+              "name": "End",
+              "type": "End",
+              "subsheet_id": "e0613de5-4422-40aa-9fc7-a401d5832a80"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04.BusinessAddress",
+      "url": null,
+      "element_count": 6,
+      "subsheets": [
+        {
+          "id": "e75429c9-057b-40fc-b7a2-c84897f775b2",
+          "name": "EnterBusinessAddress",
+          "type": "Normal",
+          "stages": [
+            {
+              "id": "062183b8-2870-4276-b126-d1da65a9eb95",
+              "name": "EnterBusinessAddress",
+              "type": "SubSheetInfo",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2"
+            },
+            {
+              "id": "6886c6b1-8f02-4852-be90-4d6d18c63296",
+              "name": "Start",
+              "type": "Start",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2"
+            },
+            {
+              "id": "a05f3c31-7782-41c1-9453-7c6949782a30",
+              "name": "WriteStreet",
+              "type": "Write",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2",
+              "write": {
+                "expr": "[Address.Street]",
+                "element": "Street Address"
+              }
+            },
+            {
+              "id": "8dd7344b-a6f8-4355-ae55-cf36fb1e8a21",
+              "name": "WriteCity",
+              "type": "Write",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2",
+              "write": {
+                "expr": "[Address.City]",
+                "element": "City"
+              }
+            },
+            {
+              "id": "dd3539aa-d0fd-4321-8111-56603d87937a",
+              "name": "SelectState",
+              "type": "Navigate",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2",
+              "navigate_steps": [
+                {
+                  "element": "State Dropdown",
+                  "action": "UIASelect",
+                  "arguments": {
+                    "Value": "[Address.State]"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "b2275f33-9513-4df0-85f2-8775ef54f6d7",
+              "name": "WriteZIP",
+              "type": "Write",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2",
+              "write": {
+                "expr": "[Address.ZIP]",
+                "element": "ZIP Code"
+              }
+            },
+            {
+              "id": "9c354d28-bfa6-4856-b098-e1136b5e9fdb",
+              "name": "CheckSameAsMailing",
+              "type": "Navigate",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2",
+              "navigate_steps": [
+                {
+                  "element": "Same as Mailing Checkbox",
+                  "action": "UIAClickCentre"
+                }
+              ]
+            },
+            {
+              "id": "473c629e-2712-440a-acce-320530c15486",
+              "name": "ClickNext",
+              "type": "Navigate",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2",
+              "navigate_steps": [
+                {
+                  "element": "Next Button",
+                  "action": "WebClick"
+                }
+              ]
+            },
+            {
+              "id": "569ca41a-f00a-4072-84f6-0d79778df4db",
+              "name": "End",
+              "type": "End",
+              "subsheet_id": "e75429c9-057b-40fc-b7a2-c84897f775b2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05.ReviewSubmit",
+      "url": null,
+      "element_count": 2,
+      "subsheets": [
+        {
+          "id": "2612f588-243b-45f3-ab14-b68b7714f1d5",
+          "name": "ReviewAndSubmit",
+          "type": "Normal",
+          "stages": [
+            {
+              "id": "093dbb17-53e8-4076-a589-da09436d604a",
+              "name": "ReviewAndSubmit",
+              "type": "SubSheetInfo",
+              "subsheet_id": "2612f588-243b-45f3-ab14-b68b7714f1d5"
+            },
+            {
+              "id": "a86f4d5e-120e-4602-8c58-fc985c8b3305",
+              "name": "Start",
+              "type": "Start",
+              "subsheet_id": "2612f588-243b-45f3-ab14-b68b7714f1d5"
+            },
+            {
+              "id": "58355d7d-32fe-40c0-b613-3e8d9fe79146",
+              "name": "ReadSummary",
+              "type": "Read",
+              "subsheet_id": "2612f588-243b-45f3-ab14-b68b7714f1d5",
+              "read": {
+                "element": "Summary Text",
+                "action": "GetText",
+                "outputs": [
+                  "SummaryContent"
+                ]
+              }
+            },
+            {
+              "id": "eee285ac-6a76-49c2-8aab-86d1c9670b74",
+              "name": "ShouldSubmit",
+              "type": "Decision",
+              "subsheet_id": "2612f588-243b-45f3-ab14-b68b7714f1d5",
+              "on_true": "ClickSubmit",
+              "on_false": "End",
+              "condition": "[IntegrationDetails.SubmitApplication] = True"
+            },
+            {
+              "id": "2b0bc694-5404-4996-9e4a-94cebafbbd5c",
+              "name": "ClickSubmit",
+              "type": "Navigate",
+              "subsheet_id": "2612f588-243b-45f3-ab14-b68b7714f1d5",
+              "navigate_steps": [
+                {
+                  "element": "Submit Button",
+                  "action": "WebClick"
+                }
+              ]
+            },
+            {
+              "id": "cb8064c3-62c0-497d-a1b3-87afdad8bf09",
+              "name": "End",
+              "type": "End",
+              "subsheet_id": "2612f588-243b-45f3-ab14-b68b7714f1d5"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

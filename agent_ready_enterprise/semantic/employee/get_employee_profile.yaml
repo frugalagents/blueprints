@@ -1,0 +1,56 @@
+capability: get_employee_profile
+domain: employee
+method: GET
+path: /employee/{employee_id}
+summary: Retrieve an employee's full profile including classification, job details,
+  and work location
+description: "This API returns the complete profile record for a single employee,\
+  \ including their name, department, job title, level, manager, hire date, work location,\
+  \ state, employment type, and FLSA classification status. It is the most foundational\
+  \ API in the HR system and is consumed by nearly every other domain \u2014 payroll,\
+  \ benefits, compliance, recruiting, and performance \u2014 to establish the basic\
+  \ facts about an employee before performing any operation. It is called whenever\
+  \ a workflow needs to know who an employee is, where they work, how they are classified,\
+  \ or who manages them. It helps answer questions like whether an employee is eligible\
+  \ for a specific benefit, which compliance rules apply to them, or whether their\
+  \ compensation is within the correct band for their level and location."
+side_effect: read
+preconditions:
+- A valid employee_id must be provided
+- The requesting user or system must have at least read-level access to employee records
+produces:
+- Employee identity information including name, department, and job title
+- Job classification details including level, employment type, and FLSA status (exempt/non-exempt)
+- Work location and state, which determine applicable compliance rules and tax jurisdictions
+- Organizational context including manager ID and hire date
+- Foundational data required by benefits eligibility, payroll, compliance, and recruiting
+  workflows
+use_cases:
+- What is this employee's current job classification and work state so we can determine
+  which compliance rules and tax rates apply to them?
+- Is this employee classified as exempt or non-exempt under FLSA, and does their current
+  compensation reflect that classification correctly?
+- Who is this employee's manager, and what department and level are they in, so we
+  can route their performance review to the right approver?
+related:
+- operation_id: get_state_rules
+  reason: The employee's work state from their profile is the direct input needed
+    to retrieve the applicable state labor and tax compliance rules.
+- operation_id: get_benefits_eligibility
+  reason: "Benefits eligibility is determined by employment type, job level, and hire\
+    \ date \u2014 all sourced from the employee profile."
+- operation_id: get_salary_bands
+  reason: The employee's job level, title, and work location from their profile are
+    used to look up the correct salary band for compensation benchmarking.
+- operation_id: get_tax_jurisdictions
+  reason: The employee's work state and location determine which tax jurisdictions
+    apply, making the profile a prerequisite for tax setup.
+- operation_id: get_compensation_budget
+  reason: Department and job level from the employee profile are used to identify
+    the relevant compensation budget for planning purposes.
+- operation_id: get_overdue_training_report
+  reason: Training compliance reports use the employee's department, level, and employment
+    type to determine which training requirements apply.
+- operation_id: list_hiring_requisitions
+  reason: When creating or reviewing requisitions, the hiring manager's profile (via
+    manager_id) provides organizational context for headcount planning.

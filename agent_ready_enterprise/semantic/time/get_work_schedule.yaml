@@ -1,0 +1,45 @@
+capability: get_work_schedule
+domain: time
+method: GET
+path: /time/schedule/{employee_id}
+summary: Retrieve an employee's work schedule type, assigned shift, and expected weekly
+  hours
+description: This API returns the official work schedule assigned to an employee,
+  including whether they are full-time or part-time, their expected hours per week,
+  and their specific shift assignment (e.g., day shift, night shift, rotating). It
+  represents the contractual or policy-defined expectation of when and how much an
+  employee should work, independent of what they actually logged. Use this API when
+  onboarding a new employee to verify their schedule is correctly configured, when
+  investigating overtime to understand the baseline hours threshold, or when planning
+  staffing coverage across shifts. It answers questions about what an employee's normal
+  working pattern looks like and whether their actual time entries align with their
+  scheduled expectations.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- A work schedule must have been assigned to the employee (e.g., at hire or during
+  a role change)
+- Caller must have read access to the employee's scheduling records
+produces:
+- The employee's schedule classification (e.g., full-time, part-time, flex)
+- The expected number of hours per week for this employee
+- The specific shift assignment (e.g., first shift, night shift, rotating schedule)
+- A baseline for comparing actual hours worked against expected hours
+use_cases:
+- Is this employee scheduled as full-time or part-time, and does their benefits eligibility
+  reflect that classification?
+- What shift is this employee assigned to, and does their actual clock-in/clock-out
+  pattern match their scheduled shift?
+- How many hours per week is this employee expected to work, and at what point do
+  their additional hours become overtime?
+related:
+- operation_id: get_time_entries
+  reason: Time entries represent actual hours worked, which should be compared against
+    the work schedule to identify attendance gaps or unplanned overtime.
+- operation_id: get_overtime_hours
+  reason: The scheduled hours per week define the overtime threshold; the work schedule
+    is a prerequisite for correctly interpreting whether overtime was legitimately
+    incurred.
+- operation_id: get_leave_balance
+  reason: An employee's scheduled hours per week determine how leave hours convert
+    to full days, which is essential for interpreting leave balances meaningfully.

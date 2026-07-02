@@ -1,0 +1,38 @@
+capability: get_benefits_changes
+domain: benefits
+method: GET
+path: /benefits/changes/{employee_id}
+summary: Retrieve a history of benefits changes including elections, life events,
+  and open enrollment updates for an employee
+description: This API returns a chronological log of all benefits changes made for
+  a specific employee, including what changed, why it changed, and when the new coverage
+  took effect. It captures transitions driven by life events (marriage, birth, divorce),
+  open enrollment periods, or voluntary mid-year elections. Use it to audit benefits
+  history, resolve discrepancies between payroll deductions and expected coverage,
+  or understand how an employee's benefits package has evolved over time. It is particularly
+  valuable for HR investigations, compliance audits, and onboarding reviews.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active or historical employee record in the
+  system
+- The caller must have HR or benefits administrator permissions, or be the employee
+  themselves
+- If the 'since' filter is provided, it must be a valid date in the past
+produces:
+- A timestamped list of benefits changes with before-and-after coverage details
+- The reason or trigger for each change (e.g., life event, open enrollment, voluntary
+  election)
+- The effective date of each coverage transition
+- The specific plans affected by each change
+use_cases:
+- Why did this employee's paycheck deduction amount change last month?
+- Did this employee update their benefits after their recent marriage?
+- What benefits changes has this employee made over the past year during open enrollment?
+related:
+- 'get_benefits_elections: Provides the current state of benefits elections, which
+  represents the end result of all changes returned by this API'
+- 'get_benefits_eligibility: Determines whether an employee was eligible to make a
+  change at a given point in time, providing context for why a change was or was not
+  allowed'
+- 'get_benefits_costs: Cost breakdowns may shift as a result of the changes tracked
+  here, making it useful to compare before and after a change event'

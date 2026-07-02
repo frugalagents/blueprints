@@ -1,0 +1,46 @@
+capability: create_employee_goal
+domain: performance
+method: POST
+path: /performance/goals/{employee_id}
+summary: Create a structured, measurable goal for an employee with key results and
+  weighting
+description: This API creates a new performance goal for a specific employee, capturing
+  the goal title, description, target completion date, measurable key results, and
+  relative weight within the employee's overall goal portfolio. It is used during
+  performance planning cycles, onboarding, or mid-year goal adjustments to align individual
+  objectives with team and organizational priorities. The API helps managers and HR
+  business partners answer questions about whether employees have documented, time-bound
+  goals that reflect current business needs. It supports OKR and MBO frameworks by
+  enabling structured goal-setting tied to measurable outcomes.
+side_effect: write
+preconditions:
+- The employee must exist in the system with a valid employee_id
+- The caller must have manager or HR permissions to set goals for the target employee
+- A review or planning period must be active or open for goal creation
+- The sum of goal weights for the employee should not exceed 100% after adding the
+  new goal
+- target_date must be a future date within the current or upcoming review period
+produces:
+- A unique goal identifier for tracking and referencing the goal
+- Confirmation of goal creation status (e.g., draft, active, pending approval)
+- A structured record of employee objectives that feeds into performance reviews
+use_cases:
+- What goals has this employee committed to for Q3, and are they aligned with department
+  OKRs?
+- How do I document a new stretch goal for an employee who just took on additional
+  responsibilities?
+- Which employees in my team do not yet have goals set for the current performance
+  cycle?
+related:
+- operation_id: get_employee_goals
+  reason: Must be called first to check existing goals and ensure the new goal does
+    not duplicate or over-weight the employee's current goal portfolio
+- operation_id: get_state_rules
+  reason: Consulted as a dependency to ensure goal creation complies with any jurisdiction-specific
+    performance documentation requirements
+- operation_id: list_courses
+  reason: Referenced to link learning and development courses to key results, supporting
+    goals that require skill-building as part of their completion criteria
+- operation_id: get_course_details
+  reason: Used to attach specific training milestones to goal key results when professional
+    development is part of the goal plan

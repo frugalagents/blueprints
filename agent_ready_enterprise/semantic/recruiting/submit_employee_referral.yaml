@@ -1,0 +1,42 @@
+capability: submit_employee_referral
+domain: recruiting
+method: POST
+path: /recruiting/referrals
+summary: Submit a candidate referral from an existing employee for an open job posting
+description: This API allows an existing employee to formally submit a referral for
+  a candidate they know, linking the referral to a specific job posting and documenting
+  the relationship between the referrer and the candidate. Upon submission, the system
+  assigns a referral ID, sets the initial tracking status, and determines whether
+  the referring employee is eligible for a referral bonus based on company policy.
+  It is used to support structured employee referral programs, which are a high-quality
+  and cost-effective sourcing channel. This API helps talent acquisition teams track
+  referral volume, source quality, and bonus liability.
+side_effect: write
+preconditions:
+- The referring employee must exist in the system with a valid employee ID
+- The job posting referenced by posting_id must be active and open to referrals
+- The candidate's email address must not already be associated with an existing application
+  for the same posting
+- The referring employee must not be disqualified from the referral program (e.g.,
+  due to role conflict or prior policy violation)
+produces:
+- A unique referral ID for tracking the submission
+- Initial status of the referral in the recruiting workflow
+- Indication of whether the referring employee qualifies for a referral bonus if the
+  candidate is hired
+use_cases:
+- "I want to refer my former colleague for the open Senior Engineer role \u2014 how\
+  \ do I submit that and will I get a bonus?"
+- How many referrals have been submitted for this job posting, and which employees
+  submitted them?
+- Is this candidate already in our system as a referral, or did they apply directly?
+related:
+- operation_id: list_job_postings
+  reason: A valid posting_id is required to submit a referral, so employees must first
+    identify the correct active posting to reference.
+- operation_id: get_peer_feedback
+  reason: Peer feedback on the referring employee may provide context about their
+    professional network quality and referral track record.
+- operation_id: get_recruiting_pipeline_metrics
+  reason: Referral submissions contribute to sourcing channel metrics, making it important
+    to track referrals alongside overall pipeline data.

@@ -1,0 +1,45 @@
+capability: get_course_details
+domain: learning
+method: GET
+path: /learning/courses/{course_id}
+summary: Retrieve full course details including syllabus, prerequisites, and delivery
+  method
+description: This API returns comprehensive information about a single training course,
+  including its full description, modular breakdown, any prerequisite courses, and
+  how it is delivered (e.g., in-person, e-learning, blended). It is used when a manager,
+  HR partner, or employee needs to evaluate whether a specific course is appropriate
+  for a learning goal or role requirement. Use it after identifying a course ID from
+  the catalog to get the depth of information needed for enrollment decisions or goal-setting.
+  It helps answer questions about course suitability, sequencing, and logistics.
+side_effect: read
+preconditions:
+- A valid course_id must be known, typically obtained from list_courses
+- Caller has read access to the learning management system
+- The course record exists and has not been archived
+produces:
+- Full course description and learning objectives
+- Ordered list of modules and their content areas
+- Prerequisite courses that must be completed before enrollment
+- Delivery method details to support scheduling and logistics planning
+use_cases:
+- What topics are covered in the Advanced Data Privacy course before I assign it to
+  my team?
+- Does this leadership course have prerequisites that employees need to complete first?
+- Is this course delivered online or does it require employees to travel to a training
+  center?
+related:
+- operation_id: list_courses
+  reason: list_courses is the natural precursor that surfaces the course_id needed
+    to call this endpoint.
+- operation_id: enroll_employee_in_course
+  reason: Course details, especially prerequisites and delivery method, must be reviewed
+    before enrolling an employee to ensure eligibility and scheduling fit.
+- operation_id: create_employee_goal
+  reason: Course module and objective details are used to align a learning goal with
+    specific measurable outcomes.
+- operation_id: create_job_posting
+  reason: Course prerequisites and content may be referenced when specifying required
+    training qualifications in a job posting.
+- operation_id: get_employee_enrollments
+  reason: Comparing course prerequisites against an employee's existing enrollments
+    confirms whether they are eligible to enroll.

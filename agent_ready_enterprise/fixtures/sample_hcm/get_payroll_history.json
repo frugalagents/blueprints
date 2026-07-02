@@ -1,0 +1,8 @@
+{
+  "employee_id": "EMP-1042",
+  "history": [
+    {"pay_period": "2026-05", "gross_pay": 3750.0, "net_pay": 2586.0},
+    {"pay_period": "2026-04", "gross_pay": 3750.0, "net_pay": 2926.0},
+    {"pay_period": "2026-03", "gross_pay": 3750.0, "net_pay": 2918.5}
+  ]
+}

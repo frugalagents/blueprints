@@ -1,0 +1,148 @@
+openapi: 3.0.3
+info:
+  title: Compliance & Audit API
+  version: 1.0.0
+  x-domain: compliance
+paths:
+  /compliance/checks/{employee_id}:
+    get:
+      operationId: get_compliance_checks
+      summary: Get compliance check results for an employee
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: category
+          in: query
+          required: false
+          schema: {type: string}
+      responses:
+        "200":
+          description: Compliance checks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ComplianceResult"
+  /compliance/violations/{employee_id}:
+    get:
+      operationId: get_compliance_violations
+      summary: Get active compliance violations and remediation status
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Violations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ViolationList"
+  /compliance/audit-trail/{employee_id}:
+    get:
+      operationId: get_audit_trail
+      summary: Get audit trail of all HR/payroll/benefits changes
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: since
+          in: query
+          required: false
+          schema: {type: string}
+      responses:
+        "200":
+          description: Audit trail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditTrail"
+  /compliance/state-rules/{state}:
+    get:
+      operationId: get_state_rules
+      summary: Get state-specific labor and tax compliance rules
+      parameters:
+        - name: state
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: State rules
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StateRules"
+components:
+  schemas:
+    ComplianceCheck:
+      type: object
+      properties:
+        rule_id: {type: string}
+        category: {type: string}
+        status: {type: string}
+        description: {type: string}
+        last_checked: {type: string}
+    ComplianceResult:
+      type: object
+      properties:
+        employee_id: {type: string}
+        checks:
+          type: array
+          items:
+            $ref: "#/components/schemas/ComplianceCheck"
+        overall_status: {type: string}
+    Violation:
+      type: object
+      properties:
+        violation_id: {type: string}
+        rule_id: {type: string}
+        severity: {type: string}
+        description: {type: string}
+        remediation: {type: string}
+        status: {type: string}
+    ViolationList:
+      type: object
+      properties:
+        employee_id: {type: string}
+        violations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Violation"
+    AuditEvent:
+      type: object
+      properties:
+        event_id: {type: string}
+        timestamp: {type: string}
+        category: {type: string}
+        action: {type: string}
+        details: {type: string}
+        actor: {type: string}
+    AuditTrail:
+      type: object
+      properties:
+        employee_id: {type: string}
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditEvent"
+    StateRules:
+      type: object
+      properties:
+        state: {type: string}
+        overtime_threshold_hours: {type: number}
+        minimum_wage: {type: number}
+        local_tax_jurisdictions:
+          type: array
+          items: {type: string}
+        rules:
+          type: array
+          items:
+            type: object
+            properties:
+              rule_id: {type: string}
+              description: {type: string}
+              category: {type: string}

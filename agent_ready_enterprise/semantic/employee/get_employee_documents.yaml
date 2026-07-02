@@ -1,0 +1,39 @@
+capability: get_employee_documents
+domain: employee
+method: GET
+path: /employee/{employee_id}/documents
+summary: Retrieve employment documents such as offer letters, I-9s, and W-4s for an
+  employee
+description: This API returns a list of official employment documents associated with
+  an employee, including document type, upload date, and current status (e.g., pending,
+  completed, expired). It is used by HR administrators and compliance teams to verify
+  that required onboarding and legal documents have been collected and are up to date.
+  This API is critical for audit readiness, I-9 compliance checks, and ensuring new
+  hires have completed all required paperwork before their start date. It also supports
+  offboarding workflows where document completeness must be confirmed.
+side_effect: read
+preconditions:
+- The employee_id must exist in the HR system
+- The requesting user must have HR compliance or document management permissions
+- At least one document must have been uploaded or requested for the employee
+produces:
+- List of all documents on file for the employee with their types and statuses
+- Upload and expiration dates for time-sensitive documents like I-9s
+- Identification of missing or expired documents that require action
+use_cases:
+- Has this new hire completed all required onboarding paperwork before their start
+  date?
+- Which employees have expired or missing I-9 documents that put us at compliance
+  risk?
+- Do we have a signed offer letter on file for this employee in case of a compensation
+  dispute?
+related:
+- operation_id: get_job_history
+  reason: Job history can be cross-referenced with documents to confirm that role
+    changes were accompanied by updated offer letters or agreements.
+- operation_id: get_emergency_contacts
+  reason: Both APIs are part of the employee onboarding completeness checklist, ensuring
+    all required personal and legal records are on file.
+- operation_id: get_manager_info
+  reason: Manager info is needed to route document completion reminders or escalations
+    when an employee's paperwork is incomplete.

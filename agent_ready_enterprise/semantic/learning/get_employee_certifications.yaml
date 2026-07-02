@@ -1,0 +1,45 @@
+capability: get_employee_certifications
+domain: learning
+method: GET
+path: /learning/certifications/{employee_id}
+summary: Retrieve an employee's active professional certifications, issue dates, and
+  expiration dates
+description: This API returns all professional or regulatory certifications held by
+  an employee, including their current status, when they were issued, and when they
+  expire. It is used by HR, compliance teams, and managers to verify that employees
+  hold the credentials required for their role and to proactively manage renewals
+  before certifications lapse. It is especially critical in regulated industries such
+  as finance, healthcare, and engineering where lapsed certifications can create legal
+  or operational risk. It helps answer questions about workforce credential coverage
+  and upcoming renewal obligations.
+side_effect: read
+preconditions:
+- The employee_id must correspond to a valid employee record in the system
+- The requesting user must have authorization to view credentialing data for the specified
+  employee
+- Certification records must have been previously entered or synced into the learning
+  management system
+produces:
+- A list of all certifications the employee currently holds or has held
+- The active or expired status of each certification
+- Issue and expiry dates enabling proactive renewal planning
+- Certification identifiers that can be used to cross-reference with role requirements
+use_cases:
+- Does this employee hold a current, valid certification required for their role before
+  we assign them to this client project?
+- Which certifications across our team are expiring in the next 90 days and need renewal
+  action?
+- Can I verify that this candidate's claimed certifications are on record and still
+  active?
+related:
+- operation_id: get_learning_completions
+  reason: Certifications are frequently awarded upon completing specific courses;
+    pairing these APIs shows both the learning activity that led to a credential and
+    the credential's current validity status.
+- operation_id: get_compliance_training_status
+  reason: Some compliance training requirements are tied to maintaining specific certifications;
+    this API confirms whether the underlying credential is still valid alongside training
+    completion status.
+- operation_id: enroll_employee_in_course
+  reason: When a certification is nearing expiry, enrolling the employee in a renewal
+    course is the natural next action, making this a common follow-up operation.

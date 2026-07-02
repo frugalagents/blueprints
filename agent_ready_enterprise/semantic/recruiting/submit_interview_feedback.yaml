@@ -1,0 +1,50 @@
+capability: submit_interview_feedback
+domain: recruiting
+method: POST
+path: /recruiting/interviews/{interview_id}/feedback
+summary: Submit structured interview feedback and a hiring recommendation for a completed
+  interview
+description: Records an interviewer's formal assessment of a candidate following a
+  completed interview, capturing a rating, hire/no-hire recommendation, identified
+  strengths and concerns, and free-form notes. This feedback is tied to a specific
+  interview ID and contributes to the overall candidate evaluation record used by
+  hiring managers and recruiters to make final decisions. Feedback should be calibrated
+  against organizational rating standards to ensure consistency across interviewers
+  and roles. Use this API immediately after an interview concludes to keep the pipeline
+  moving and ensure timely, documented hiring decisions.
+side_effect: write
+preconditions:
+- The interview_id corresponds to a completed or in-progress interview in the system
+- The submitting user is one of the designated interviewers for that interview
+- The interview has not already received feedback from this interviewer
+- Rating values conform to the organization's calibrated rating scale
+- Caller has write access to interview feedback records
+produces:
+- A recorded feedback entry linked to the interview and applicant, with a unique feedback
+  ID
+- A hire/no-hire signal that contributes to the aggregate candidate evaluation
+- Documented strengths and concerns that inform debrief discussions and final hiring
+  decisions
+use_cases:
+- "I just finished interviewing a candidate for the Data Scientist role \u2014 how\
+  \ do I submit my scorecard and recommendation?"
+- Our hiring team needs all interviewers to log their feedback before the debrief
+  meeting tomorrow; how is that captured?
+- How do we ensure interview ratings are consistent and calibrated across different
+  interviewers evaluating candidates for the same role?
+related:
+- operation_id: schedule_interview
+  reason: The interview must have been scheduled and assigned an interview_id before
+    feedback can be submitted against it.
+- operation_id: get_applicants_for_posting
+  reason: Applicant context (stage, prior ratings) should be reviewed to ensure feedback
+    is relevant and the candidate is still active in the pipeline.
+- operation_id: get_rating_calibration
+  reason: Rating calibration guidelines must be consulted to ensure the submitted
+    rating is consistent with organizational standards and comparable across interviewers.
+- operation_id: get_review_details
+  reason: For internal candidates, prior performance review details provide context
+    that should inform how interview feedback is framed and rated.
+- operation_id: get_peer_feedback
+  reason: Peer feedback on internal candidates can supplement interview observations
+    and should be considered when formulating the recommendation.

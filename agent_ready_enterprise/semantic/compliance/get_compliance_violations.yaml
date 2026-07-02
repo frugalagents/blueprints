@@ -1,0 +1,44 @@
+capability: get_compliance_violations
+domain: compliance
+method: GET
+path: /compliance/violations/{employee_id}
+summary: Retrieve active compliance violations and their remediation status for a
+  specific employee
+description: This API returns a list of open or unresolved compliance violations associated
+  with a specific employee, along with the current remediation status of each violation.
+  It is used by HR managers, compliance officers, and legal teams to track which employees
+  have outstanding compliance issues and whether corrective actions are in progress.
+  Unlike compliance checks (which evaluate current state), this API surfaces violations
+  that have already been recorded and are being tracked through resolution. It helps
+  answer questions like whether an employee has unresolved issues that could expose
+  the organization to regulatory or legal risk.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- At least one compliance violation must have been previously recorded for the employee
+  to return meaningful results
+produces:
+- List of active compliance violations associated with the employee
+- Remediation status for each violation (e.g., open, in-progress, resolved)
+- Details about the nature and category of each violation
+- Visibility into which violations are overdue for remediation
+use_cases:
+- Does this employee have any open compliance violations that need to be resolved
+  before we can proceed with their transfer?
+- How many employees in our organization currently have unresolved compliance violations,
+  and what is the remediation status?
+- What compliance violations has this employee accumulated over time, and are any
+  of them overdue for resolution?
+related:
+- operation_id: get_compliance_checks
+  reason: Compliance checks identify current rule failures that may generate new violations;
+    together they provide both real-time evaluation and historical violation tracking.
+- operation_id: get_audit_trail
+  reason: The audit trail can reveal what HR or payroll actions triggered a violation,
+    providing the historical context needed to understand and remediate it.
+- operation_id: get_state_rules
+  reason: Understanding which state rules apply to an employee helps interpret why
+    a specific violation was recorded and what remediation steps are required.
+- operation_id: get_employee_profile
+  reason: Employee classification and work location determine which rules the employee
+    is subject to, which is essential context for evaluating the severity of a violation.

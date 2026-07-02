@@ -1,0 +1,44 @@
+capability: get_employee_enrollments
+domain: learning
+method: GET
+path: /learning/enrollments/{employee_id}
+summary: Retrieve all course enrollments and progress for a specific employee
+description: This API returns the full enrollment history and current progress for
+  a given employee across all training courses, with optional filtering by enrollment
+  status (e.g., in-progress, completed, overdue). It provides a real-time snapshot
+  of an individual's learning activity, making it essential for compliance audits,
+  performance reviews, and development planning conversations. Use it when you need
+  to verify whether an employee has completed required training or to understand their
+  current learning workload. It helps managers and HR partners answer questions about
+  individual training compliance and development progress.
+side_effect: read
+preconditions:
+- A valid employee_id must be known, typically obtained from search_employees
+- Caller has read access to the employee's learning records
+- The employee has at least one enrollment record in the system
+produces:
+- Complete list of courses the employee is enrolled in or has completed
+- Enrollment dates and current completion status for each course
+- Progress percentage for in-progress courses to gauge learning momentum
+- Identification of overdue or incomplete mandatory training
+use_cases:
+- Has this employee completed all mandatory compliance training required before their
+  project start date?
+- What courses is this employee currently working through, and how far along are they?
+- Which team members have not yet finished the annual security awareness training?
+related:
+- operation_id: search_employees
+  reason: Employee search provides the employee_id required to query enrollments for
+    a specific individual.
+- operation_id: enroll_employee_in_course
+  reason: Reviewing existing enrollments before enrolling prevents duplicate registrations
+    and confirms prerequisite completion.
+- operation_id: get_course_details
+  reason: Course details can be cross-referenced with enrollment records to verify
+    that prerequisite courses have been completed.
+- operation_id: get_compliance_training_status
+  reason: Enrollment records feed into compliance training status checks to determine
+    whether regulatory requirements have been met.
+- operation_id: get_overdue_training_report
+  reason: Individual enrollment data aggregates into the overdue training report used
+    for team-level compliance monitoring.

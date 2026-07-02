@@ -1,0 +1,37 @@
+capability: get_background_check_status
+domain: recruiting
+method: GET
+path: /recruiting/applicants/{applicant_id}/background-check
+summary: Retrieve the current status and result of a background check for a specific
+  applicant
+description: This API retrieves the real-time status of a background check initiated
+  for a job applicant, including when it was started, when it completed, and whether
+  the result was clear or flagged. It is used during the pre-hire phase to determine
+  whether an offer can be formally extended or if further review is needed. HR coordinators
+  and hiring managers rely on this to avoid onboarding delays and ensure compliance
+  with company hiring policies. It helps answer questions about where a candidate
+  stands in the final stages of the hiring process.
+side_effect: read
+preconditions:
+- The applicant must exist in the recruiting system with a valid applicant_id
+- A background check must have already been initiated for the applicant
+- The calling user must have appropriate permissions to view background check results
+produces:
+- Current status of the background check (e.g., pending, in-progress, completed)
+- Date the background check was initiated
+- Date the background check was completed, if applicable
+- Final result indicating whether the check was cleared or flagged
+use_cases:
+- Has the background check for this finalist candidate come back yet, and did they
+  pass?
+- Which applicants are still waiting on background check results before we can send
+  offer letters?
+- How long has this applicant's background check been pending, and is it overdue?
+related:
+- operation_id: list_hiring_requisitions
+  reason: "Background check status is typically reviewed in the context of filling\
+    \ an open requisition \u2014 knowing which req the applicant belongs to helps\
+    \ prioritize follow-up."
+- operation_id: list_job_postings
+  reason: The job posting associated with the applicant provides context for the role
+    they are being screened for, which may affect background check requirements.

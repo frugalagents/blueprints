@@ -1,0 +1,60 @@
+capability: create_improvement_plan
+domain: performance
+method: POST
+path: /performance/improvement-plans/{employee_id}
+summary: Create a formal performance improvement plan with objectives, milestones,
+  and duration for an underperforming employee
+description: This API creates a structured performance improvement plan (PIP) for
+  an employee, documenting the reason for the plan, specific improvement objectives,
+  measurable milestones, and the duration over which progress will be assessed. It
+  is used by managers and HR business partners when an employee has demonstrated sustained
+  performance deficiencies that have been identified through formal reviews, payroll
+  adjustments, or job history patterns. The API ensures that the organization has
+  a legally defensible, documented process before taking further employment actions
+  such as demotion or termination. It helps answer questions about whether the company
+  has met its duty of care to support an underperforming employee before escalating
+  consequences.
+side_effect: write
+preconditions:
+- The employee must exist in the system with a valid employee_id
+- No active performance improvement plan should already exist for the employee (verified
+  via get_improvement_plan)
+- Performance review history must document the basis for the improvement plan
+- The caller must have manager and HR co-authorization to create a PIP
+- The reason for the PIP must be supported by documented performance evidence from
+  prior review cycles
+- Legal or HR compliance review may be required before plan creation depending on
+  jurisdiction
+produces:
+- A unique plan identifier for tracking the improvement plan throughout its lifecycle
+- Confirmation of plan creation status and the official start date
+- A structured improvement record that serves as legal documentation of the performance
+  management process
+- Milestone checkpoints that trigger scheduled manager check-ins and progress evaluations
+use_cases:
+- How do I formally document performance expectations for an employee who has missed
+  targets for two consecutive quarters?
+- What improvement plan should be created for an employee whose recent performance
+  review rated them as 'needs improvement' with specific skill gaps?
+- Has the organization followed the correct process to support this employee before
+  considering termination?
+related:
+- operation_id: get_improvement_plan
+  reason: Must be called before creating a new plan to confirm no active PIP exists
+    and to review historical plan details that should inform the new plan's objectives
+- operation_id: get_performance_reviews
+  reason: Performance review history provides the documented evidence of underperformance
+    that justifies and shapes the content of the improvement plan
+- operation_id: get_job_history
+  reason: Job history context is reviewed to understand whether performance issues
+    are role-specific or span multiple positions, informing the plan's objectives
+- operation_id: get_merit_increase_history
+  reason: Merit increase patterns are examined to establish whether compensation has
+    already reflected performance concerns, providing additional context for the PIP
+    rationale
+- operation_id: get_payroll_adjustments
+  reason: Payroll adjustment history may reveal prior corrective actions or compensation
+    holds that are relevant to documenting the performance management timeline
+- operation_id: create_offer_letter
+  reason: PIP creation is a prerequisite check for offer letter generation; an active
+    PIP may block or require disclosure in internal transfer or promotion offer processes

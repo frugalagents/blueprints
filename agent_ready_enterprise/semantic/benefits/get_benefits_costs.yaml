@@ -1,0 +1,43 @@
+capability: get_benefits_costs
+domain: benefits
+method: GET
+path: /benefits/costs/{employee_id}
+summary: Retrieve a per-paycheck breakdown of employee and employer benefits costs
+  across all enrolled plans
+description: This API calculates and returns the precise cost of an employee's benefits
+  package on a per-paycheck basis, split between what the employee pays and what the
+  employer subsidizes, with a detailed breakdown by individual plan. It depends on
+  the employee's current elections to compute accurate figures and is the authoritative
+  source for benefits-related payroll deduction amounts. Use it when preparing total
+  compensation reports, validating payroll deductions, or helping an employee understand
+  the full value of their benefits package including employer contributions. It is
+  also useful for workforce cost modeling and benefits budget forecasting.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active employee with at least one active benefits
+  election
+- get_benefits_elections must be resolvable for the employee, as cost calculations
+  depend on current plan enrollments
+- Employer contribution rates and plan premium tables must be configured in the benefits
+  system for the current plan year
+produces:
+- The total per-paycheck cost the employee pays across all enrolled benefits plans
+- The total per-paycheck cost the employer contributes on behalf of the employee
+- A plan-by-plan cost breakdown showing employee and employer shares for each benefit
+- The full monetary value of the employer's benefits contribution, useful for total
+  compensation statements
+use_cases:
+- How much is deducted from this employee's paycheck each pay period for benefits?
+- What is the total value of benefits the company is providing to this employee, including
+  employer contributions?
+- "Why does this employee's net pay seem lower than expected \u2014 how much are benefits\
+  \ deductions costing them?"
+related:
+- 'get_benefits_elections: A required dependency that provides the list of enrolled
+  plans used to calculate costs'
+- 'get_deduction_breakdown: Uses benefits cost data to populate the benefits deduction
+  line items on a paycheck'
+- 'get_benefits_dependents: Dependent enrollment affects plan tier pricing (e.g.,
+  employee-only vs. family), which directly impacts cost calculations'
+- 'get_benefits_changes: Changes in elections will cause costs to shift, making it
+  useful to review changes alongside cost history'

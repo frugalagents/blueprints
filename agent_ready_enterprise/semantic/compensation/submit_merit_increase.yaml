@@ -1,0 +1,57 @@
+capability: submit_merit_increase
+domain: compensation
+method: POST
+path: /compensation/merit-increases/{employee_id}
+summary: Submit a merit-based salary increase recommendation for approval
+description: Creates a formal merit increase request for a specific employee by submitting
+  a proposed new salary, the percentage change, an effective date, and a written justification.
+  The system validates the request against salary bands, budget availability, and
+  prior compensation history before routing it through the appropriate approval chain.
+  This API is used by managers and HR business partners during compensation review
+  cycles or off-cycle adjustment processes. It ensures that salary changes are documented,
+  justified, and subject to proper governance before taking effect in payroll.
+side_effect: write
+preconditions:
+- The employee_id must correspond to an active employee record
+- The caller must have manager or HR authority to submit compensation changes for
+  the specified employee
+- The proposed salary must be validated against current salary bands for the employee's
+  job family and level
+- Sufficient budget must be available in the department's compensation budget
+- The employee's most recent merit increase history should be reviewed to avoid duplicate
+  or conflicting submissions
+- Any active performance review or improvement plan status should be considered before
+  submission
+produces:
+- A unique request ID for tracking the merit increase through the approval workflow
+- The current status of the submitted request (e.g., pending, approved, rejected)
+- The full approval chain indicating who must review and approve the request before
+  it takes effect
+use_cases:
+- How do I formally recommend a 7% salary increase for an employee who just received
+  an outstanding performance review?
+- "I need to submit an off-cycle merit adjustment for a retention risk \u2014 what\
+  \ approvals will be required?"
+- Can I initiate a salary increase for a recently promoted employee to bring them
+  into the new salary band?
+related:
+- operation_id: get_merit_increase_history
+  reason: Reviewing prior merit increases is a prerequisite to submitting a new one,
+    ensuring the proposed change is appropriate given the employee's compensation
+    trajectory.
+- operation_id: get_salary_bands
+  reason: The proposed salary must fall within the approved salary band for the employee's
+    role and level, making band data essential validation context before submission.
+- operation_id: get_performance_reviews
+  reason: Performance review ratings and recency are core justification inputs for
+    merit increases and are required to support the business case in the submission.
+- operation_id: get_compensation_budget
+  reason: Budget availability in the employee's department must be confirmed before
+    submitting an increase to ensure the request can be approved without exceeding
+    fiscal constraints.
+- operation_id: get_market_compensation_data
+  reason: Market benchmarks help justify the proposed salary level relative to external
+    competitiveness, strengthening the business case in the justification field.
+- operation_id: get_payroll_adjustments
+  reason: Checking recent payroll adjustments ensures there are no conflicting or
+    duplicate compensation changes already in flight for the same employee.

@@ -1,0 +1,47 @@
+capability: get_payroll_history
+domain: payroll
+method: GET
+path: /payroll/history/{employee_id}
+summary: Retrieve historical payroll records to track pay changes and trends over
+  time
+description: This API retrieves a chronological record of payroll transactions for
+  a specific employee, optionally filtered by a start date. It surfaces pay period
+  details alongside gross and net pay figures, making it possible to trace how an
+  employee's compensation has evolved. Use this when auditing pay equity, investigating
+  discrepancies, or preparing for compensation reviews. It serves as a foundational
+  data source for downstream payroll analysis such as deduction breakdowns, overtime
+  calculations, and paystub generation.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active or historical employee record in the
+  system
+- The requesting user must have payroll read permissions for the specified employee
+- If 'since' is provided, it must be a valid date not in the future
+produces:
+- A time-ordered list of pay periods with associated gross and net pay amounts
+- A historical view of compensation changes that can reveal raises, demotions, or
+  pay corrections
+- Baseline pay data needed to calculate trends, averages, or anomalies across periods
+use_cases:
+- Has this employee received any pay increases in the last 12 months, and if so, how
+  much did their net pay change?
+- What was the employee's gross pay in Q3 compared to Q1 of this year?
+- Are there any pay periods where net pay dropped unexpectedly, suggesting a deduction
+  or correction issue?
+related:
+- operation_id: get_paystub
+  reason: Payroll history provides the list of pay periods; get_paystub retrieves
+    the detailed breakdown for any single period identified in that history.
+- operation_id: get_payroll_adjustments
+  reason: Adjustments such as retro pay or corrections directly affect the gross/net
+    pay values visible in payroll history, so the two must be reviewed together to
+    explain anomalies.
+- operation_id: get_deduction_breakdown
+  reason: Differences between gross and net pay across history periods can be explained
+    by examining the deduction breakdown for those same periods.
+- operation_id: get_overtime_hours
+  reason: Spikes in gross pay visible in payroll history often correlate with overtime
+    hours worked, making this a natural companion for root-cause analysis.
+- operation_id: get_time_entries
+  reason: Time entries drive the hours-based component of gross pay, so they provide
+    the upstream context needed to validate what appears in payroll history.

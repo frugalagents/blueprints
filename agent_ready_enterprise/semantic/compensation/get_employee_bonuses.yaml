@@ -1,0 +1,48 @@
+capability: get_employee_bonuses
+domain: compensation
+method: GET
+path: /compensation/bonuses/{employee_id}
+summary: Retrieve an employee's bonus history and pending bonus payments for a given
+  year
+description: This API returns a complete record of bonuses awarded to an employee
+  for a specified year, including each bonus's type (e.g., annual performance, spot,
+  signing, referral), amount, payment date, and current status (paid, pending, or
+  cancelled). It is used by HR business partners, payroll teams, and managers to review
+  an employee's variable pay history and understand the full cash compensation picture
+  beyond base salary. Compensation analysts use it to audit bonus distributions for
+  equity and consistency, while managers use it during performance and promotion conversations
+  to contextualize total cash earnings. It answers questions about what an employee
+  has been paid in variable compensation and whether any bonuses are still outstanding.
+side_effect: read
+preconditions:
+- Employee must exist in the HR system with a valid employee_id
+- A valid year must be provided to scope the results
+- Caller must have compensation administration, payroll, or employee self-service
+  access permissions
+- At least one bonus record must exist for the employee in the specified year for
+  results to be returned
+produces:
+- List of all bonuses for the employee in the specified year with unique identifiers
+- Type of each bonus (annual performance, spot award, signing bonus, referral bonus,
+  etc.)
+- Dollar amount of each bonus
+- Date each bonus was or is scheduled to be paid
+- Payment status of each bonus (paid, pending, or cancelled)
+use_cases:
+- What is the total variable cash compensation this employee received last year when
+  combining all bonus types?
+- Does this employee have any pending bonuses that have not yet been paid, and when
+  are they expected to be disbursed?
+- How does this employee's annual performance bonus compare to others at the same
+  level to identify potential pay equity concerns?
+related:
+- "get_total_rewards_statement \u2014 bonus history is a key input to the total rewards\
+  \ statement, which presents the full value of an employee's compensation package"
+- "get_employee_equity \u2014 bonuses and equity grants together represent the complete\
+  \ variable and incentive compensation picture for an employee"
+- "get_retirement_plan \u2014 some employees elect to contribute a portion of bonus\
+  \ payouts to their 401(k), making bonus data relevant to retirement contribution\
+  \ analysis"
+- "get_salary_bands \u2014 bonus amounts are sometimes expressed as a percentage of\
+  \ base salary, so salary band context is useful when evaluating whether bonus levels\
+  \ are appropriate for a given role"

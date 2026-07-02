@@ -1,0 +1,51 @@
+capability: get_rating_calibration
+domain: performance
+method: GET
+path: /performance/ratings/calibration
+summary: Retrieve performance rating distribution across a department for calibration
+  and fairness analysis
+description: This API returns the distribution of performance ratings across a specified
+  department for a given review period, showing how many employees received each rating
+  level and what percentage of the department each rating represents. It is used by
+  HR business partners, compensation teams, and senior leaders during calibration
+  sessions to identify rating inflation, compression, or bias across managers and
+  teams. The API helps ensure that performance ratings are fairly and consistently
+  applied before they are used to drive compensation decisions, promotions, or talent
+  actions. It is essential for answering questions about whether a department's rating
+  curve aligns with company-wide norms or budget constraints.
+side_effect: read
+preconditions:
+- A review period must have been completed or be in the rating finalization phase
+- The specified department must exist and have employees with submitted ratings for
+  the review period
+- The caller must have HR, compensation, or senior leadership permissions to view
+  aggregate rating data
+- Ratings must have been submitted by managers before calibration data is meaningful
+produces:
+- A breakdown of how many employees in the department received each performance rating
+- Percentage distribution of ratings to identify bell curve alignment or rating skew
+- Department-level calibration data to support fair and consistent rating normalization
+- Inputs for compensation budget allocation based on performance differentiation
+use_cases:
+- Is the Engineering department over-rating employees compared to the company-wide
+  distribution curve?
+- How does the rating distribution in Sales this year compare to last year's calibration
+  targets?
+- Which departments have rating distributions that will cause budget overruns in the
+  merit increase cycle?
+related:
+- operation_id: get_compensation_budget
+  reason: Rating distribution directly drives merit budget allocation; calibration
+    data must align with available compensation budget before ratings are finalized
+- operation_id: get_employee_profile
+  reason: Used to drill into individual employee details when a calibration anomaly
+    is identified at the department level
+- operation_id: get_performance_reviews
+  reason: Individual performance reviews are the source records that aggregate into
+    the calibration distribution; reviewing individual records clarifies outliers
+- operation_id: search_employees
+  reason: Enables HR to identify and pull specific employee subsets within a department
+    when investigating rating distribution anomalies
+- operation_id: get_recruiting_pipeline_metrics
+  reason: Calibration results influence headcount and backfill decisions; low-rated
+    employees may trigger open requisitions that need pipeline visibility

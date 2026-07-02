@@ -1,0 +1,46 @@
+capability: get_merit_increase_history
+domain: compensation
+method: GET
+path: /compensation/merit-increases/{employee_id}
+summary: Retrieve full salary increase history for an employee
+description: Returns a chronological record of all merit-based salary increases for
+  a specific employee, including the effective date, previous and new salary amounts,
+  percentage change, and the stated reason for each increase. This API is used when
+  managers, HR business partners, or compensation analysts need to understand the
+  trajectory of an employee's pay over time. It supports decisions around equity reviews,
+  promotion readiness, and identifying employees who may be overdue for a raise. It
+  also provides essential context before submitting a new merit increase recommendation.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active or historical employee record in the
+  system
+- The caller must have compensation visibility permissions for the specified employee
+- At least one merit increase event must exist for the employee to return meaningful
+  data
+produces:
+- A timeline of salary changes with before-and-after salary values
+- Percentage increase amounts for each merit event
+- Business justifications or reasons associated with each salary change
+- Effective dates for each increase to understand timing and frequency
+use_cases:
+- When was this employee last given a raise, and how large was it?
+- Has this employee's salary kept pace with their growing responsibilities over the
+  past three years?
+- What justifications have been used for this employee's past merit increases to ensure
+  consistency in the next review?
+related:
+- operation_id: submit_merit_increase
+  reason: Merit increase history is a required input before submitting a new increase
+    recommendation, ensuring the proposed change is consistent with past patterns
+    and avoids redundant or excessive adjustments.
+- operation_id: create_improvement_plan
+  reason: When creating a performance improvement plan, reviewing merit increase history
+    helps establish whether compensation has been aligned with performance expectations
+    or if pay has continued despite underperformance.
+- operation_id: get_performance_reviews
+  reason: Comparing merit increase history against performance review ratings reveals
+    whether pay changes have been appropriately tied to performance outcomes.
+- operation_id: get_salary_bands
+  reason: Cross-referencing increase history with current salary bands shows whether
+    past increases have moved the employee toward, within, or beyond the appropriate
+    compensation range for their role.

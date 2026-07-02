@@ -1,0 +1,55 @@
+capability: get_deduction_breakdown
+domain: payroll
+method: GET
+path: /payroll/deductions/{employee_id}
+summary: Retrieve a categorized breakdown of pre-tax and post-tax payroll deductions
+  for a pay period
+description: This API returns a detailed, categorized list of all deductions applied
+  to an employee's paycheck for a specified pay period, split between pre-tax (e.g.,
+  401k contributions, HSA, medical premiums) and post-tax (e.g., Roth contributions,
+  garnishments, voluntary deductions) categories. It enables employees, HR administrators,
+  and payroll teams to understand exactly why take-home pay differs from gross pay.
+  Use this when an employee questions their net pay, when verifying that benefits
+  elections are being applied correctly, or when preparing tax planning guidance.
+  It depends on benefits elections and payroll history to ensure deduction amounts
+  are consistent with enrolled plans.
+side_effect: read
+preconditions:
+- The employee_id must be valid and have at least one processed payroll record
+- The pay_period must correspond to a period for which payroll has been finalized
+- Benefits elections must be on file for the employee to populate benefits-related
+  deduction lines
+- The requesting user must have payroll or benefits read access for the specified
+  employee
+produces:
+- An itemized list of pre-tax deductions with amounts, showing how taxable income
+  is reduced before withholding
+- An itemized list of post-tax deductions with amounts, explaining the remaining difference
+  between taxable net and take-home pay
+- A categorized summary that maps each deduction to its type (health insurance, retirement,
+  tax levy, etc.) for benefits and compliance auditing
+use_cases:
+- "Why is my take-home pay $300 less than I expected \u2014 what deductions are being\
+  \ taken out and are they correct?"
+- Is the employee's 401k contribution being deducted at the correct percentage following
+  their recent election change?
+- How much of this employee's gross pay is being sheltered from federal income tax
+  through pre-tax benefit deductions?
+related:
+- operation_id: get_benefits_elections
+  reason: Benefits elections define which plans an employee is enrolled in and at
+    what contribution levels, directly determining the benefits-related deduction
+    amounts shown in the breakdown.
+- operation_id: get_paystub
+  reason: The paystub presents a summary view of deductions; the deduction breakdown
+    API provides the granular, categorized detail behind those summary figures.
+- operation_id: get_payroll_history
+  reason: Comparing deduction breakdowns across multiple periods from payroll history
+    helps identify when deduction amounts changed and whether those changes were expected.
+- operation_id: get_garnishments
+  reason: Wage garnishments appear as post-tax deductions; cross-referencing the garnishments
+    API confirms that court-ordered amounts are being correctly reflected in the deduction
+    breakdown.
+- operation_id: get_ytd_earnings
+  reason: Year-to-date deduction totals (e.g., YTD 401k) can be validated against
+    the per-period deduction breakdown to ensure cumulative figures are accurate.

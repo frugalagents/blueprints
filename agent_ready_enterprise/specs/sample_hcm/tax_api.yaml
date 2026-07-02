@@ -1,0 +1,215 @@
+openapi: 3.0.3
+info:
+  title: Tax API
+  version: 1.0.0
+  x-domain: tax
+paths:
+  /tax/jurisdiction-changes/{employee_id}:
+    get:
+      operationId: get_tax_jurisdiction_changes
+      summary: Get recent tax jurisdiction and rate changes
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: since
+        in: query
+        required: false
+        schema:
+          type: string
+      x-depends-on:
+      - get_employee_profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  changes:
+                    type: string
+                  jurisdiction:
+                    type: string
+                  tax_type:
+                    type: string
+                  old_rate:
+                    type: number
+                  new_rate:
+                    type: number
+                  effective_date:
+                    type: string
+  /tax/withholding/{employee_id}:
+    get:
+      operationId: get_tax_withholding
+      summary: Get current W-4 withholding elections
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  filing_status:
+                    type: string
+                  allowances:
+                    type: string
+                  additional_withholding_amount:
+                    type: number
+                  exempt:
+                    type: string
+                  last_updated:
+                    type: string
+  /tax/ytd/{employee_id}:
+    get:
+      operationId: get_tax_ytd_summary
+      summary: Get year-to-date tax withholdings by jurisdiction
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  federal_tax:
+                    type: number
+                  state_tax:
+                    type: number
+                  local_tax:
+                    type: number
+                  social_security_tax:
+                    type: number
+                  medicare_tax:
+                    type: number
+                  total_tax:
+                    type: number
+  /tax/jurisdictions/{employee_id}:
+    get:
+      operationId: get_tax_jurisdictions
+      summary: Get all tax jurisdictions that apply to employee
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      x-depends-on:
+      - get_employee_profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  work_state:
+                    type: string
+                  resident_state:
+                    type: string
+                  local_jurisdictions:
+                    type: string
+                  reciprocity:
+                    type: string
+  /tax/rates/{state}:
+    get:
+      operationId: get_tax_rates
+      summary: Get current tax rates for a state
+      parameters:
+      - name: state
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                  income_tax_rate:
+                    type: number
+                  sdi_rate:
+                    type: number
+                  local_taxes:
+                    type: string
+  /tax/w2/{employee_id}:
+    get:
+      operationId: get_w2_preview
+      summary: Get W-2 preview for current tax year
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  box1_wages_amount:
+                    type: number
+                  box2_federal_tax:
+                    type: number
+                  box16_state_wages_amount:
+                    type: number
+                  box17_state_tax:
+                    type: number
+  /tax/estimated-liability/{employee_id}:
+    get:
+      operationId: get_estimated_tax_liability
+      summary: Get estimated annual tax liability vs withholding
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      x-depends-on:
+      - get_tax_withholding
+      - get_ytd_earnings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  estimated_liability_amount:
+                    type: number
+                  withholding_pace_amount:
+                    type: number
+                  projected_refund_amount:
+                    type: number
+                  recommendation:
+                    type: string

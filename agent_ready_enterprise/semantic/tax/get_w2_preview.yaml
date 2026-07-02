@@ -1,0 +1,42 @@
+capability: get_w2_preview
+domain: tax
+method: GET
+path: /tax/w2/{employee_id}
+summary: Generate a preview of an employee's W-2 form for the current or specified
+  tax year
+description: This API produces a preview of the key W-2 tax form fields for a given
+  employee and tax year, including federal taxable wages, federal income tax withheld,
+  state wages, and state income tax withheld. It is used by payroll administrators
+  before year-end W-2 distribution to verify accuracy, and by employees who want to
+  review their expected tax document before it is officially issued. This API helps
+  answer questions like 'will my W-2 be correct?' and supports proactive error detection
+  before official filing deadlines.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- A valid tax year must be provided or defaulted to the current calendar year
+- Payroll must have been processed for the employee during the specified tax year
+- Year-end payroll adjustments and corrections should ideally be finalized before
+  relying on this preview for filing purposes
+produces:
+- 'Box 1: Federal taxable wages and tips for the year'
+- 'Box 2: Total federal income tax withheld for the year'
+- 'Box 16: State taxable wages for the year'
+- 'Box 17: Total state income tax withheld for the year'
+use_cases:
+- Can I see what my W-2 will look like before it's officially mailed so I can start
+  preparing my tax return?
+- Are the federal and state wages on this employee's W-2 preview consistent with what
+  we expect based on their salary and deductions?
+- "We need to audit W-2s before the January deadline \u2014 which employees have discrepancies\
+  \ between their YTD records and their W-2 preview?"
+related:
+- operation_id: get_tax_ytd_summary
+  reason: YTD tax withholding totals are the primary source data that populate the
+    W-2 preview boxes; discrepancies between the two indicate a data issue.
+- operation_id: get_estimated_tax_liability
+  reason: Employees often review their W-2 preview alongside their estimated liability
+    to understand whether they will owe taxes or receive a refund when they file.
+- operation_id: get_tax_jurisdictions
+  reason: Multi-state employees may have multiple state W-2 entries; jurisdiction
+    data explains which states will appear on the W-2 form.

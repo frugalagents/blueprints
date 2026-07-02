@@ -1,0 +1,44 @@
+capability: get_improvement_plan
+domain: performance
+method: GET
+path: /performance/improvement-plans/{employee_id}
+summary: Retrieve the active or historical performance improvement plan for an employee
+description: This API retrieves the full details of a performance improvement plan
+  (PIP) for a specific employee, including objectives, milestones, check-in schedule,
+  plan duration, and current status. It is used by managers, HR business partners,
+  and legal teams to monitor an employee's progress against documented improvement
+  expectations and to ensure compliance with the PIP process before taking further
+  employment actions. The API helps answer questions about whether an employee is
+  meeting their improvement milestones and whether the organization has fulfilled
+  its documentation obligations. It is a critical prerequisite before escalating employment
+  decisions such as termination or role changes.
+side_effect: read
+preconditions:
+- The employee must exist in the system with a valid employee_id
+- A performance improvement plan must have been previously created for the employee
+- The caller must have manager, HR, or legal permissions to access PIP documentation
+- The plan must not have been purged due to data retention policy expiration
+produces:
+- Full details of the employee's current or most recent performance improvement plan
+- Milestone and objective tracking data showing progress against improvement targets
+- Plan status indicating whether the PIP is active, completed, or failed
+- Check-in frequency and schedule for ongoing manager-employee accountability meetings
+- Start and end dates to assess whether the plan is within its active window
+use_cases:
+- Is this employee currently on a performance improvement plan, and what milestones
+  have they completed?
+- Has the employee met the objectives outlined in their PIP before we proceed with
+  a termination decision?
+- What is the history of improvement plans for this employee over the past two years?
+related:
+- operation_id: create_improvement_plan
+  reason: This read API is a direct prerequisite to creating a new PIP; existing plan
+    details must be reviewed to avoid duplicate plans and to inform the structure
+    of a new one
+- operation_id: create_offer_letter
+  reason: PIP status is checked before generating offer letters for internal transfers
+    or role changes to ensure employment actions are appropriate given active improvement
+    plans
+- operation_id: get_performance_reviews
+  reason: Performance reviews provide the documented evidence of underperformance
+    that typically precedes and informs the content of an improvement plan

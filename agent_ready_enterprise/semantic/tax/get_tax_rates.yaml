@@ -1,0 +1,40 @@
+capability: get_tax_rates
+domain: tax
+method: GET
+path: /tax/rates/{state}
+summary: Retrieve current income tax rates, SDI rates, and local tax rates for a given
+  state
+description: This API returns the current, authoritative tax rates for a specified
+  state, including the state income tax rate, State Disability Insurance (SDI) rate,
+  and any applicable local tax rates within that state. It is used when setting up
+  payroll for employees in a new state, validating that withholding calculations are
+  using up-to-date rates, or when modeling the tax impact of relocating an employee.
+  This API helps payroll teams answer compliance questions like 'are we withholding
+  at the correct rate for this state?' and supports accurate gross-to-net pay calculations.
+side_effect: read
+preconditions:
+- A valid two-letter U.S. state code must be provided
+- State rules must be available via get_state_rules before rates can be fully resolved
+- Employee profile context may be required to apply the correct rate tier or filing
+  status
+produces:
+- The state income tax rate applicable for the given state
+- The State Disability Insurance (SDI) contribution rate, if applicable
+- A list of local or municipal tax rates within the state that may apply to employees
+use_cases:
+- "We're hiring an employee in California \u2014 what are the current state income\
+  \ tax and SDI rates we need to configure?"
+- Has the state tax rate changed for Texas this year, and are our payroll calculations
+  still accurate?
+- What local tax rates apply within Pennsylvania that we need to account for when
+  running payroll?
+related:
+- operation_id: get_tax_jurisdictions
+  reason: Jurisdiction data identifies which states and localities apply to an employee;
+    tax rates are then fetched for each of those jurisdictions.
+- operation_id: get_estimated_tax_liability
+  reason: Accurate liability projections depend on applying the correct state and
+    local tax rates to projected earnings.
+- operation_id: get_w2_preview
+  reason: W-2 state wage and tax boxes must reflect withholdings calculated using
+    the correct state rates retrieved by this API.

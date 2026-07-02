@@ -1,0 +1,39 @@
+capability: get_emergency_contacts
+domain: employee
+method: GET
+path: /employee/{employee_id}/emergency-contacts
+summary: Retrieve emergency contact names, relationships, and phone numbers for an
+  employee
+description: This API returns the list of emergency contacts an employee has designated,
+  including each contact's name, relationship to the employee, and phone number. It
+  is used by HR, facilities, and security teams in situations requiring urgent outreach
+  on behalf of an employee, such as a workplace incident, medical emergency, or natural
+  disaster. Keeping this data current is also a standard part of onboarding and annual
+  HR data verification processes. It may also be referenced in employee referral workflows
+  to validate personal contact information.
+side_effect: read
+preconditions:
+- The employee_id must be valid and active in the HR system
+- The employee must have at least one emergency contact recorded
+- The requesting user must have HR or security-level access to sensitive personal
+  data
+produces:
+- Names and relationships of all designated emergency contacts for the employee
+- Phone numbers for immediate outreach in urgent situations
+- Completeness signal indicating whether the employee has fulfilled the emergency
+  contact requirement
+use_cases:
+- Who should we contact immediately if this employee is involved in a workplace accident?
+- Which employees have not yet provided emergency contact information as part of onboarding?
+- Do we have up-to-date contact details for this employee's next of kin for our annual
+  HR data audit?
+related:
+- operation_id: get_employee_documents
+  reason: Both APIs represent personal employee records that must be complete and
+    current, and are commonly reviewed together during onboarding audits.
+- operation_id: submit_employee_referral
+  reason: Employee referral workflows may cross-reference emergency contact data to
+    validate personal relationships declared in the referral submission.
+- operation_id: get_manager_info
+  reason: In an emergency, the manager may need to be notified alongside or before
+    emergency contacts, making both APIs relevant to incident response workflows.

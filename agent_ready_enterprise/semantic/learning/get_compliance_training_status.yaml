@@ -1,0 +1,45 @@
+capability: get_compliance_training_status
+domain: learning
+method: GET
+path: /learning/compliance-training/{employee_id}
+summary: Retrieve the status of all mandatory compliance training requirements for
+  a specific employee
+description: This API returns the full list of compliance training courses required
+  for an employee, indicating which have been completed, which are pending, and which
+  are overdue along with their due dates. It is used by HR compliance officers, managers,
+  and legal teams to ensure employees meet regulatory and company policy training
+  obligations. It is typically consulted before audits, during onboarding reviews,
+  or as part of periodic compliance checks. It helps answer questions about whether
+  an individual employee is currently compliant with all mandatory training requirements.
+side_effect: read
+preconditions:
+- The employee_id must correspond to a valid employee record in the system
+- Mandatory training requirements must have been configured and assigned to the employee's
+  role or department
+- The requesting user must have permission to view compliance data for the specified
+  employee
+produces:
+- A complete list of all mandatory compliance courses assigned to the employee
+- Completion status for each required course indicating whether it is done, pending,
+  or overdue
+- Due dates for each required course to support prioritization
+- An overdue flag identifying courses that have passed their deadline without completion
+use_cases:
+- Is this employee fully compliant with all mandatory training before we allow them
+  to start working with sensitive customer data?
+- Which required compliance courses does this employee still need to complete before
+  the end of the quarter?
+- Is this employee overdue on any mandatory training that could create a regulatory
+  risk for the organization?
+related:
+- operation_id: enroll_employee_in_course
+  reason: When this API reveals incomplete or overdue compliance training, enrolling
+    the employee in the missing course is the immediate remediation action.
+- operation_id: get_overdue_training_report
+  reason: This API provides individual-level compliance status while the overdue report
+    aggregates the same data across a department, making them complementary views
+    of the same compliance problem.
+- operation_id: get_learning_completions
+  reason: Compliance completions are a subset of all learning completions; cross-referencing
+    confirms that mandatory courses are properly recorded in the employee's overall
+    transcript.

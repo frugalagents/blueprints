@@ -1,0 +1,54 @@
+capability: enroll_employee_in_course
+domain: learning
+method: POST
+path: /learning/enrollments/{employee_id}
+summary: Enroll an employee in a training course with an optional due date
+description: This API creates a new course enrollment record for a specified employee,
+  linking them to a course and optionally setting a completion due date to enforce
+  deadlines. It is the primary action endpoint for assigning training, whether triggered
+  by onboarding workflows, compliance requirements, or manager-initiated development
+  plans. Use it after verifying the employee's existing enrollments and confirming
+  course prerequisites are met to avoid redundant or invalid assignments. It helps
+  organizations ensure employees receive required training on schedule and supports
+  audit trails for regulatory compliance.
+side_effect: write
+preconditions:
+- A valid employee_id must exist in the system, confirmed via search_employees
+- A valid course_id must exist in the catalog, confirmed via list_courses or get_course_details
+- The employee must not already have an active enrollment in the same course
+- Any prerequisite courses identified in get_course_details must be completed by the
+  employee
+- Compliance training status and onboarding tasks have been reviewed to confirm this
+  enrollment is needed
+- Caller has write access to learning enrollment records
+produces:
+- A unique enrollment ID confirming the registration was created
+- An enrollment status indicating whether the assignment is active and pending completion
+- An auditable record linking the employee to the course with a due date for compliance
+  tracking
+use_cases:
+- How do I assign the mandatory GDPR training to all new hires in the EU with a 30-day
+  deadline?
+- "A manager wants to enroll a high-potential employee in a leadership development\
+  \ course \u2014 how is that done?"
+- "An employee's onboarding checklist requires three specific courses to be assigned\
+  \ on day one \u2014 how do I automate that?"
+related:
+- operation_id: get_compliance_training_status
+  reason: Compliance training status must be checked beforehand to confirm which courses
+    are still outstanding and need to be assigned.
+- operation_id: get_onboarding_tasks
+  reason: Onboarding task lists identify which courses must be enrolled as part of
+    a new hire's first-day or first-week requirements.
+- operation_id: get_employee_enrollments
+  reason: Existing enrollments should be reviewed before calling this API to prevent
+    duplicate assignments.
+- operation_id: get_course_details
+  reason: Course prerequisites and delivery details must be confirmed before enrollment
+    to ensure the employee is eligible and prepared.
+- operation_id: list_courses
+  reason: The course catalog provides the valid course_id values that can be used
+    as inputs to this enrollment action.
+- operation_id: search_employees
+  reason: Employee search resolves the correct employee_id before submitting the enrollment
+    request.

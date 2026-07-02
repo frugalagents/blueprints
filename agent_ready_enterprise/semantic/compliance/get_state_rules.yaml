@@ -1,0 +1,56 @@
+capability: get_state_rules
+domain: compliance
+method: GET
+path: /compliance/state-rules/{state}
+summary: Retrieve state-specific labor law, wage, overtime, and tax compliance rules
+  for a given US state
+description: "This API returns the full set of labor and tax compliance rules applicable\
+  \ to a specific US state, including minimum wage rates, overtime thresholds, local\
+  \ tax jurisdictions, and categorized rule definitions. It is a foundational reference\
+  \ API used by other compliance, payroll, and HR workflows to ensure that employee-level\
+  \ decisions \u2014 such as compensation setting, job posting requirements, and training\
+  \ mandates \u2014 conform to the laws of the state where the employee works. It\
+  \ is typically called when onboarding an employee in a new state, evaluating a remote\
+  \ work request, or auditing payroll configurations. It helps answer what legal obligations\
+  \ the organization has for employees working in a given state."
+side_effect: read
+preconditions:
+- A valid US state code or name must be provided
+- Employee profile data (via get_employee_profile) should be available to determine
+  which state's rules are relevant
+- Tax rate data (via get_tax_rates) should be available for full rule context where
+  tax rules are involved
+produces:
+- State minimum wage rate applicable to employees in that jurisdiction
+- Overtime threshold in hours that triggers overtime pay obligations
+- List of local tax jurisdictions within the state that may apply to employees
+- Categorized compliance rules (e.g., leave, classification, wage, safety) with descriptions
+  and rule IDs
+- Reference data used by downstream compliance checks, payroll calculations, and job
+  postings
+use_cases:
+- What are the minimum wage and overtime rules we need to comply with for our employees
+  working in California?
+- "We're hiring in a new state \u2014 what labor law requirements do we need to configure\
+  \ in our payroll and HR systems?"
+- Does this employee's current compensation and classification meet all the legal
+  requirements for their work state?
+related:
+- operation_id: get_employee_profile
+  reason: The employee's work state, obtained from their profile, determines which
+    state's rules to retrieve and apply.
+- operation_id: get_tax_rates
+  reason: State rules include tax jurisdiction information that must be cross-referenced
+    with tax rates to ensure accurate payroll withholding compliance.
+- operation_id: get_compliance_checks
+  reason: Compliance checks consume state rules as their primary reference to evaluate
+    whether an employee meets jurisdiction-specific requirements.
+- operation_id: list_courses
+  reason: State rules may mandate specific training requirements, which are fulfilled
+    through courses in the training catalog.
+- operation_id: create_job_posting
+  reason: Job postings must reflect state-specific requirements such as pay transparency
+    laws and minimum wage disclosures, which are sourced from state rules.
+- operation_id: create_employee_goal
+  reason: State rules may impose constraints on performance management practices (e.g.,
+    documentation requirements) that affect how employee goals are structured.

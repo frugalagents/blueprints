@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Time & Attendance API
+  version: 1.0.0
+  x-domain: time
+paths:
+  /time/entries/{employee_id}:
+    get:
+      operationId: get_time_entries
+      summary: Get time entries including hours worked, overtime, and leave
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: pay_period
+          in: query
+          required: false
+          schema: {type: string}
+      responses:
+        "200":
+          description: Time entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimeEntries"
+  /time/overtime/{employee_id}:
+    get:
+      operationId: get_overtime_hours
+      summary: Get overtime hours and classification for an employee
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: pay_period
+          in: query
+          required: false
+          schema: {type: string}
+      responses:
+        "200":
+          description: Overtime details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OvertimeRecord"
+  /time/leave/{employee_id}:
+    get:
+      operationId: get_leave_balance
+      summary: Get leave balances (PTO, sick, personal)
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Leave balances
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveBalance"
+  /time/schedule/{employee_id}:
+    get:
+      operationId: get_work_schedule
+      summary: Get work schedule and shift assignments
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: Work schedule
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkSchedule"
+components:
+  schemas:
+    TimeEntry:
+      type: object
+      properties:
+        date: {type: string}
+        hours_regular: {type: number}
+        hours_overtime: {type: number}
+        hours_pto: {type: number}
+        shift: {type: string}
+    TimeEntries:
+      type: object
+      properties:
+        employee_id: {type: string}
+        pay_period: {type: string}
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeEntry"
+        total_regular: {type: number}
+        total_overtime: {type: number}
+    OvertimeRecord:
+      type: object
+      properties:
+        employee_id: {type: string}
+        pay_period: {type: string}
+        overtime_hours: {type: number}
+        overtime_rate: {type: number}
+        classification: {type: string}
+    LeaveBalance:
+      type: object
+      properties:
+        employee_id: {type: string}
+        pto_hours: {type: number}
+        sick_hours: {type: number}
+        personal_hours: {type: number}
+    WorkSchedule:
+      type: object
+      properties:
+        employee_id: {type: string}
+        schedule_type: {type: string}
+        hours_per_week: {type: number}
+        shift: {type: string}

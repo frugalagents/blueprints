@@ -1,0 +1,49 @@
+capability: get_time_entries
+domain: time
+method: GET
+path: /time/entries/{employee_id}
+summary: Retrieve detailed time entries including regular hours, overtime, and leave
+  for a given pay period
+description: This API retrieves a complete record of all time entries logged by an
+  employee during a specified pay period, including regular hours worked, overtime
+  hours, and any leave taken. It serves as the foundational time data source that
+  feeds into payroll calculations, deduction breakdowns, and overtime analysis. Use
+  this API when you need to audit an employee's attendance, verify hours before payroll
+  processing, or investigate discrepancies between expected and actual pay. It helps
+  answer questions about how many hours an employee worked, whether their pay reflects
+  their actual time, and what drove any payroll variances in a given period.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- The specified pay_period must be a valid, closed or current pay period
+- Caller must have read access to the employee's time records
+- Time entries must have been submitted or recorded for the given pay period
+produces:
+- A chronological list of all time entries (regular, overtime, leave) for the pay
+  period
+- Aggregated total regular hours worked across the pay period
+- Aggregated total overtime hours worked across the pay period
+- A breakdown of time by entry type (e.g., worked, PTO, sick)
+use_cases:
+- How many hours did this employee actually work during the last pay period, and does
+  that match what they were paid?
+- "Why does this employee's paycheck look different from last period \u2014 did their\
+  \ hours change?"
+- Can I see a full audit trail of this employee's time entries before approving payroll?
+related:
+- operation_id: get_overtime_hours
+  reason: Overtime hours are a subset of time entries; get_overtime_hours provides
+    the classified breakdown of overtime that is summarized within the time entry
+    totals.
+- operation_id: get_paystub
+  reason: The paystub is directly computed from time entries; verifying paystub accuracy
+    requires cross-referencing the hours recorded here.
+- operation_id: get_payroll_adjustments
+  reason: Payroll adjustments are often triggered by corrected or amended time entries,
+    making time entries the upstream source for understanding why an adjustment occurred.
+- operation_id: get_deduction_breakdown
+  reason: Certain deductions (e.g., unpaid leave, benefit proration) are calculated
+    based on hours worked, so time entries provide the basis for deduction amounts.
+- operation_id: get_work_schedule
+  reason: Comparing time entries against the employee's expected work schedule reveals
+    attendance gaps, unplanned overtime, or schedule deviations.

@@ -1,0 +1,30 @@
+project_name: enterprise-api-kg
+graph_file: out/api_graph.json
+semantic_dir: semantic
+index_file: out/semantic_index
+specs_dir: specs/sample_hcm
+api_base_url: http://localhost:8080
+
+bedrock:
+  region: us-east-1
+  planning_model: global.anthropic.claude-sonnet-4-6
+  inference_model: global.anthropic.claude-sonnet-4-6
+  synthesis_model: us.anthropic.claude-haiku-4-5-20251001-v1:0
+  embedding_model: amazon.titan-embed-text-v2:0
+
+retrieval:
+  max_capabilities: 10
+  graph_hops: 1
+
+planning:
+  max_steps: 12
+  allow_mutations: false
+
+demo_defaults:
+  current_period: "2026-05"
+  previous_period: "2026-04"
+  aliases:
+    sarah:
+      employee_id: EMP-1042
+    sarah chen:
+      employee_id: EMP-1042

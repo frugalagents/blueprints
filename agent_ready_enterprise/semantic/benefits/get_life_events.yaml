@@ -1,0 +1,39 @@
+capability: get_life_events
+domain: benefits
+method: GET
+path: /benefits/life-events/{employee_id}
+summary: Retrieve qualifying life events that trigger benefits enrollment windows
+  for an employee
+description: This API retrieves all qualifying life events (such as marriage, divorce,
+  birth of a child, or loss of other coverage) recorded for a specific employee, along
+  with the associated enrollment deadlines and any benefits changes already made in
+  response. It is used when an employee reports a major personal change that entitles
+  them to modify their benefits outside of the standard open enrollment period. HR
+  administrators and benefits coordinators use this to ensure employees act within
+  their Special Enrollment Period and that elections are updated accordingly. It helps
+  answer questions about whether an employee has an open benefits change window and
+  what elections they have already updated.
+side_effect: read
+preconditions:
+- Employee must exist in the HR system with a valid employee_id
+- Caller must have benefits administration or employee self-service access permissions
+- Employee must have at least one life event recorded, or the response will return
+  an empty list
+produces:
+- List of qualifying life events with their types (e.g., marriage, birth, adoption)
+- Date each life event occurred
+- Deadline by which the employee must complete benefits changes
+- Record of which benefits changes have already been submitted in response to each
+  event
+use_cases:
+- Has this employee recently had a qualifying life event that allows them to change
+  their health insurance plan outside of open enrollment?
+- What is the deadline for an employee who just had a baby to add a dependent to their
+  benefits?
+- Did the employee make any benefits changes after their recent marriage, or is their
+  enrollment window still open?
+related:
+- "get_retirement_plan \u2014 retirement contributions may also be reviewed or updated\
+  \ following a qualifying life event such as marriage or the birth of a child"
+- "get_salary_bands \u2014 compensation context may be needed alongside benefits data\
+  \ when preparing a total rewards review triggered by a life event"

@@ -1,0 +1,450 @@
+openapi: 3.0.3
+info:
+  title: Recruiting API
+  version: 1.0.0
+  x-domain: recruiting
+paths:
+  /recruiting/job-postings:
+    get:
+      operationId: list_job_postings
+      summary: List active job postings
+      parameters:
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  postings:
+                    type: string
+                  posting_id:
+                    type: string
+                  title:
+                    type: string
+                  department:
+                    type: string
+                  location:
+                    type: string
+                  status:
+                    type: string
+    post:
+      operationId: create_job_posting
+      summary: Create a new job posting
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                department:
+                  type: string
+                location:
+                  type: string
+                description:
+                  type: string
+                requirements:
+                  type: string
+                salary_range_min:
+                  type: number
+                salary_range_max:
+                  type: number
+      responses:
+        '201':
+          description: Posting created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posting_id:
+                    type: string
+                  status:
+                    type: string
+                  published_date:
+                    type: string
+  /recruiting/applicants/{posting_id}:
+    get:
+      operationId: get_applicants_for_posting
+      summary: Get applicants for a job posting
+      parameters:
+      - name: posting_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stage
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  applicants:
+                    type: string
+                  applicant_id:
+                    type: string
+                  name:
+                    type: string
+                  applied_date:
+                    type: string
+                  stage:
+                    type: string
+                  rating:
+                    type: number
+  /recruiting/interviews:
+    post:
+      operationId: schedule_interview
+      summary: Schedule an interview for an applicant
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                posting_id:
+                  type: string
+                interviewer_ids:
+                  type: string
+                scheduled_date:
+                  type: string
+                interview_type:
+                  type: string
+      responses:
+        '201':
+          description: Interview scheduled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  interview_id:
+                    type: string
+                  status:
+                    type: string
+                  calendar_link:
+                    type: string
+  /recruiting/interviews/{interview_id}/feedback:
+    post:
+      operationId: submit_interview_feedback
+      summary: Submit interview feedback and scorecard
+      parameters:
+      - name: interview_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                recommendation:
+                  type: string
+                strengths:
+                  type: string
+                concerns:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        '201':
+          description: Feedback submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  feedback_id:
+                    type: string
+                  status:
+                    type: string
+  /recruiting/offers:
+    post:
+      operationId: create_offer_letter
+      summary: Generate and send an offer letter
+      x-depends-on:
+      - get_applicants_for_posting
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                posting_id:
+                  type: string
+                salary:
+                  type: number
+                start_date:
+                  type: string
+                signing_bonus:
+                  type: number
+                equity_shares:
+                  type: integer
+      responses:
+        '201':
+          description: Offer created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  offer_id:
+                    type: string
+                  status:
+                    type: string
+                  expiration_date:
+                    type: string
+  /recruiting/offers/{offer_id}:
+    get:
+      operationId: get_offer_status
+      summary: Get offer letter status
+      parameters:
+      - name: offer_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  offer_id:
+                    type: string
+                  applicant_name:
+                    type: string
+                  status:
+                    type: string
+                  salary:
+                    type: number
+                  accepted_date:
+                    type: string
+  /recruiting/onboarding/{employee_id}:
+    get:
+      operationId: get_onboarding_status
+      summary: Get new hire onboarding progress
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employee_id:
+                    type: string
+                  tasks_completed:
+                    type: integer
+                  tasks_total:
+                    type: integer
+                  pending_items:
+                    type: string
+                  start_date:
+                    type: string
+                  buddy_assigned:
+                    type: string
+  /recruiting/onboarding/{employee_id}/tasks:
+    get:
+      operationId: get_onboarding_tasks
+      summary: Get onboarding task checklist
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tasks:
+                    type: string
+                  task_id:
+                    type: string
+                  task_name:
+                    type: string
+                  due_date:
+                    type: string
+                  completed:
+                    type: boolean
+                  assigned_to:
+                    type: string
+  /recruiting/pipeline-metrics:
+    get:
+      operationId: get_recruiting_pipeline_metrics
+      summary: Get recruiting pipeline analytics
+      parameters:
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: period
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  open_positions:
+                    type: integer
+                  total_applicants:
+                    type: integer
+                  avg_time_to_fill:
+                    type: number
+                  offer_acceptance_rate:
+                    type: number
+  /recruiting/applicants/{applicant_id}/background-check:
+    get:
+      operationId: get_background_check_status
+      summary: Get background check status for applicant
+      parameters:
+      - name: applicant_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  applicant_id:
+                    type: string
+                  check_status:
+                    type: string
+                  initiated_date:
+                    type: string
+                  completed_date:
+                    type: string
+                  result:
+                    type: string
+  /recruiting/requisitions:
+    get:
+      operationId: list_hiring_requisitions
+      summary: List open hiring requisitions
+      parameters:
+      - name: department
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requisitions:
+                    type: string
+                  req_id:
+                    type: string
+                  title:
+                    type: string
+                  department:
+                    type: string
+                  hiring_manager:
+                    type: string
+                  status:
+                    type: string
+                  approved_date:
+                    type: string
+  /recruiting/referrals:
+    post:
+      operationId: submit_employee_referral
+      summary: Submit an employee referral
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                referrer_employee_id:
+                  type: string
+                candidate_name:
+                  type: string
+                candidate_email:
+                  type: string
+                posting_id:
+                  type: string
+                relationship:
+                  type: string
+      responses:
+        '201':
+          description: Referral submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  referral_id:
+                    type: string
+                  status:
+                    type: string
+                  bonus_eligible:
+                    type: boolean

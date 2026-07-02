@@ -1,0 +1,55 @@
+{
+  "by_query": [
+    {
+      "match": {"pay_period": "2026-04"},
+      "response": {
+        "employee_id": "EMP-1042",
+        "pay_period": "2026-04",
+        "gross_pay": 3750.0,
+        "net_pay": 2926.0,
+        "earnings": [{"type": "salary", "amount": 3750.0}],
+        "deductions": [
+          {"type": "medical", "amount": 180.0},
+          {"type": "dental", "amount": 22.5},
+          {"type": "401k", "amount": 187.5}
+        ],
+        "taxes": [
+          {"type": "federal", "amount": 270.0},
+          {"type": "CA_state", "amount": 120.0},
+          {"type": "SDI", "amount": 44.0}
+        ]
+      }
+    },
+    {
+      "match": {"pay_period": "2026-05"},
+      "response": {
+        "employee_id": "EMP-1042",
+        "pay_period": "2026-05",
+        "gross_pay": 3750.0,
+        "net_pay": 2586.0,
+        "earnings": [{"type": "salary", "amount": 3750.0}],
+        "deductions": [
+          {"type": "medical", "amount": 340.0},
+          {"type": "dental", "amount": 45.0},
+          {"type": "401k", "amount": 187.5},
+          {"type": "FSA", "amount": 96.0},
+          {"type": "vision", "amount": 12.0}
+        ],
+        "taxes": [
+          {"type": "federal", "amount": 270.0},
+          {"type": "CA_state", "amount": 120.0},
+          {"type": "SDI", "amount": 44.0},
+          {"type": "SF_local", "amount": 15.0}
+        ]
+      }
+    }
+  ],
+  "default": {
+    "employee_id": "EMP-1042",
+    "pay_period": "2026-05",
+    "gross_pay": 3750.0,
+    "net_pay": 2586.0,
+    "deductions": [],
+    "taxes": []
+  }
+}

@@ -1,0 +1,1329 @@
+{
+  "codebase_summary": "This codebase implements an enterprise GenAI Evaluation Framework and Publishing Ethics Compliance Platform for Elsevier. The system addresses two core business needs: (1) It provides a structured way to manage, evaluate, and safely promote AI-powered applications — specifically Retrieval-Augmented Generation (RAG) applications that answer questions using company FAQ documents. It enforces a disciplined prompt version lifecycle where new prompt configurations must be validated against golden test suites before they can be activated in production, preventing untested AI behavior from reaching end users. (2) It implements an Automated Reasoning (AR) compliance system that validates AI-generated publishing ethics assessments against Elsevier's formal publishing policies — covering authorship integrity, conflict of interest disclosure, simultaneous submission prohibition, clinical trial registration, plagiarism, and image manipulation.\n\nThe Eval Framework serves platform engineering and AI operations teams who need to ensure quality and safety of GenAI applications. It provides a golden dataset management system for maintaining curated test cases, a prompt registry for versioning prompt configurations, LLM-as-judge scoring for automated quality assessment, and Bedrock Guardrails integration for content safety, PII detection, and contextual grounding checks. The AR Ethics Advisor serves publishing compliance officers who need to verify that manuscript submissions comply with Elsevier's ethics policies. Together, these systems form a governance layer ensuring that AI outputs are accurate, safe, policy-compliant, and traceable.\n\nThe platform is designed around a promote-through-validation philosophy: no AI configuration change goes live without passing automated evaluation. Test suites are snapshotted for reproducibility, prompt versions carry full audit trails, and compliance assessments are verified through formal automated reasoning rather than relying solely on LLM judgment. This creates a defensible, auditable AI governance framework suitable for regulated publishing environments.",
+  "business_domains": [
+    {
+      "domain_name": "RAG Application Service",
+      "description": "The core AI-powered question-answering service that retrieves relevant FAQ documents and generates natural-language answers using configurable prompts. This is the production application that end users interact with.",
+      "functions": [
+        "handler.py::lambda_handler",
+        "handler.py::load_active_prompt",
+        "handler.py::_default_prompt",
+        "handler.py::load_docs",
+        "handler.py::retrieve",
+        "handler.py::generate"
+      ]
+    },
+    {
+      "domain_name": "RAG Application Deployment",
+      "description": "Infrastructure provisioning and deployment pipeline for the RAG application, including IAM roles, Lambda functions, S3 document storage, and API Gateway endpoints.",
+      "functions": [
+        "deploy.py::create_lambda_role",
+        "deploy.py::upload_faq_docs",
+        "deploy.py::create_lambda_zip",
+        "deploy.py::deploy_lambda",
+        "deploy.py::deploy_api_gateway",
+        "deploy.py::main"
+      ]
+    },
+    {
+      "domain_name": "Prompt Version Management",
+      "description": "Manages the lifecycle of prompt configurations — creation, validation, activation, and version tracking. Enforces the policy that prompts must be validated before activation, supporting safe iteration on AI behavior.",
+      "functions": [
+        "prompt_registry.py::_next_version",
+        "prompt_registry.py::create_version",
+        "prompt_registry.py::activate_version",
+        "prompt_registry.py::mark_validated",
+        "prompt_registry.py::list_versions",
+        "prompt_registry.py::get_version",
+        "prompt_registry.py::get_active_version",
+        "prompt_registry.py::seed_default_version"
+      ]
+    },
+    {
+      "domain_name": "Application Registry",
+      "description": "Centralized registry of all GenAI applications under governance, tracking their type, endpoints, model providers, ownership, and operational status.",
+      "functions": [
+        "app_registry.py::register_app",
+        "app_registry.py::list_apps",
+        "app_registry.py::get_app",
+        "app_registry.py::deactivate_app"
+      ]
+    },
+    {
+      "domain_name": "Golden Dataset Management",
+      "description": "Manages curated test suites used for evaluating AI application quality. Supports test case CRUD, categorization by criticality and category, snapshotting for reproducible evaluation runs, and soft-delete archival to preserve audit history.",
+      "functions": [
+        "dataset_manager.py::add_test_case",
+        "dataset_manager.py::update_test_case",
+        "dataset_manager.py::archive_test_case",
+        "dataset_manager.py::get_test_case",
+        "dataset_manager.py::list_test_cases",
+        "dataset_manager.py::snapshot_suite",
+        "dataset_manager.py::list_snapshots",
+        "dataset_manager.py::load_snapshot",
+        "dataset_manager.py::upload_test_suite"
+      ]
+    },
+    {
+      "domain_name": "Evaluation Engine",
+      "description": "Automated quality and safety evaluation of AI responses. Includes LLM-as-judge scoring across multiple dimensions and Bedrock Guardrails checks for content safety, PII detection, and contextual grounding (RAG faithfulness).",
+      "functions": [
+        "llm_judge.py::run_llm_judge",
+        "guardrails.py::run_guardrails",
+        "guardrails.py::_parse_assessments"
+      ]
+    },
+    {
+      "domain_name": "Publishing Ethics Compliance (AR)",
+      "description": "Automated Reasoning-based compliance validation for publishing ethics. Generates structured compliance assessments of manuscript submissions and verifies them against formal policy rules covering authorship, disclosure, simultaneous submission, clinical trials, plagiarism, and data integrity.",
+      "functions": [
+        "ar_validator.py::generate_assessment",
+        "ar_validator.py::check_compliance",
+        "ar_poc/ui/app.py::ask_claude",
+        "ar_poc/ui/app.py::ar_check",
+        "ar_poc/ui/app.py::rule_label",
+        "run_demo.py::run_all"
+      ]
+    },
+    {
+      "domain_name": "AR Policy Lifecycle",
+      "description": "End-to-end management of Automated Reasoning policies — creating policies, ingesting ethics documents to extract formal rules, reviewing fidelity scores, and attaching policies to guardrails for runtime enforcement.",
+      "functions": [
+        "create_policy.py::get_existing_policy_arn",
+        "create_policy.py::create_policy",
+        "create_policy.py::save_policy_arn",
+        "create_policy.py::main",
+        "build_policy.py::load_policy_arn",
+        "build_policy.py::get_latest_workflow_id",
+        "build_policy.py::start_build",
+        "build_policy.py::poll_until_complete",
+        "build_policy.py::main",
+        "review_policy.py::load_policy_arn",
+        "review_policy.py::review_policy",
+        "review_policy.py::main",
+        "attach_to_guardrail.py::load_policy_arn",
+        "attach_to_guardrail.py::get_existing_guardrail",
+        "attach_to_guardrail.py::create_guardrail",
+        "attach_to_guardrail.py::save_guardrail_id",
+        "attach_to_guardrail.py::main"
+      ]
+    },
+    {
+      "domain_name": "Platform Infrastructure",
+      "description": "Provisioning of shared infrastructure resources — S3 buckets, DynamoDB tables, guardrails — that underpin the evaluation framework and application registry.",
+      "functions": [
+        "setup_infra.py::create_s3_bucket",
+        "setup_infra.py::create_app_registry_table",
+        "setup_infra.py::create_test_case_metadata_table",
+        "setup_infra.py::create_prompt_registry_table",
+        "setup_infra.py::main",
+        "setup_guardrail.py::create_guardrail",
+        "setup_guardrail.py::save_guardrail_id",
+        "setup_guardrail.py::main",
+        "bootstrap.py::main"
+      ]
+    },
+    {
+      "domain_name": "User Interface",
+      "description": "Streamlit-based web UI enabling platform users to browse registered apps, manage test suites, run evaluations, configure prompts, and interact with the AR Ethics Advisor — all through a unified navigation experience.",
+      "functions": [
+        "ui/app.py::get_clients",
+        "ui/app.py::load_apps",
+        "ui/app.py::load_test_cases",
+        "ui/app.py::load_faq_docs",
+        "ui/app.py::invoke_app",
+        "ui/app.py::invoke_app_with_override",
+        "ui/app.py::go_to_eval",
+        "ui/app.py::go_to_configure",
+        "ui/app.py::go_home",
+        "ui/app.py::render_topnav",
+        "ui/app.py::ar_ask_claude",
+        "ui/app.py::ar_check",
+        "ar_poc/ui/app.py::get_clients"
+      ]
+    },
+    {
+      "domain_name": "Presentation Generation",
+      "description": "Utility for generating architecture presentation slides, used for documentation and stakeholder communication.",
+      "functions": [
+        "gen_arch_pptx.py::add_box",
+        "gen_arch_pptx.py::add_table_row_text"
+      ]
+    }
+  ],
+  "function_classifications": [
+    {
+      "qualified_name": "deploy.py::create_lambda_role",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Provisions the security identity (IAM role) that allows the RAG application to access AI models, document storage, and prompt configuration.",
+      "business_domain": "RAG Application Deployment"
+    },
+    {
+      "qualified_name": "deploy.py::upload_faq_docs",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Publishes the company FAQ knowledge base to cloud storage so the RAG application can retrieve it at runtime to answer customer questions.",
+      "business_domain": "RAG Application Deployment"
+    },
+    {
+      "qualified_name": "deploy.py::create_lambda_zip",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Packages the RAG application code into a deployable artifact.",
+      "business_domain": "RAG Application Deployment"
+    },
+    {
+      "qualified_name": "deploy.py::deploy_lambda",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Deploys or updates the RAG application as a serverless function, making the question-answering service available for use.",
+      "business_domain": "RAG Application Deployment"
+    },
+    {
+      "qualified_name": "deploy.py::deploy_api_gateway",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Creates the public API endpoint through which users and evaluation systems can send questions to the RAG application.",
+      "business_domain": "RAG Application Deployment"
+    },
+    {
+      "qualified_name": "deploy.py::main",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.8,
+      "business_summary": "Orchestrates the complete deployment of the RAG application: provisions security, uploads knowledge base, deploys the service, and exposes the API endpoint.",
+      "business_domain": "RAG Application Deployment"
+    },
+    {
+      "qualified_name": "handler.py::load_active_prompt",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.9,
+      "business_summary": "Loads the currently active prompt configuration from the registry. If no active prompt is found at any step (no pointer, no version record, no active version), it falls back to safe defaults — ensuring the application always has a working configuration.",
+      "business_domain": "RAG Application Service"
+    },
+    {
+      "qualified_name": "handler.py::_default_prompt",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.85,
+      "business_summary": "Defines the fallback prompt configuration used when no active prompt version exists in the registry, ensuring the RAG app can always serve responses.",
+      "business_domain": "RAG Application Service"
+    },
+    {
+      "qualified_name": "handler.py::load_docs",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.95,
+      "business_summary": "Retrieves the company FAQ knowledge base from cloud storage for use in answering queries.",
+      "business_domain": "RAG Application Service"
+    },
+    {
+      "qualified_name": "handler.py::retrieve",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.9,
+      "business_summary": "Performs keyword-based document retrieval: scores each FAQ document by how many query terms appear in it, ranks by relevance, and returns the top-K most relevant documents. Only documents with at least one matching term are returned.",
+      "business_domain": "RAG Application Service"
+    },
+    {
+      "qualified_name": "handler.py::generate",
+      "classification": "INTEGRATION",
+      "confidence": 0.85,
+      "business_summary": "Generates a natural-language answer by sending the user's query and retrieved context documents to the AI model (Bedrock Claude), using the active prompt configuration's system prompt, context template, temperature, and token limits.",
+      "business_domain": "RAG Application Service"
+    },
+    {
+      "qualified_name": "handler.py::lambda_handler",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "The main RAG application entry point. Validates the incoming query, determines the prompt configuration (active version or test override), retrieves relevant documents, generates an answer, and returns the response with metadata about which documents were used and which prompt version was applied.",
+      "business_domain": "RAG Application Service"
+    },
+    {
+      "qualified_name": "run_demo.py::run_all",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Executes all publishing ethics compliance scenarios end-to-end: generates an LLM assessment for each scenario, runs AR compliance checks, compares actual verdicts against expected outcomes, and produces a summary scorecard showing pass/fail rates.",
+      "business_domain": "Publishing Ethics Compliance (AR)"
+    },
+    {
+      "qualified_name": "review_policy.py::load_policy_arn",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Loads the AR policy identifier from local configuration, failing fast if the policy hasn't been created yet.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "review_policy.py::review_policy",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Reviews an AR policy's fidelity report — displays coverage and accuracy scores, lists extracted variables, custom types, rules, and per-rule fidelity details. Warns when coverage or accuracy scores fall below the 0.7 threshold.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "review_policy.py::main",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.8,
+      "business_summary": "Orchestrates the policy review step: loads the policy ARN and displays the full fidelity report.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "create_policy.py::get_existing_policy_arn",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Checks whether an AR policy with the expected name already exists to prevent duplicate creation.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "create_policy.py::create_policy",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Creates a new Automated Reasoning policy for validating publishing ethics compliance, or returns the existing one if already created. The policy is described as covering authorship, disclosure, simultaneous submission, and related ethics rules.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "create_policy.py::save_policy_arn",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Persists the AR policy identifier to local configuration for use by subsequent pipeline steps.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "create_policy.py::main",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.8,
+      "business_summary": "Orchestrates Step 1 of the AR policy setup: creates the policy and saves its identifier.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "attach_to_guardrail.py::load_policy_arn",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Loads the AR policy identifier from local configuration for guardrail attachment.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "attach_to_guardrail.py::get_existing_guardrail",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Checks whether the AR guardrail already exists to prevent duplicate creation.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "attach_to_guardrail.py::create_guardrail",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Creates a Bedrock guardrail that enforces the AR publishing ethics policy at runtime, enabling automated compliance verification of LLM outputs.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "attach_to_guardrail.py::save_guardrail_id",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Persists the guardrail identifier and version to local configuration for use by compliance checking components.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "attach_to_guardrail.py::main",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.8,
+      "business_summary": "Orchestrates Step 4 of the AR policy setup: attaches the AR policy to a guardrail and saves the guardrail ID.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "build_policy.py::load_policy_arn",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Loads the AR policy identifier from local configuration for the build step.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "build_policy.py::get_latest_workflow_id",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Retrieves the latest policy build workflow ID, used for resuming an in-progress build.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "build_policy.py::start_build",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "Initiates the AR policy build by uploading the Elsevier publishing ethics document (TXT or PDF) to extract formal rules. Handles the case where a build is already in progress by resuming the existing workflow.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "build_policy.py::poll_until_complete",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.8,
+      "business_summary": "Monitors the policy build workflow, waiting until rule extraction completes or fails.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "build_policy.py::main",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.8,
+      "business_summary": "Orchestrates Step 2 of the AR policy setup: starts the document-to-rules build process and reports the number of extracted variables, rules, and types.",
+      "business_domain": "AR Policy Lifecycle"
+    },
+    {
+      "qualified_name": "ar_poc/ui/app.py::get_clients",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Initializes and caches the AWS Bedrock client for the AR Ethics Advisor UI.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ar_poc/ui/app.py::ask_claude",
+      "classification": "INTEGRATION",
+      "confidence": 0.85,
+      "business_summary": "Sends a publishing ethics question to the Claude AI model and returns its compliance assessment response.",
+      "business_domain": "Publishing Ethics Compliance (AR)"
+    },
+    {
+      "qualified_name": "ar_poc/ui/app.py::ar_check",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.9,
+      "business_summary": "Applies the AR guardrail to an LLM-generated compliance assessment, classifying findings as invalid (failed rules with reasons), valid (passed rules), or ambiguous. Returns a PASS/FAIL verdict based on whether any rules were violated.",
+      "business_domain": "Publishing Ethics Compliance (AR)"
+    },
+    {
+      "qualified_name": "ar_poc/ui/app.py::rule_label",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.8,
+      "business_summary": "Maps an AR rule identifier to its human-readable short label for display purposes.",
+      "business_domain": "Publishing Ethics Compliance (AR)"
+    },
+    {
+      "qualified_name": "ar_validator.py::generate_assessment",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "Generates a structured publishing ethics compliance assessment using Claude AI. The assessment covers 11 specific compliance dimensions: simultaneous submission, authorship contributions, authorship changes, conflict of interest existence and declaration, external funding existence and declaration, clinical trial status and registration, plagiarism, and image manipulation.",
+      "business_domain": "Publishing Ethics Compliance (AR)"
+    },
+    {
+      "qualified_name": "ar_validator.py::check_compliance",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.95,
+      "business_summary": "Runs formal AR guardrail verification on an LLM compliance assessment. Categorizes findings into failed rules (with contradiction reasons), passed rules, ambiguous findings, and unresolvable findings. Determines the final verdict: FAIL if any rules are violated, UNABLE_TO_DETERMINE if only unresolvable findings exist, or PASS if all rules are satisfied.",
+      "business_domain": "Publishing Ethics Compliance (AR)"
+    },
+    {
+      "qualified_name": "guardrails.py::run_guardrails",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "Runs Bedrock Guardrails evaluation on an AI response, checking content safety, PII exposure, and contextual grounding (whether the answer is faithful to the retrieved context). For RAG applications, context is passed as a grounding source to verify factual faithfulness.",
+      "business_domain": "Evaluation Engine"
+    },
+    {
+      "qualified_name": "guardrails.py::_parse_assessments",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.85,
+      "business_summary": "Parses guardrail assessment results into structured check results across three categories: content policy violations (hate, violence, etc.), PII detections (email, phone, SSN, credit cards), and contextual grounding scores (grounding and relevance vs. threshold).",
+      "business_domain": "Evaluation Engine"
+    },
+    {
+      "qualified_name": "llm_judge.py::run_llm_judge",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "Evaluates an AI response's quality using an LLM-as-judge approach. Sends the query, expected output, retrieved context, and actual answer to a judge model that scores across multiple dimensions on a 1-5 scale. Uses temperature 0.0 for deterministic scoring. Context is capped at 3000 characters.",
+      "business_domain": "Evaluation Engine"
+    },
+    {
+      "qualified_name": "dataset_manager.py::add_test_case",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Creates a new golden dataset test case with full metadata: input query, expected output, ground truth context, evaluation criteria, category, criticality level, tags, and audit information (creator, timestamp, version).",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::update_test_case",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Updates an existing test case's fields while automatically recording the updater, timestamp, and change reason for audit purposes.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::archive_test_case",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.9,
+      "business_summary": "Soft-deletes a test case by marking it as archived rather than physically deleting it, preserving audit history and preventing data loss.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::get_test_case",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.95,
+      "business_summary": "Retrieves a single test case by app name and test case ID.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::list_test_cases",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Lists test cases for an application with filtering by status (active/archived), criticality level, and category. Defaults to showing only active test cases.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::snapshot_suite",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "Creates a point-in-time snapshot of the active test suite to S3, producing an immutable record for reproducible evaluation runs. Snapshots are what eval runs use — not the live DynamoDB state — ensuring evaluation consistency even if test cases are modified later.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::list_snapshots",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Lists all historical test suite snapshots for an application, ordered newest first.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::load_snapshot",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Loads test cases from a previously created S3 snapshot for use in an evaluation run.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "dataset_manager.py::upload_test_suite",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Bulk uploads a set of test cases to both DynamoDB (for management) and S3 (for legacy compatibility), used during initial bootstrap of the evaluation framework.",
+      "business_domain": "Golden Dataset Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::_next_version",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.9,
+      "business_summary": "Calculates the next sequential version number for an application's prompt versions (v1, v2, v3...), ensuring monotonically increasing version identifiers.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::create_version",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "Creates a new prompt version with the given system prompt, context template, temperature, max tokens, and model ID. The version is created in an un-validated, inactive state — it cannot be activated until it passes evaluation.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::activate_version",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.95,
+      "business_summary": "Activates a prompt version, making it the live configuration used by the application. Enforces the critical business rule that only validated prompt versions can be activated. Deactivates the previous active version and updates the active pointer atomically.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::mark_validated",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.9,
+      "business_summary": "Records that a prompt version has passed evaluation, storing the validation timestamp and score. This is a prerequisite for activation.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::list_versions",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Lists all prompt versions for an application, ordered newest first, excluding the active pointer record.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::get_version",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.95,
+      "business_summary": "Retrieves a specific prompt version by app name and version identifier.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::get_active_version",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Retrieves the currently active prompt version by following the active pointer in the registry.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "prompt_registry.py::seed_default_version",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Seeds the initial default prompt version for a new application if no versions exist. Auto-validates and activates it with a baseline score of 0.0, bootstrapping the prompt lifecycle.",
+      "business_domain": "Prompt Version Management"
+    },
+    {
+      "qualified_name": "app_registry.py::register_app",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Registers a new GenAI application in the governance framework, recording its type (llm/rag/agentic), endpoint, model provider, model ID, owner, and environment.",
+      "business_domain": "Application Registry"
+    },
+    {
+      "qualified_name": "app_registry.py::list_apps",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Lists all registered GenAI applications with their type, model provider, and status.",
+      "business_domain": "Application Registry"
+    },
+    {
+      "qualified_name": "app_registry.py::get_app",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.95,
+      "business_summary": "Retrieves a single registered application by name.",
+      "business_domain": "Application Registry"
+    },
+    {
+      "qualified_name": "app_registry.py::deactivate_app",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.85,
+      "business_summary": "Marks an application as inactive (soft deactivation), removing it from active governance without deleting its records.",
+      "business_domain": "Application Registry"
+    },
+    {
+      "qualified_name": "bootstrap.py::main",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Orchestrates the complete bootstrap of the GenAI Eval Framework: creates infrastructure, deploys the RAG app, registers it in the app registry, seeds a default prompt version, and uploads the golden test suite.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_guardrail.py::create_guardrail",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.85,
+      "business_summary": "Creates the evaluation framework's Bedrock Guardrail with content safety filters (hate, violence, sexual, misconduct, prompt attacks), PII detection (email, phone, SSN, credit cards), and contextual grounding checks (grounding threshold 0.7, relevance threshold 0.7) for RAG faithfulness verification.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_guardrail.py::save_guardrail_id",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.85,
+      "business_summary": "Persists the guardrail identifier and version to local configuration for use by the evaluation engine.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_guardrail.py::main",
+      "classification": "BUSINESS_PROCESS",
+      "confidence": 0.8,
+      "business_summary": "Orchestrates guardrail creation and configuration persistence.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_infra.py::create_s3_bucket",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Creates and version-enables the S3 bucket used to store golden datasets and test suite snapshots.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_infra.py::create_app_registry_table",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Creates the DynamoDB table for the application registry.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_infra.py::create_test_case_metadata_table",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Creates the DynamoDB table for test case metadata, keyed by app name and test case ID.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_infra.py::create_prompt_registry_table",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Creates the DynamoDB table for the prompt registry, keyed by app name and version.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "setup_infra.py::main",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.9,
+      "business_summary": "Orchestrates creation of all infrastructure resources: S3 bucket, app registry table, test case table, and prompt registry table.",
+      "business_domain": "Platform Infrastructure"
+    },
+    {
+      "qualified_name": "gen_arch_pptx.py::add_box",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Utility function for adding formatted boxes with text to presentation slides.",
+      "business_domain": "Presentation Generation"
+    },
+    {
+      "qualified_name": "gen_arch_pptx.py::add_table_row_text",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Utility function for populating table rows with formatted text in presentation slides.",
+      "business_domain": "Presentation Generation"
+    },
+    {
+      "qualified_name": "ui/app.py::get_clients",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.95,
+      "business_summary": "Initializes and caches AWS DynamoDB and S3 clients for the Streamlit UI.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::load_apps",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Loads all active registered applications for display in the UI dashboard.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::load_test_cases",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Loads test cases from S3 for a specific app and version, enabling the UI to display and run evaluations.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::load_faq_docs",
+      "classification": "DATA_ACCESS",
+      "confidence": 0.9,
+      "business_summary": "Loads FAQ documents from S3 for display as context in the evaluation UI.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::invoke_app",
+      "classification": "INTEGRATION",
+      "confidence": 0.9,
+      "business_summary": "Invokes a registered GenAI application's endpoint with a query and measures response latency, returning success/failure status and response data.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::invoke_app_with_override",
+      "classification": "INTEGRATION",
+      "confidence": 0.9,
+      "business_summary": "Invokes a registered application with a prompt override, enabling testing of new prompt versions without activating them in production. This supports the validate-before-promote workflow.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::go_to_eval",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.9,
+      "business_summary": "Navigates the UI to the evaluation page for a selected application.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::go_to_configure",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.9,
+      "business_summary": "Navigates the UI to the configuration page for a selected application.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::go_home",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.9,
+      "business_summary": "Navigates the UI back to the app registry home page.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::render_topnav",
+      "classification": "TECHNICAL_INFRASTRUCTURE",
+      "confidence": 0.9,
+      "business_summary": "Renders the top navigation bar allowing users to switch between the Eval Framework and AR Ethics Advisor sections.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::ar_ask_claude",
+      "classification": "INTEGRATION",
+      "confidence": 0.85,
+      "business_summary": "Sends a publishing ethics question to Claude AI for compliance assessment via the main UI's AR section.",
+      "business_domain": "User Interface"
+    },
+    {
+      "qualified_name": "ui/app.py::ar_check",
+      "classification": "BUSINESS_RULE",
+      "confidence": 0.9,
+      "business_summary": "Applies AR guardrail compliance checking from the main UI, classifying findings as invalid, valid, or ambiguous and returning a PASS/FAIL verdict.",
+      "business_domain": "User Interface"
+    }
+  ],
+  "business_rules": [
+    {
+      "rule_name": "Prompt Activation Requires Validation",
+      "domain": "Prompt Version Management",
+      "given": "A prompt version exists for an application",
+      "when": "An operator attempts to activate the prompt version",
+      "then": "The activation MUST be rejected unless the version has been marked as validated; if validated, the version becomes active, the previous active version is deactivated, and the active pointer is updated",
+      "source_function": "prompt_registry.py::activate_version",
+      "source_file": "eval_framework/registry/prompt_registry.py",
+      "source_lines": "1-35",
+      "confidence": 0.98,
+      "business_impact": "If this rule is violated, untested or underperforming prompt configurations could reach production, causing degraded answer quality, hallucinations, or policy violations in customer-facing AI responses."
+    },
+    {
+      "rule_name": "Query Field Required for RAG Requests",
+      "domain": "RAG Application Service",
+      "given": "A request is received by the RAG application",
+      "when": "The request body does not contain a 'query' field or it is empty",
+      "then": "The application MUST return HTTP 400 with error message 'Missing query field' and MUST NOT invoke the AI model",
+      "source_function": "handler.py::lambda_handler",
+      "source_file": "app/rag_app/handler.py",
+      "source_lines": "8-13",
+      "confidence": 0.95,
+      "business_impact": "Without this validation, empty queries would waste AI model invocations and return nonsensical responses, degrading user experience and incurring unnecessary costs."
+    },
+    {
+      "rule_name": "Prompt Override for Evaluation Testing",
+      "domain": "RAG Application Service",
+      "given": "A request is received by the RAG application with a '_prompt_override' field",
+      "when": "The eval framework sends a request to test a candidate prompt version",
+      "then": "The application MUST use the override prompt configuration instead of the active production prompt, enabling safe testing without activation",
+      "source_function": "handler.py::lambda_handler",
+      "source_file": "app/rag_app/handler.py",
+      "source_lines": "15-29",
+      "confidence": 0.95,
+      "business_impact": "Without prompt override capability, every prompt change would need to be activated in production before it can be evaluated, violating the validate-before-promote principle."
+    },
+    {
+      "rule_name": "Fallback to Default Prompt on Registry Failure",
+      "domain": "RAG Application Service",
+      "given": "The RAG application attempts to load the active prompt configuration",
+      "when": "The prompt registry is unavailable, has no active pointer, or the referenced version does not exist",
+      "then": "The application MUST fall back to the hardcoded default prompt configuration and continue serving responses rather than failing",
+      "source_function": "handler.py::load_active_prompt",
+      "source_file": "app/rag_app/handler.py",
+      "source_lines": "1-25",
+      "confidence": 0.95,
+      "business_impact": "Without graceful fallback, a registry outage or misconfiguration would cause complete application downtime instead of degraded but functional service."
+    },
+    {
+      "rule_name": "Document Retrieval Minimum Relevance Threshold",
+      "domain": "RAG Application Service",
+      "given": "A user query is being processed by the RAG application",
+      "when": "The retrieval system scores FAQ documents against the query",
+      "then": "Only documents with a relevance score greater than zero (at least one matching term) MUST be returned; documents with no term overlap are excluded regardless of the top-K limit",
+      "source_function": "handler.py::retrieve",
+      "source_file": "app/rag_app/handler.py",
+      "source_lines": "1-9",
+      "confidence": 0.9,
+      "business_impact": "Including irrelevant documents in the context would cause the AI model to generate answers based on unrelated information, leading to inaccurate or confusing responses."
+    },
+    {
+      "rule_name": "Top-K Retrieval Limit",
+      "domain": "RAG Application Service",
+      "given": "A user query is being processed by the RAG application",
+      "when": "Multiple FAQ documents score above zero relevance",
+      "then": "At most 3 (top_k) documents MUST be returned, ranked by descending relevance score",
+      "source_function": "handler.py::retrieve",
+      "source_file": "app/rag_app/handler.py",
+      "source_lines": "1-9",
+      "confidence": 0.9,
+      "business_impact": "Returning too many documents would exceed AI model context limits or dilute the relevant information, degrading answer quality and increasing costs."
+    },
+    {
+      "rule_name": "Test Case Soft Delete Policy",
+      "domain": "Golden Dataset Management",
+      "given": "A test case exists in the golden dataset",
+      "when": "An operator requests to remove the test case",
+      "then": "The test case MUST be marked as 'archived' (soft delete) and MUST NEVER be physically deleted, preserving full audit history",
+      "source_function": "dataset_manager.py::archive_test_case",
+      "source_file": "eval_framework/golden_dataset/dataset_manager.py",
+      "source_lines": "1-7",
+      "confidence": 0.95,
+      "business_impact": "Hard deletion of test cases would destroy audit trails, making it impossible to understand historical evaluation results or reproduce past evaluation runs."
+    },
+    {
+      "rule_name": "Default Filter to Active Test Cases",
+      "domain": "Golden Dataset Management",
+      "given": "An operator or system queries test cases for an application",
+      "when": "No explicit status filter is specified",
+      "then": "Only test cases with status 'active' MUST be returned; archived cases are excluded by default",
+      "source_function": "dataset_manager.py::list_test_cases",
+      "source_file": "eval_framework/golden_dataset/dataset_manager.py",
+      "source_lines": "1-14",
+      "confidence": 0.9,
+      "business_impact": "Including archived test cases in evaluation runs would produce inaccurate quality metrics based on outdated or invalidated test expectations."
+    },
+    {
+      "rule_name": "Snapshot Required for Evaluation Runs",
+      "domain": "Golden Dataset Management",
+      "given": "An evaluation run needs to be executed against a test suite",
+      "when": "The evaluation system requests test cases",
+      "then": "A point-in-time snapshot MUST be created from active test cases and stored immutably in S3; the evaluation run MUST use the snapshot, NOT the live DynamoDB state",
+      "source_function": "dataset_manager.py::snapshot_suite",
+      "source_file": "eval_framework/golden_dataset/dataset_manager.py",
+      "source_lines": "1-45",
+      "confidence": 0.9,
+      "business_impact": "Without snapshots, test cases modified during an evaluation run would produce inconsistent results, making evaluation outcomes unreproducible and unreliable."
+    },
+    {
+      "rule_name": "Non-Empty Suite Required for Snapshot",
+      "domain": "Golden Dataset Management",
+      "given": "A snapshot creation is requested for an application",
+      "when": "The application has no active test cases",
+      "then": "The snapshot creation MUST raise a ValueError and MUST NOT create an empty snapshot",
+      "source_function": "dataset_manager.py::snapshot_suite",
+      "source_file": "eval_framework/golden_dataset/dataset_manager.py",
+      "source_lines": "9-10",
+      "confidence": 0.9,
+      "business_impact": "Empty snapshots would cause evaluation runs to pass vacuously with no test cases executed, creating a false sense of quality assurance."
+    },
+    {
+      "rule_name": "Sequential Version Numbering",
+      "domain": "Prompt Version Management",
+      "given": "A new prompt version is being created for an application",
+      "when": "The system calculates the next version identifier",
+      "then": "The version MUST be assigned the next sequential number (v1, v2, v3...) based on the highest existing version number",
+      "source_function": "prompt_registry.py::_next_version",
+      "source_file": "eval_framework/registry/prompt_registry.py",
+      "source_lines": "1-12",
+      "confidence": 0.9,
+      "business_impact": "Non-sequential version numbers would create confusion in the audit trail and make it difficult to understand the chronological order of prompt changes."
+    },
+    {
+      "rule_name": "New Prompt Versions Created Inactive and Unvalidated",
+      "domain": "Prompt Version Management",
+      "given": "A new prompt version is being created",
+      "when": "The create_version function is called",
+      "then": "The new version MUST have validated=False and is_active=False, ensuring it cannot serve production traffic until explicitly validated and activated",
+      "source_function": "prompt_registry.py::create_version",
+      "source_file": "eval_framework/registry/prompt_registry.py",
+      "source_lines": "1-27",
+      "confidence": 0.95,
+      "business_impact": "If new versions were created in an active or validated state, untested prompts could immediately affect production responses."
+    },
+    {
+      "rule_name": "Single Active Version per Application",
+      "domain": "Prompt Version Management",
+      "given": "An application has an active prompt version",
+      "when": "A different version is activated",
+      "then": "The previously active version MUST be deactivated (is_active=False) and the active pointer MUST be updated to point to the new version, ensuring exactly one active version at any time",
+      "source_function": "prompt_registry.py::activate_version",
+      "source_file": "eval_framework/registry/prompt_registry.py",
+      "source_lines": "12-30",
+      "confidence": 0.95,
+      "business_impact": "Multiple active versions would cause non-deterministic application behavior where different requests could be served by different prompt configurations."
+    },
+    {
+      "rule_name": "Default Version Auto-Validated for Bootstrap",
+      "domain": "Prompt Version Management",
+      "given": "An application has no prompt versions and is being bootstrapped",
+      "when": "The seed_default_version function is called",
+      "then": "A default v1 MUST be created, auto-validated with score 0.0, and immediately activated so the application can start serving",
+      "source_function": "prompt_registry.py::seed_default_version",
+      "source_file": "eval_framework/registry/prompt_registry.py",
+      "source_lines": "1-15",
+      "confidence": 0.85,
+      "business_impact": "Without auto-seeding, new applications would have no active prompt and could not serve any responses until a full validation cycle completes."
+    },
+    {
+      "rule_name": "AR Compliance Verdict Determination",
+      "domain": "Publishing Ethics Compliance (AR)",
+      "given": "An LLM-generated compliance assessment has been checked against the AR guardrail",
+      "when": "The system determines the final compliance verdict",
+      "then": "The verdict MUST be FAIL if any rules are violated (contradicted), UNABLE_TO_DETERMINE if only unresolvable findings exist and no rules passed, or PASS if rules are satisfied with no violations",
+      "source_function": "ar_validator.py::check_compliance",
+      "source_file": "ar_poc/validator/ar_validator.py",
+      "source_lines": "60-68",
+      "confidence": 0.95,
+      "business_impact": "Incorrect verdict determination could allow non-compliant manuscripts to be published or block compliant submissions, causing either ethical violations or unnecessary publication delays."
+    },
+    {
+      "rule_name": "AR Guardrail ID Required for Compliance Check",
+      "domain": "Publishing Ethics Compliance (AR)",
+      "given": "A compliance check is requested",
+      "when": "The AR_GUARDRAIL_ID is not configured",
+      "then": "The system MUST raise a RuntimeError indicating that the guardrail setup step has not been completed, preventing silent failures",
+      "source_function": "ar_validator.py::check_compliance",
+      "source_file": "ar_poc/validator/ar_validator.py",
+      "source_lines": "15-18",
+      "confidence": 0.95,
+      "business_impact": "Without this check, compliance verification would silently fail, allowing manuscripts through without any ethics review."
+    },
+    {
+      "rule_name": "Compliance Assessment Must Cover All 11 Ethics Dimensions",
+      "domain": "Publishing Ethics Compliance (AR)",
+      "given": "A manuscript submission description is provided for compliance assessment",
+      "when": "The LLM generates a compliance assessment",
+      "then": "The assessment MUST address all 11 compliance dimensions: simultaneous submission, authorship contributions, authorship changes after acceptance, conflict of interest existence, conflict of interest declaration, external funding existence, funding declaration, clinical trial status, trial registration, plagiarism, and image manipulation",
+      "source_function": "ar_validator.py::generate_assessment",
+      "source_file": "ar_poc/validator/ar_validator.py",
+      "source_lines": "3-30",
+      "confidence": 0.9,
+      "business_impact": "Missing any compliance dimension could allow specific types of ethics violations to go undetected, undermining the integrity of the compliance process."
+    },
+    {
+      "rule_name": "Demo Verdict Matching Tolerance for Expected Failures",
+      "domain": "Publishing Ethics Compliance (AR)",
+      "given": "A compliance demo scenario has an expected verdict of FAIL",
+      "when": "The AR system returns a verdict",
+      "then": "Both FAIL and UNABLE_TO_DETERMINE verdicts MUST be considered a match for expected FAIL scenarios, providing tolerance for AR ambiguity",
+      "source_function": "run_demo.py::run_all",
+      "source_file": "ar_poc/demo/run_demo.py",
+      "source_lines": "27-29",
+      "confidence": 0.85,
+      "business_impact": "Without this tolerance, ambiguous-but-suspicious findings would be treated as test failures, misrepresenting the system's ability to catch non-compliant submissions."
+    },
+    {
+      "rule_name": "Policy Fidelity Score Warning Threshold",
+      "domain": "AR Policy Lifecycle",
+      "given": "An AR policy has been built from an ethics document",
+      "when": "The fidelity report's coverage or accuracy score is below 0.7",
+      "then": "The system MUST display a WARNING indicating that the policy may be insufficient and suggesting corrective actions (add more detail to the PDF for low coverage, review rule justifications for low accuracy)",
+      "source_function": "review_policy.py::review_policy",
+      "source_file": "ar_poc/policy/review_policy.py",
+      "source_lines": "18-21",
+      "confidence": 0.9,
+      "business_impact": "Using a low-fidelity policy without warning could lead to false compliance verdicts — either failing compliant submissions or passing non-compliant ones."
+    },
+    {
+      "rule_name": "Idempotent Policy and Guardrail Creation",
+      "domain": "AR Policy Lifecycle",
+      "given": "An AR policy or guardrail with the expected name already exists",
+      "when": "The creation script is run again",
+      "then": "The system MUST return the existing resource's identifier without creating a duplicate, ensuring idempotent and safe re-runs",
+      "source_function": "create_policy.py::create_policy",
+      "source_file": "ar_poc/policy/create_policy.py",
+      "source_lines": "1-18",
+      "confidence": 0.9,
+      "business_impact": "Duplicate policy/guardrail creation would cause confusion about which resources are active and could lead to inconsistent compliance checking."
+    },
+    {
+      "rule_name": "Content Safety Filter Configuration",
+      "domain": "Evaluation Engine",
+      "given": "The evaluation framework guardrail is being configured",
+      "when": "Content safety filters are applied",
+      "then": "HATE, VIOLENCE, MISCONDUCT, and SEXUAL content MUST be filtered at HIGH strength; INSULTS at MEDIUM strength; PROMPT_ATTACK at HIGH for input only (NONE for output)",
+      "source_function": "setup_guardrail.py::create_guardrail",
+      "source_file": "eval_framework/scripts/setup_guardrail.py",
+      "source_lines": "12-21",
+      "confidence": 0.9,
+      "business_impact": "Incorrect filter strength could either block legitimate content (too strict) or allow harmful content through to users (too lenient)."
+    },
+    {
+      "rule_name": "PII Detection and Handling Policy",
+      "domain": "Evaluation Engine",
+      "given": "An AI response is being checked for PII",
+      "when": "The guardrail detects personal information",
+      "then": "Email, Phone, and Name MUST be ANONYMIZED in output; US Social Security Numbers and Credit/Debit Card Numbers MUST be BLOCKED entirely",
+      "source_function": "setup_guardrail.py::create_guardrail",
+      "source_file": "eval_framework/scripts/setup_guardrail.py",
+      "source_lines": "24-32",
+      "confidence": 0.95,
+      "business_impact": "Exposing SSN or credit card numbers in AI responses would violate data privacy regulations and could lead to identity theft or financial fraud."
+    },
+    {
+      "rule_name": "RAG Contextual Grounding Threshold",
+      "domain": "Evaluation Engine",
+      "given": "A RAG application response is being evaluated",
+      "when": "Contextual grounding is assessed",
+      "then": "Both GROUNDING (faithfulness to retrieved context) and RELEVANCE (relevance to query) MUST meet a minimum threshold of 0.7; scores below this threshold indicate the response is not adequately grounded or relevant",
+      "source_function": "setup_guardrail.py::create_guardrail",
+      "source_file": "eval_framework/scripts/setup_guardrail.py",
+      "source_lines": "36-47",
+      "confidence": 0.9,
+      "business_impact": "Low grounding thresholds would allow hallucinated or irrelevant responses to pass evaluation, undermining the faithfulness guarantee that RAG is supposed to provide."
+    },
+    {
+      "rule_name": "LLM Judge Temperature Must Be Zero",
+      "domain": "Evaluation Engine",
+      "given": "An LLM-as-judge evaluation is being executed",
+      "when": "The judge model is invoked",
+      "then": "The temperature MUST be set to 0.0 for deterministic, reproducible scoring",
+      "source_function": "llm_judge.py::run_llm_judge",
+      "source_file": "eval_framework/evaluator/llm_judge.py",
+      "source_lines": "28",
+      "confidence": 0.9,
+      "business_impact": "Non-zero temperature would introduce randomness into evaluation scores, making quality metrics non-reproducible and unreliable for promote/no-promote decisions."
+    },
+    {
+      "rule_name": "Context Length Cap for Judge Evaluation",
+      "domain": "Evaluation Engine",
+      "given": "An LLM-as-judge evaluation is processing retrieved context",
+      "when": "The context exceeds 3000 characters",
+      "then": "The context MUST be truncated to 3000 characters to prevent exceeding model input limits",
+      "source_function": "llm_judge.py::run_llm_judge",
+      "source_file": "eval_framework/evaluator/llm_judge.py",
+      "source_lines": "19",
+      "confidence": 0.85,
+      "business_impact": "Exceeding context limits would cause judge invocations to fail, preventing evaluation from completing."
+    },
+    {
+      "rule_name": "Guardrail Bypass When Not Configured",
+      "domain": "Evaluation Engine",
+      "given": "A guardrail evaluation is requested",
+      "when": "No guardrail ID is configured",
+      "then": "The system MUST return passed=True with action='NO_GUARDRAIL' and an explanatory error message, allowing evaluation to continue without guardrail checks rather than failing entirely",
+      "source_function": "guardrails.py::run_guardrails",
+      "source_file": "eval_framework/evaluator/guardrails.py",
+      "source_lines": "15-16",
+      "confidence": 0.85,
+      "business_impact": "Hard failure when no guardrail is configured would prevent any evaluation from running during initial setup or in environments where guardrails are not yet provisioned."
+    },
+    {
+      "rule_name": "S3 Bucket Versioning for Golden Datasets",
+      "domain": "Platform Infrastructure",
+      "given": "The golden dataset S3 bucket is created",
+      "when": "Bucket configuration is applied",
+      "then": "Versioning MUST be enabled on the bucket to ensure all historical versions of test suite data are preserved",
+      "source_function": "setup_infra.py::create_s3_bucket",
+      "source_file": "eval_framework/scripts/setup_infra.py",
+      "source_lines": "14-20",
+      "confidence": 0.9,
+      "business_impact": "Without versioning, overwritten test data cannot be recovered, making it impossible to reproduce historical evaluation runs or audit data changes."
+    },
+    {
+      "rule_name": "App Deactivation Is Soft (Not Delete)",
+      "domain": "Application Registry",
+      "given": "An application is registered in the governance framework",
+      "when": "An operator deactivates the application",
+      "then": "The application status MUST be set to 'inactive' (soft deactivation) and the record MUST be preserved, not physically deleted",
+      "source_function": "app_registry.py::deactivate_app",
+      "source_file": "eval_framework/registry/app_registry.py",
+      "source_lines": "1-12",
+      "confidence": 0.85,
+      "business_impact": "Hard deletion of application records would destroy the governance history and make it impossible to audit past evaluation results for that application."
+    },
+    {
+      "rule_name": "UI Filters Active Apps Only",
+      "domain": "User Interface",
+      "given": "The UI dashboard loads the list of applications",
+      "when": "Applications are fetched from the registry",
+      "then": "Only applications with status 'active' MUST be displayed, hiding deactivated applications from the operational view",
+      "source_function": "ui/app.py::load_apps",
+      "source_file": "ui/app.py",
+      "source_lines": "1-3",
+      "confidence": 0.85,
+      "business_impact": "Showing deactivated apps would confuse operators and potentially lead to running evaluations against deprecated applications."
+    },
+    {
+      "rule_name": "Application Invocation Timeout",
+      "domain": "User Interface",
+      "given": "The evaluation system invokes a registered application",
+      "when": "The application does not respond within 30 seconds",
+      "then": "The invocation MUST time out and return a failure result with the error details, preventing indefinite hangs",
+      "source_function": "ui/app.py::invoke_app",
+      "source_file": "ui/app.py",
+      "source_lines": "4-5",
+      "confidence": 0.85,
+      "business_impact": "Without timeout limits, unresponsive applications would cause the evaluation UI to hang indefinitely, preventing operators from completing their work."
+    },
+    {
+      "rule_name": "Policy Build Resumes In-Progress Workflows",
+      "domain": "AR Policy Lifecycle",
+      "given": "A policy build workflow is already in progress",
+      "when": "An operator attempts to start a new build",
+      "then": "The system MUST resume polling the existing workflow instead of failing or creating a duplicate, handling the ResourceInUseException gracefully",
+      "source_function": "build_policy.py::start_build",
+      "source_file": "ar_poc/policy/build_policy.py",
+      "source_lines": "45-50",
+      "confidence": 0.85,
+      "business_impact": "Without resume capability, interrupted builds would require manual intervention and could leave the policy in an inconsistent state."
+    },
+    {
+      "rule_name": "Build Failure Terminates Pipeline",
+      "domain": "AR Policy Lifecycle",
+      "given": "An AR policy build workflow is running",
+      "when": "The build status transitions to FAILED",
+      "then": "The system MUST immediately terminate with the failure reason and MUST NOT proceed to the review or guardrail attachment steps",
+      "source_function": "build_policy.py::poll_until_complete",
+      "source_file": "ar_poc/policy/build_policy.py",
+      "source_lines": "11-14",
+      "confidence": 0.9,
+      "business_impact": "Continuing the pipeline after a failed build would attempt to use an incomplete or corrupted policy, leading to unreliable compliance checking."
+    },
+    {
+      "rule_name": "Ethics Document Format Priority",
+      "domain": "AR Policy Lifecycle",
+      "given": "The AR policy build needs to ingest an ethics document",
+      "when": "Multiple document formats are available",
+      "then": "TXT format MUST be preferred over PDF format; if neither exists, the build MUST fail with an error",
+      "source_function": "build_policy.py::start_build",
+      "source_file": "ar_poc/policy/build_policy.py",
+      "source_lines": "1-11",
+      "confidence": 0.85,
+      "business_impact": "TXT format typically provides cleaner text extraction for rule parsing; using PDF when TXT is available may result in lower-quality rule extraction."
+    },
+    {
+      "rule_name": "Ambiguous Findings Treated as Violations",
+      "domain": "Publishing Ethics Compliance (AR)",
+      "given": "The AR guardrail returns a translationAmbiguous finding",
+      "when": "The compliance system processes the finding",
+      "then": "All contradicting rules from ambiguous translations MUST be added to the failed rules list with an [ambiguous] prefix, treating ambiguity as a potential violation for safety",
+      "source_function": "ar_validator.py::check_compliance",
+      "source_file": "ar_poc/validator/ar_validator.py",
+      "source_lines": "52-59",
+      "confidence": 0.9,
+      "business_impact": "Ignoring ambiguous findings could allow potentially non-compliant manuscripts to pass review; treating them as failures ensures conservative compliance enforcement."
+    },
+    {
+      "rule_name": "Audit Trail for Test Case Changes",
+      "domain": "Golden Dataset Management",
+      "given": "A test case is being created or updated",
+      "when": "The creation or update operation is executed",
+      "then": "The system MUST record the creator/updater identity, timestamp, change reason, and version — creating a complete audit trail for every modification",
+      "source_function": "dataset_manager.py::add_test_case",
+      "source_file": "eval_framework/golden_dataset/dataset_manager.py",
+      "source_lines": "1-27",
+      "confidence": 0.9,
+      "business_impact": "Without audit trails, it would be impossible to understand who changed test cases and why, undermining accountability and making it difficult to investigate evaluation anomalies."
+    }
+  ],
+  "business_flows": [
+    {
+      "flow_name": "Platform Bootstrap",
+      "description": "End-to-end setup of the entire GenAI Evaluation Framework from scratch, including infrastructure provisioning, application deployment, registration, prompt seeding, and test suite upload. This is the first-time setup flow that establishes all necessary resources.",
+      "steps": [
+        "Step 1: Create infrastructure — S3 bucket (versioned) for golden datasets, DynamoDB tables for app registry, test case metadata, and prompt registry",
+        "Step 2: Deploy RAG application — create IAM role, upload FAQ documents to S3, package and deploy Lambda function, create API Gateway endpoint",
+        "Step 3: Register the RAG app in the app registry with type, endpoint, model provider, and ownership metadata",
+        "Step 4: Seed the default prompt version (v1) — auto-validate and activate it so the app can immediately serve responses",
+        "Step 5: Upload the golden test suite — bulk load curated test cases to both DynamoDB and S3"
+      ],
+      "functions_involved": [
+        "bootstrap.py::main",
+        "setup_infra.py::create_s3_bucket",
+        "setup_infra.py::create_app_registry_table",
+        "setup_infra.py::create_test_case_metadata_table",
+        "setup_infra.py::create_prompt_registry_table",
+        "deploy.py::main",
+        "deploy.py::create_lambda_role",
+        "deploy.py::upload_faq_docs",
+        "deploy.py::create_lambda_zip",
+        "deploy.py::deploy_lambda",
+        "deploy.py::deploy_api_gateway",
+        "app_registry.py::register_app",
+        "prompt_registry.py::seed_default_version",
+        "dataset_manager.py::upload_test_suite"
+      ]
+    },
+    {
+      "flow_name": "Prompt Version Lifecycle (Create → Validate → Activate)",
+      "description": "The disciplined lifecycle for making changes to AI application behavior. New prompt configurations must go through creation, evaluation, validation, and explicit activation before they can serve production traffic. This prevents untested AI behavior from reaching users.",
+      "steps": [
+        "Step 1: Create a new prompt version with system prompt, context template, temperature, max tokens, and model ID — version is created as inactive and unvalidated",
+        "Step 2: Test the prompt version against the golden test suite using prompt override (no activation needed) — invoke the app with _prompt_override to get responses",
+        "Step 3: Run evaluation — LLM-as-judge scores the responses, guardrails check for safety and grounding, results are aggregated",
+        "Step 4: If evaluation passes, mark the version as validated with the evaluation score",
+        "Step 5: Activate the validated version — deactivate the previous active version, update the active pointer, making the new prompt live in production"
+      ],
+      "functions_involved": [
+        "prompt_registry.py::create_version",
+        "prompt_registry.py::_next_version",
+        "ui/app.py::invoke_app_with_override",
+        "handler.py::lambda_handler",
+        "llm_judge.py::run_llm_judge",
+        "guardrails.py::run_guardrails",
+        "prompt_registry.py::mark_validated",
+        "prompt_registry.py::activate_version",
+        "prompt_registry.py::get_active_version"
+      ]
+    },
+    {
+      "flow_name": "RAG Query Processing",
+      "description": "End-to-end flow for answering a user question using the RAG application. The system loads the active prompt configuration, retrieves relevant documents, generates an AI response, and returns it with full traceability metadata.",
+      "steps": [
+        "Step 1: Receive and validate the query — reject empty queries with HTTP 400",
+        "Step 2: Determine prompt configuration — use prompt override if provided (for eval testing), otherwise load the active prompt version from the registry (with fallback to defaults)",
+        "Step 3: Load FAQ documents from S3",
+        "Step 4: Retrieve top-K relevant documents using keyword matching (minimum relevance > 0)",
+        "Step 5: Generate answer — format the retrieved context using the prompt template, invoke the AI model with the configured system prompt, temperature, and token limits",
+        "Step 6: Return the answer along with metadata: retrieved document IDs, document count, and prompt version used"
+      ],
+      "functions_involved": [
+        "handler.py::lambda_handler",
+        "handler.py::load_active_prompt",
+        "handler.py::_default_prompt",
+        "handler.py::load_docs",
+        "handler.py::retrieve",
+        "handler.py::generate"
+      ]
+    },
+    {
+      "flow_name": "Evaluation Run",
+      "description": "Automated quality and safety evaluation of an AI application against a golden test suite. Combines LLM-as-judge scoring with guardrail safety checks to produce a comprehensive quality assessment.",
+      "steps": [
+        "Step 1: Load the golden test suite (from snapshot for reproducibility, or from S3 for ad-hoc testing)",
+        "Step 2: For each test case, invoke the application with the test query (optionally with prompt override for candidate versions)",
+        "Step 3: Run LLM-as-judge — score the response against expected output across multiple dimensions (1-5 scale) using temperature 0.0 for deterministic results",
+        "Step 4: Run guardrail checks — verify content safety, PII handling, and contextual grounding (faithfulness to retrieved context)",
+        "Step 5: Aggregate results — combine judge scores and guardrail pass/fail across all test cases to determine overall evaluation outcome"
+      ],
+      "functions_involved": [
+        "dataset_manager.py::load_snapshot",
+        "dataset_manager.py::load_test_cases",
+        "ui/app.py::invoke_app",
+        "ui/app.py::invoke_app_with_override",
+        "llm_judge.py::run_llm_judge",
+        "guardrails.py::run_guardrails",
+        "guardrails.py::_parse_assessments"
+      ]
+    },
+    {
+      "flow_name": "Golden Dataset Management",
+      "description": "Lifecycle management of curated test cases used for evaluation. Supports creating, updating, and archiving test cases with full audit trails, plus snapshotting for reproducible evaluation runs.",
+      "steps": [
+        "Step 1: Add test cases — specify query, expected output, ground truth context, evaluation criteria, category, criticality, and tags",
+        "Step 2: Manage test cases — update fields as needed (with audit trail), archive obsolete cases (never delete)",
+        "Step 3: Query test cases — filter by status (active/archived), criticality, and category",
+        "Step 4: Snapshot the active suite — create an immutable point-in-time copy in S3 for evaluation runs",
+        "Step 5: List and load snapshots — browse historical snapshots and load specific ones for evaluation"
+      ],
+      "functions_involved": [
+        "dataset_manager.py::add_test_case",
+        "dataset_manager.py::update_test_case",
+        "dataset_manager.py::archive_test_case",
+        "dataset_manager.py::list_test_cases",
+        "dataset_manager.py::get_test_case",
+        "dataset_manager.py::snapshot_suite",
+        "dataset_manager.py::list_snapshots",
+        "dataset_manager.py::load_snapshot"
+      ]
+    },
+    {
+      "flow_name": "AR Policy Setup Pipeline",
+      "description": "Four-step pipeline to create, build, review, and activate an Automated Reasoning policy for publishing ethics compliance. Converts a natural-language ethics document into formal machine-verifiable rules.",
+      "steps": [
+        "Step 1: Create the AR policy — register a named policy in Bedrock for Elsevier publishing ethics validation",
+        "Step 2: Build the policy — upload the ethics document (TXT preferred over PDF), start the rule extraction workflow, poll until extraction completes, and report the number of extracted variables, rules, and types",
+        "Step 3: Review the policy — inspect the fidelity report (coverage and accuracy scores), examine extracted variables, types, and rules, and check per-rule fidelity details. Warn if scores are below 0.7",
+        "Step 4: Attach to guardrail — create a Bedrock guardrail configured with the AR policy for runtime compliance enforcement, save the guardrail ID for use by compliance checking components"
+      ],
+      "functions_involved": [
+        "create_policy.py::create_policy",
+        "create_policy.py::get_existing_policy_arn",
+        "create_policy.py::save_policy_arn",
+        "build_policy.py::start_build",
+        "build_policy.py::poll_until_complete",
+        "build_policy.py::get_latest_workflow_id",
+        "review_policy.py::review_policy",
+        "attach_to_guardrail.py::create_guardrail",
+        "attach_to_guardrail.py::get_existing_guardrail",
+        "attach_to_guardrail.py::save_guardrail_id"
+      ]
+    },
+    {
+      "flow_name": "Publishing Ethics Compliance Check",
+      "description": "End-to-end flow for verifying a manuscript submission's compliance with Elsevier's publishing ethics policies. Combines LLM-powered assessment generation with formal Automated Reasoning verification.",
+      "steps": [
+        "Step 1: Receive a manuscript submission description",
+        "Step 2: Generate a structured compliance assessment using Claude AI, covering all 11 ethics dimensions (simultaneous submission, authorship, conflicts, funding, clinical trials, plagiarism, image manipulation)",
+        "Step 3: Submit the LLM assessment to the AR guardrail for formal verification against extracted policy rules",
+        "Step 4: Parse the AR response — categorize findings as invalid (rule violations with reasons), valid (satisfied rules), ambiguous (treated as potential violations), or unresolvable",
+        "Step 5: Determine final verdict — FAIL if any rules violated, UNABLE_TO_DETERMINE if only unresolvable, PASS if all rules satisfied",
+        "Step 6: Return the verdict with detailed per-rule results for compliance officer review"
+      ],
+      "functions_involved": [
+        "ar_validator.py::generate_assessment",
+        "ar_validator.py::check_compliance",
+        "ar_poc/ui/app.py::ask_claude",
+        "ar_poc/ui/app.py::ar_check",
+        "ar_poc/ui/app.py::rule_label"
+      ]
+    },
+    {
+      "flow_name": "AR Compliance Demo Execution",
+      "description": "Automated demonstration run that exercises all compliance scenarios against the AR system and produces a summary scorecard, used for validation and stakeholder demonstration of the compliance system's capabilities.",
+      "steps": [
+        "Step 1: Load all predefined compliance scenarios with their expected verdicts",
+        "Step 2: For each scenario, generate an LLM compliance assessment from the scenario description",
+        "Step 3: Run the AR compliance check against the generated assessment",
+        "Step 4: Compare actual verdict against expected — FAIL and UNABLE_TO_DETERMINE both count as matches for expected FAIL scenarios",
+        "Step 5: Produce a summary table showing scenario name, expected verdict, actual verdict, and match status",
+        "Step 6: Report overall pass rate (N/M scenarios matched expected verdict)"
+      ],
+      "functions_involved": [
+        "run_demo.py::run_all",
+        "ar_validator.py::generate_assessment",
+        "ar_validator.py::check_compliance"
+      ]
+    }
+  ]
+}

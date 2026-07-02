@@ -1,0 +1,45 @@
+capability: list_hiring_requisitions
+domain: recruiting
+method: GET
+path: /recruiting/requisitions
+summary: List and filter open or historical hiring requisitions across departments
+description: This API returns a list of hiring requisitions, optionally filtered by
+  department or status, providing a comprehensive view of all approved headcount requests
+  across the organization. Each requisition includes the role title, owning department,
+  assigned hiring manager, current status, and approval date. Talent acquisition teams
+  and HR business partners use this to track workforce planning progress, identify
+  bottlenecks in the hiring pipeline, and ensure approved headcount is being actively
+  recruited. It is foundational for reporting on recruiting activity and aligning
+  hiring efforts with budget and organizational goals.
+side_effect: read
+preconditions:
+- The calling user must have access to recruiting or workforce planning data
+- At least one requisition must exist in the system to return meaningful results
+- Optional filter values (department, status) must match valid system-defined enumerations
+  if provided
+produces:
+- A list of hiring requisitions with unique identifiers and titles
+- Department and hiring manager assignments for each requisition
+- Current status of each requisition (e.g., open, on-hold, filled, cancelled)
+- Approval dates indicating when headcount was authorized
+use_cases:
+- How many open requisitions does the Engineering department currently have, and who
+  are the hiring managers?
+- Which approved requisitions have not yet had a job posting created against them?
+- What is the current status of all hiring activity across the organization this quarter?
+related:
+- operation_id: list_job_postings
+  reason: "Job postings are created from requisitions \u2014 this relationship allows\
+    \ users to see which reqs have active postings and which are still unposted."
+- operation_id: get_recruiting_pipeline_metrics
+  reason: Pipeline metrics are aggregated at the requisition level, making requisition
+    data essential context for interpreting funnel performance.
+- operation_id: create_job_posting
+  reason: Creating a job posting requires a valid requisition ID, so listing requisitions
+    is a natural precursor to initiating a new posting.
+- operation_id: get_compensation_budget
+  reason: Requisitions consume compensation budget; cross-referencing the two helps
+    validate that open reqs are within approved spend limits.
+- operation_id: get_manager_info
+  reason: Hiring managers listed on requisitions can be looked up to understand reporting
+    structure and escalation paths for approval delays.

@@ -1,0 +1,40 @@
+capability: get_benefits_eligibility
+domain: benefits
+method: GET
+path: /benefits/eligibility/{employee_id}
+summary: Check whether an employee is eligible for benefits enrollment and identify
+  open enrollment or life event windows
+description: This API determines whether a specific employee is currently eligible
+  to enroll in or modify their benefits, and if so, what enrollment windows are available
+  to them. It surfaces key timing information such as when a waiting period ends,
+  whether a qualifying life event has opened a special enrollment window, and when
+  the next open enrollment period occurs. Use it before attempting to process a benefits
+  election change to confirm the action is permitted, or to proactively notify employees
+  when they become eligible. It depends on the employee profile to assess employment
+  type, start date, and eligibility rules.
+side_effect: read
+preconditions:
+- The employee_id must exist in the HR system with a valid employment record
+- get_employee_profile must be accessible to retrieve employment start date, classification,
+  and eligibility group
+- The system must have current benefits plan eligibility rules configured for the
+  employee's employment type and location
+produces:
+- A boolean indicator of whether the employee is currently eligible to enroll in benefits
+- The start and end dates of any currently open enrollment window
+- Whether a qualifying life event has triggered a special enrollment period
+- The date on which a waiting period ends and benefits eligibility begins
+use_cases:
+- Can this newly hired employee enroll in benefits yet, or are they still in a waiting
+  period?
+- Did this employee's recent divorce open a special enrollment window for them to
+  update their coverage?
+- When is the next opportunity for this employee to make changes to their benefits
+  elections?
+related:
+- 'get_employee_profile: A required dependency that provides employment start date
+  and classification needed to evaluate eligibility rules'
+- 'get_benefits_elections: Should be called after confirming eligibility to view what
+  the employee is currently enrolled in'
+- 'get_benefits_changes: Useful for verifying whether a past life event was already
+  used to trigger an enrollment window'

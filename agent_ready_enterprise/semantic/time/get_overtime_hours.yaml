@@ -1,0 +1,50 @@
+capability: get_overtime_hours
+domain: time
+method: GET
+path: /time/overtime/{employee_id}
+summary: Retrieve classified overtime hours, applicable rate multipliers, and FLSA/policy
+  classification for an employee
+description: This API returns a detailed record of overtime hours worked by an employee
+  in a given pay period, including the number of overtime hours, the applicable overtime
+  rate multiplier (e.g., 1.5x, 2x), and the classification of the overtime (e.g.,
+  daily, weekly, double-time) per company policy or labor law. It is used when calculating
+  gross pay, auditing labor costs, or ensuring compliance with FLSA and state overtime
+  regulations. Use this API when you need to understand why an employee's gross pay
+  is higher than their base salary would suggest, or when a manager wants to review
+  overtime exposure for budget purposes. It directly answers questions about overtime
+  liability, pay accuracy, and workforce cost management.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- The specified pay_period must be a valid, closed or current pay period
+- Time entries for the pay period must already be recorded (get_time_entries data
+  must exist)
+- Caller must have read access to the employee's compensation and time records
+- Overtime rules and rate classifications must be configured for the employee's work
+  classification
+produces:
+- Total overtime hours worked during the pay period
+- The overtime rate multiplier applied (e.g., 1.5x, 2.0x)
+- The classification type of overtime (e.g., weekly FLSA overtime, daily California
+  overtime, double-time)
+- A structured record suitable for payroll gross pay calculation
+use_cases:
+- "Why is this employee's gross pay significantly higher than their base salary this\
+  \ period \u2014 how much overtime did they work and at what rate?"
+- Are we correctly classifying and compensating overtime for employees in states with
+  daily overtime rules like California?
+- How much overtime cost did a specific department incur last pay period, and which
+  employees drove it?
+related:
+- operation_id: get_time_entries
+  reason: Time entries are the source data from which overtime hours are derived;
+    overtime records cannot exist without underlying time entry data.
+- operation_id: get_paystub
+  reason: Overtime hours and rates feed directly into gross pay on the paystub; verifying
+    overtime pay accuracy requires comparing this record against the paystub.
+- operation_id: get_payroll_adjustments
+  reason: Retroactive corrections to overtime classification or hours often result
+    in payroll adjustments, making overtime records the upstream cause.
+- operation_id: get_work_schedule
+  reason: An employee's scheduled hours per week determine the threshold at which
+    overtime begins; the work schedule provides the baseline for overtime eligibility.

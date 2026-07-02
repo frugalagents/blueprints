@@ -1,0 +1,47 @@
+capability: get_job_history
+domain: employee
+method: GET
+path: /employee/{employee_id}/job-history
+summary: Retrieve full job title, role, and department change history for an employee
+description: This API returns a chronological record of every job title, department,
+  and position change an employee has experienced since joining the organization,
+  including the effective date and reason for each change. It is used when you need
+  to understand an employee's career progression, tenure in a role, or eligibility
+  for promotions and merit increases. HR business partners and managers rely on this
+  data to make informed compensation decisions, calibrate performance ratings in context,
+  and assess readiness for advancement. It also supports compliance and audit workflows
+  that require a verified record of role transitions.
+side_effect: read
+preconditions:
+- The employee_id must correspond to an active or historical employee record in the
+  system
+- The requesting user must have HR read access or be the employee's direct manager
+- The employee must have at least one recorded job assignment in the system
+produces:
+- Ordered list of past and current job titles with effective dates
+- Department affiliations at each point in the employee's tenure
+- Reasons for each role change (e.g., promotion, lateral move, reorganization)
+- Duration spent in each role or department
+use_cases:
+- Has this employee been in their current role long enough to be eligible for a promotion
+  or merit increase?
+- What departments and titles has this employee held, and how has their career progressed
+  over time?
+- Was this employee's last role change a promotion, a lateral transfer, or a demotion,
+  and why?
+related:
+- operation_id: get_manager_info
+  reason: Manager context is often needed alongside job history to understand who
+    approved or initiated each role change.
+- operation_id: submit_merit_increase
+  reason: Job history is a prerequisite for validating promotion eligibility and time-in-role
+    requirements before submitting a merit increase.
+- operation_id: get_rating_calibration
+  reason: Performance calibration sessions use job history to contextualize ratings
+    relative to how long an employee has been in their current role.
+- operation_id: create_improvement_plan
+  reason: Job history provides context on role tenure and prior transitions that inform
+    the scope and expectations of a performance improvement plan.
+- operation_id: get_compensation_budget
+  reason: Compensation budget planning depends on job history to identify employees
+    due for review based on time-in-role or recent promotions.

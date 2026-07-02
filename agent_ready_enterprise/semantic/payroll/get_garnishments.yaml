@@ -1,0 +1,50 @@
+capability: get_garnishments
+domain: payroll
+method: GET
+path: /payroll/garnishments/{employee_id}
+summary: Retrieve active wage garnishments and court-ordered withholding details for
+  an employee
+description: This API returns all active wage garnishment orders applied to an employee's
+  paycheck, including the garnishment type (e.g., child support, tax levy, creditor
+  judgment), the per-period withholding amount, the associated legal case number,
+  and the remaining balance until the obligation is satisfied. It is used by payroll
+  administrators to verify compliance with court orders, by HR to understand an employee's
+  total mandatory deduction burden, and by legal or finance teams to track outstanding
+  obligations. Use this when an employee disputes a deduction, when onboarding a new
+  garnishment order, or when auditing payroll for legal compliance.
+side_effect: read
+preconditions:
+- The employee_id must exist in the payroll system
+- The requesting user must have payroll compliance or legal deduction read permissions
+- At least one garnishment order must have been entered into the system for the employee
+  to return non-empty results
+produces:
+- A list of all active court-ordered wage garnishments with their legal case identifiers,
+  enabling compliance verification
+- The per-period dollar amount being withheld for each garnishment, supporting reconciliation
+  with deduction breakdowns
+- The remaining balance on each garnishment order, allowing payroll teams to anticipate
+  when withholding will cease
+use_cases:
+- Is this employee currently subject to any active wage garnishments, and if so, how
+  much is being withheld each pay period?
+- How much remains on this employee's child support garnishment order before the obligation
+  is fully satisfied?
+- Are all court-ordered garnishments for this employee being correctly reflected as
+  post-tax deductions in the payroll system?
+related:
+- operation_id: get_deduction_breakdown
+  reason: Garnishment withholdings appear as post-tax deductions; the deduction breakdown
+    API is where these amounts surface in the context of a full paycheck, and the
+    two should be reconciled to confirm accuracy.
+- operation_id: get_paystub
+  reason: Paystubs must legally reflect garnishment deductions; cross-referencing
+    the paystub with garnishment records confirms that court-ordered amounts are being
+    properly disclosed.
+- operation_id: get_payroll_history
+  reason: Payroll history can reveal when garnishment deductions first appeared or
+    changed, helping administrators trace the timeline of a legal withholding order.
+- operation_id: get_ytd_earnings
+  reason: YTD gross pay figures are used to calculate disposable income limits under
+    federal garnishment law (e.g., CCPA caps), making earnings data essential context
+    for garnishment compliance.

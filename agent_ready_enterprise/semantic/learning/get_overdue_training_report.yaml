@@ -1,0 +1,50 @@
+capability: get_overdue_training_report
+domain: learning
+method: GET
+path: /learning/compliance-training/overdue
+summary: Generate a department-level report of employees with overdue mandatory compliance
+  training
+description: This API produces an aggregated report of all employees within a department
+  who have failed to complete mandatory compliance training by its due date, including
+  how many days each course is overdue. It is used by department heads, HR business
+  partners, and compliance officers to identify systemic training gaps and take corrective
+  action at scale rather than employee by employee. It is typically run ahead of audits,
+  at the end of compliance windows, or as part of regular governance reporting. It
+  helps answer questions about organizational compliance risk exposure and which teams
+  or individuals require urgent intervention.
+side_effect: read
+preconditions:
+- The department parameter must correspond to a valid department in the organizational
+  structure
+- Mandatory training requirements and due dates must be configured in the learning
+  management system
+- Employee records must be linked to their respective departments in the HR system
+produces:
+- A count of employees with at least one overdue compliance training course
+- A detailed list of each non-compliant employee with their name and employee ID
+- The specific course name that is overdue for each employee
+- The number of days each course has been overdue, enabling prioritization by severity
+use_cases:
+- How many people in the Sales department are currently out of compliance with mandatory
+  training, and by how long?
+- Which employees do I need to escalate to their managers today because their compliance
+  training is critically overdue?
+- Can I get a report to present to the audit committee showing our current mandatory
+  training compliance rate by department?
+related:
+- operation_id: get_compliance_training_status
+  reason: This report aggregates what get_compliance_training_status shows at the
+    individual level; drilling into a specific employee from this report would use
+    that API for detail.
+- operation_id: get_employee_profile
+  reason: Employee profiles provide contact information and manager details needed
+    to reach out to non-compliant employees identified in this report.
+- operation_id: get_manager_info
+  reason: Escalating overdue training to the responsible manager requires knowing
+    who manages each non-compliant employee surfaced by this report.
+- operation_id: enroll_employee_in_course
+  reason: After identifying overdue employees in this report, bulk or individual enrollment
+    in the missing courses is the natural remediation step.
+- operation_id: search_employees
+  reason: Searching employees by department can help validate or expand the scope
+    of the overdue report when department boundaries are unclear.

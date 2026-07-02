@@ -1,0 +1,52 @@
+capability: get_payroll_adjustments
+domain: payroll
+method: GET
+path: /payroll/adjustments/{employee_id}
+summary: Retrieve one-time and retroactive payroll adjustments with reasons and effective
+  dates
+description: This API returns all payroll adjustments applied to an employee's pay
+  for a given period, including retroactive pay corrections, one-time bonuses, and
+  manual overrides. Each adjustment record includes the type, dollar amount, reason,
+  and effective date, giving payroll administrators and managers full visibility into
+  non-standard pay events. Use this when reconciling a paystub that looks unexpectedly
+  high or low, or when auditing compensation changes following a merit cycle or error
+  correction. It is also essential context before submitting a new merit increase
+  or creating a performance improvement plan.
+side_effect: read
+preconditions:
+- The employee_id must exist in the payroll system
+- The pay_period parameter must reference a valid, closed or current pay period
+- The requesting user must have payroll adjustment read permissions for the specified
+  employee
+- Upstream payroll records (paystub, history, time entries) must exist for the specified
+  period to ensure adjustments are contextualized correctly
+produces:
+- A list of all non-standard pay events for the specified period, categorized by type
+  (e.g., retro pay, correction, one-time bonus)
+- The monetary amount and business reason for each adjustment, enabling audit trail
+  documentation
+- Effective dates that clarify when the adjustment was earned versus when it was processed
+use_cases:
+- "Why was this employee's paycheck $800 higher than usual this period \u2014 was\
+  \ it a bonus, a retro correction, or a data entry error?"
+- Has this employee received any retroactive pay adjustments in the past six months
+  that should be factored into their total compensation review?
+- Before submitting a merit increase, are there any pending or recent corrections
+  that would distort the baseline pay figure?
+related:
+- operation_id: get_paystub
+  reason: Adjustments appear as line items on a paystub; reviewing both together gives
+    a complete picture of why a specific paycheck amount differs from the standard.
+- operation_id: get_payroll_history
+  reason: Payroll history reveals which periods had unusual pay amounts, and adjustments
+    explain the specific reasons behind those anomalies.
+- operation_id: submit_merit_increase
+  reason: Before submitting a merit increase, existing adjustments must be reviewed
+    to ensure the new base pay calculation starts from an accurate, clean baseline.
+- operation_id: create_improvement_plan
+  reason: When creating a performance improvement plan, recent pay adjustments provide
+    context about whether compensation changes have already been made in response
+    to performance issues.
+- operation_id: get_overtime_hours
+  reason: Some adjustments are triggered by overtime miscalculations; cross-referencing
+    overtime hours helps validate whether an adjustment was correctly computed.

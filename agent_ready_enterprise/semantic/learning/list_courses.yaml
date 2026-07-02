@@ -1,0 +1,47 @@
+capability: list_courses
+domain: learning
+method: GET
+path: /learning/courses
+summary: List available training courses filtered by category or mandatory status
+description: This API retrieves the catalog of training courses available in the learning
+  management system, optionally filtered by subject category or whether the course
+  is mandatory for compliance. It provides a high-level view of learning offerings
+  including duration and classification, making it useful for planning training programs
+  or auditing compliance coverage. Use it when you need to understand what training
+  is available before enrolling employees or building development plans. It helps
+  answer questions about organizational learning readiness and regulatory compliance
+  obligations.
+side_effect: read
+preconditions:
+- Caller has read access to the learning management system
+- State or jurisdiction rules have been loaded via get_state_rules to correctly flag
+  mandatory courses
+- The course catalog has been populated with at least one course
+produces:
+- A list of available courses with unique course IDs and titles
+- Classification of each course by category (e.g., compliance, technical, leadership)
+- Duration estimates to support scheduling and workload planning
+- Flags indicating which courses are mandatory versus optional
+use_cases:
+- What mandatory compliance training courses does our organization currently offer?
+- How many hours of cybersecurity training are available in the catalog?
+- Which courses should be included in a new hire onboarding plan for a sales role?
+related:
+- operation_id: get_state_rules
+  reason: State-specific regulatory rules determine which courses are flagged as mandatory,
+    so this must be called before the mandatory filter is reliable.
+- operation_id: get_compliance_checks
+  reason: The list of mandatory courses from this API feeds directly into compliance
+    checks that verify employee completion status.
+- operation_id: create_employee_goal
+  reason: Course listings are referenced when creating learning-based development
+    goals for employees.
+- operation_id: create_job_posting
+  reason: Available courses may be referenced in job postings to indicate required
+    or recommended training for a role.
+- operation_id: get_course_details
+  reason: After identifying a course of interest from the list, get_course_details
+    is called to retrieve the full syllabus and prerequisites.
+- operation_id: enroll_employee_in_course
+  reason: Course IDs obtained from this listing are required inputs when enrolling
+    an employee in a specific course.

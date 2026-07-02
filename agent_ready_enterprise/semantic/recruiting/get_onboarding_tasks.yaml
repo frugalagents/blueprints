@@ -1,0 +1,40 @@
+capability: get_onboarding_tasks
+domain: recruiting
+method: GET
+path: /recruiting/onboarding/{employee_id}/tasks
+summary: Retrieve the detailed onboarding task checklist for a new hire
+description: This API returns the full itemized list of onboarding tasks assigned
+  to a new employee, including each task's name, due date, completion status, and
+  the person or team responsible for completing it. Use this when you need to drill
+  into the specifics of what has and hasn't been done during onboarding, rather than
+  just a summary count. It helps answer questions like 'Which specific tasks are overdue
+  for our new hire?' and 'Who is responsible for completing the IT setup task that's
+  still pending?'
+side_effect: read
+preconditions:
+- The employee must exist in the HR system with a valid employee_id
+- An onboarding record with associated tasks must have been created for the employee
+- The caller must have appropriate permissions to view onboarding task details for
+  the given employee
+produces:
+- A complete list of all onboarding tasks with their names and unique identifiers
+- Due dates for each task to support timeline management and escalation
+- Completion status for each task, enabling identification of what is done versus
+  outstanding
+- The assigned owner (person or team) for each task, clarifying accountability for
+  incomplete items
+use_cases:
+- "An HR coordinator asks: 'Our new hire starts in two days \u2014 can I get a full\
+  \ list of every pending task and who owns it so I can send reminders to the right\
+  \ people?'"
+- A manager wants to verify that their new team member has completed compliance training
+  and signed all required policy documents before being given system access.
+- An IT administrator needs to see which new hires have open equipment provisioning
+  tasks assigned to their team so they can prioritize their workload for the week.
+related:
+- "get_onboarding_status \u2014 the summary-level companion to this API; get_onboarding_status\
+  \ gives the high-level progress snapshot while get_onboarding_tasks provides the\
+  \ underlying task detail"
+- "enroll_employee_in_course \u2014 onboarding tasks often include mandatory training\
+  \ enrollments; this API identifies which training tasks are pending, and enroll_employee_in_course\
+  \ executes the enrollment action to fulfill them"

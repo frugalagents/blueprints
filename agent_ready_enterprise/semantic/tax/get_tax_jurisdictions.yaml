@@ -1,0 +1,42 @@
+capability: get_tax_jurisdictions
+domain: tax
+method: GET
+path: /tax/jurisdictions/{employee_id}
+summary: "Retrieve all tax jurisdictions \u2014 federal, state, and local \u2014 applicable\
+  \ to a specific employee"
+description: This API identifies every tax jurisdiction that has a claim on an employee's
+  wages, based on where they work and where they live, including any reciprocity agreements
+  between states that may reduce double taxation. It is essential when onboarding
+  a new employee, when an employee moves or changes work location, or when auditing
+  why a particular tax is or is not being withheld. It answers the foundational compliance
+  question of 'which governments does this employee owe taxes to?' and ensures payroll
+  is configured correctly for multi-state or local tax scenarios.
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- Employee profile must include a valid work address and home/resident address
+- get_employee_profile must return successfully before this call is made
+produces:
+- The state where the employee performs their work
+- The state where the employee legally resides
+- A list of local or municipal jurisdictions (e.g., city, county) that levy taxes
+  on this employee
+- Any active reciprocity agreements between work and resident states that affect withholding
+  obligations
+use_cases:
+- "This employee lives in New Jersey but works in New York \u2014 which state taxes\
+  \ should we be withholding?"
+- Does this remote employee working from home in a different state than our office
+  trigger new local tax obligations?
+- "Why is a local city tax appearing on this employee's paycheck \u2014 what jurisdiction\
+  \ is it from?"
+related:
+- operation_id: get_tax_rates
+  reason: Once jurisdictions are identified, tax rates for each applicable state or
+    locality must be retrieved to calculate correct withholding amounts.
+- operation_id: get_tax_ytd_summary
+  reason: The YTD summary reflects withholdings across all jurisdictions; this API
+    explains which jurisdictions are included and why.
+- operation_id: get_estimated_tax_liability
+  reason: Accurate liability estimation requires knowing all jurisdictions the employee
+    is subject to, especially in multi-state situations.

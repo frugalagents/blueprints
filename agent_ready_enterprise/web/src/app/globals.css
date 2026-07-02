@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a25;
+  --border: #2a2a35;
+  --text-primary: #e8e8ed;
+  --text-secondary: #8888a0;
+  --accent: #4ecdc4;
+  --accent-dim: #2a7a74;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Markdown in answers */
+.answer-content h1 { font-size: 1.3em; font-weight: 700; margin: 16px 0 8px; }
+.answer-content h2 { font-size: 1.1em; font-weight: 600; margin: 12px 0 6px; }
+.answer-content p { margin: 8px 0; line-height: 1.6; }
+.answer-content ul, .answer-content ol { margin: 8px 0 8px 20px; }
+.answer-content li { margin: 4px 0; line-height: 1.5; }
+.answer-content strong { color: #fff; }
+.answer-content code { background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }

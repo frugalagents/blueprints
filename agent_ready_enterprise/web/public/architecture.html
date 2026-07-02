@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise API Knowledge Graph — Architecture</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a1a; color: #e0e0e0; }
+.container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+.header { text-align: center; margin-bottom: 50px; }
+.header h1 { font-size: 2.5em; background: linear-gradient(135deg, #4ecdc4, #44a8f2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header p { color: #888; font-size: 1.1em; margin-top: 8px; }
+section { margin-bottom: 70px; }
+section h2 { font-size: 1.6em; margin-bottom: 25px; color: #fff; border-left: 4px solid #4ecdc4; padding-left: 15px; }
+
+/* SVG Architecture Diagrams */
+.diagram-container { background: #0d0d20; border: 1px solid #222; border-radius: 12px; padding: 30px; overflow-x: auto; }
+svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+/* Comparison Grid */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.compare-card { padding: 25px; border-radius: 12px; }
+.compare-card.old { background: #1a0a0a; border: 1px solid #aa3333; }
+.compare-card.new { background: #0a1a0a; border: 1px solid #33aa33; }
+.compare-card h3 { margin-bottom: 15px; }
+.compare-card.old h3 { color: #ff6b6b; }
+.compare-card.new h3 { color: #4ecdc4; }
+.compare-card ul { list-style: none; margin-left: 0; }
+.compare-card li { padding: 6px 0; padding-left: 22px; position: relative; color: #ccc; }
+.compare-card.old li::before { content: "✗"; position: absolute; left: 0; color: #ff4444; }
+.compare-card.new li::before { content: "✓"; position: absolute; left: 0; color: #4ecdc4; }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 50px; }
+.metric { background: #111; border: 1px solid #222; border-radius: 10px; padding: 20px; text-align: center; }
+.metric .num { font-size: 2.2em; font-weight: 700; color: #4ecdc4; }
+.metric .lbl { color: #888; font-size: 0.85em; margin-top: 4px; }
+
+/* Code block */
+.code { background: #0d0d20; border: 1px solid #222; border-radius: 8px; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.82em; line-height: 1.7; overflow-x: auto; white-space: pre; }
+.c-key { color: #4ecdc4; } .c-val { color: #f5a623; } .c-cmt { color: #555; }
+
+/* Principles grid */
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.pcard { background: #111; border: 1px solid #222; border-radius: 10px; padding: 20px; }
+.pcard h4 { color: #4ecdc4; margin-bottom: 8px; font-size: 0.95em; }
+.pcard p { color: #aaa; font-size: 0.85em; line-height: 1.5; }
+
+@media (max-width: 900px) { .compare, .pgrid { grid-template-columns: 1fr; } .metrics { grid-template-columns: repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+    <h1>Enterprise API Knowledge Graph</h1>
+    <p>Agent architecture with a semantic layer for cross-domain API orchestration</p>
+</div>
+
+<div class="metrics">
+    <div class="metric"><div class="num">74</div><div class="lbl">APIs</div></div>
+    <div class="metric"><div class="num">10</div><div class="lbl">Domains</div></div>
+    <div class="metric"><div class="num">132</div><div class="lbl">Dependencies</div></div>
+    <div class="metric"><div class="num">5-9s</div><div class="lbl">Latency</div></div>
+    <div class="metric"><div class="num">0</div><div class="lbl">Hardcoded Rules</div></div>
+</div>
+
+<!-- ===== PROBLEM ===== -->
+<section>
+<h2>The Problem: Multi-Agent / MCP Server Sprawl</h2>
+<div class="compare">
+    <div class="compare-card old">
+        <h3>Traditional: Domain Agents + MCP Servers</h3>
+        <ul>
+            <li>One MCP server per domain (payroll, benefits, tax...)</li>
+            <li>Router agent decides which domain → routing errors</li>
+            <li>Cross-domain questions require multi-hop agent handoffs</li>
+            <li>Tool count grows → LLM selection accuracy collapses</li>
+            <li>Adding a domain = new server, new routes, new prompts, new tests</li>
+            <li>Context duplicated across agent boundaries</li>
+            <li>No shared semantic understanding</li>
+        </ul>
+    </div>
+    <div class="compare-card new">
+        <h3>This: Single Agent + Semantic Knowledge Graph</h3>
+        <ul>
+            <li>One semantic layer covers ALL domains</li>
+            <li>Vector search replaces routing logic</li>
+            <li>Cross-domain via graph traversal — one pass</li>
+            <li>Agent sees only 5-10 relevant APIs per query</li>
+            <li>Adding a domain = drop specs, run 3 commands</li>
+            <li>Bounded context — never sees the full graph</li>
+            <li>Rich descriptions enable semantic matching</li>
+        </ul>
+    </div>
+</div>
+</section>
+
+<!-- ===== MAIN ARCHITECTURE DIAGRAM ===== -->
+<section>
+<h2>Runtime Architecture: Agent Query Loop</h2>
+<div class="diagram-container">
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background regions -->
+    <rect x="30" y="30" width="1140" height="100" rx="8" fill="#111" stroke="#333" stroke-dasharray="4"/>
+    <text x="50" y="55" fill="#666" font-size="11">USER</text>
+
+    <rect x="30" y="150" width="1140" height="420" rx="8" fill="#0a1525" stroke="#2a5580" stroke-dasharray="4"/>
+    <text x="50" y="175" fill="#3498db" font-size="11" font-weight="600">AGENT (Reasoning Loop)</text>
+
+    <rect x="30" y="590" width="1140" height="90" rx="8" fill="#0a2515" stroke="#2a8055" stroke-dasharray="4"/>
+    <text x="50" y="615" fill="#1abc9c" font-size="11">API LAYER (Mock / Real)</text>
+
+    <!-- User Question -->
+    <rect x="450" y="50" width="300" height="60" rx="8" fill="#1a1a3a" stroke="#4ecdc4" stroke-width="2"/>
+    <text x="600" y="78" fill="#fff" font-size="13" text-anchor="middle" font-weight="600">User Question</text>
+    <text x="600" y="96" fill="#888" font-size="10" text-anchor="middle">"Why did Sarah's net pay drop $340?"</text>
+
+    <!-- Arrow down -->
+    <line x1="600" y1="110" x2="600" y2="190" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+    <!-- Step 1: Semantic Search -->
+    <rect x="60" y="200" width="220" height="90" rx="8" fill="#152855" stroke="#3498db" stroke-width="2"/>
+    <text x="170" y="228" fill="#3498db" font-size="10" text-anchor="middle" font-weight="600">STEP 1</text>
+    <text x="170" y="248" fill="#fff" font-size="12" text-anchor="middle" font-weight="600">Semantic Search</text>
+    <text x="170" y="268" fill="#aaa" font-size="10" text-anchor="middle">FAISS vector search over</text>
+    <text x="170" y="282" fill="#aaa" font-size="10" text-anchor="middle">capability descriptions</text>
+
+    <!-- Step 2: Graph Expansion -->
+    <rect x="320" y="200" width="220" height="90" rx="8" fill="#155540" stroke="#1abc9c" stroke-width="2"/>
+    <text x="430" y="228" fill="#1abc9c" font-size="10" text-anchor="middle" font-weight="600">STEP 2</text>
+    <text x="430" y="248" fill="#fff" font-size="12" text-anchor="middle" font-weight="600">Graph Expansion</text>
+    <text x="430" y="268" fill="#aaa" font-size="10" text-anchor="middle">Traverse dependency edges</text>
+    <text x="430" y="282" fill="#aaa" font-size="10" text-anchor="middle">+ proximity scoring</text>
+
+    <!-- Step 3: LLM Planning -->
+    <rect x="580" y="200" width="220" height="90" rx="8" fill="#1a1040" stroke="#9b59b6" stroke-width="2"/>
+    <text x="690" y="228" fill="#9b59b6" font-size="10" text-anchor="middle" font-weight="600">STEP 3</text>
+    <text x="690" y="248" fill="#fff" font-size="12" text-anchor="middle" font-weight="600">LLM Plan Generation</text>
+    <text x="690" y="268" fill="#aaa" font-size="10" text-anchor="middle">Constrained JSON output</text>
+    <text x="690" y="282" fill="#aaa" font-size="10" text-anchor="middle">from capability descriptions</text>
+
+    <!-- Step 4: Graph Validation -->
+    <rect x="840" y="200" width="220" height="90" rx="8" fill="#155540" stroke="#1abc9c" stroke-width="2"/>
+    <text x="950" y="228" fill="#1abc9c" font-size="10" text-anchor="middle" font-weight="600">STEP 4</text>
+    <text x="950" y="248" fill="#fff" font-size="12" text-anchor="middle" font-weight="600">Graph Validation</text>
+    <text x="950" y="268" fill="#aaa" font-size="10" text-anchor="middle">Deps, params, permissions</text>
+    <text x="950" y="282" fill="#aaa" font-size="10" text-anchor="middle">+ repair loop if fails</text>
+
+    <!-- Arrows 1→2→3→4 -->
+    <line x1="280" y1="245" x2="320" y2="245" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+    <line x1="540" y1="245" x2="580" y2="245" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+    <line x1="800" y1="245" x2="840" y2="245" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+    <!-- Repair loop arrow -->
+    <path d="M 950 290 L 950 320 L 690 320 L 690 290" fill="none" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow-red)"/>
+    <text x="820" y="335" fill="#ff6b6b" font-size="9" text-anchor="middle">repair if validation fails</text>
+
+    <!-- Step 5: DAG Executor -->
+    <rect x="200" y="380" width="280" height="90" rx="8" fill="#2a2a10" stroke="#f5a623" stroke-width="2"/>
+    <text x="340" y="408" fill="#f5a623" font-size="10" text-anchor="middle" font-weight="600">STEP 5</text>
+    <text x="340" y="428" fill="#fff" font-size="12" text-anchor="middle" font-weight="600">Deterministic DAG Executor</text>
+    <text x="340" y="448" fill="#aaa" font-size="10" text-anchor="middle">API calls in dependency order</text>
+    <text x="340" y="462" fill="#aaa" font-size="10" text-anchor="middle">+ operators (diff, attribute_delta)</text>
+
+    <!-- Step 6: Evidence + Synthesis -->
+    <rect x="580" y="380" width="280" height="90" rx="8" fill="#1a1040" stroke="#9b59b6" stroke-width="2"/>
+    <text x="720" y="408" fill="#9b59b6" font-size="10" text-anchor="middle" font-weight="600">STEP 6</text>
+    <text x="720" y="428" fill="#fff" font-size="12" text-anchor="middle" font-weight="600">Evidence → LLM Synthesis</text>
+    <text x="720" y="448" fill="#aaa" font-size="10" text-anchor="middle">Extract claims from execution</text>
+    <text x="720" y="462" fill="#aaa" font-size="10" text-anchor="middle">LLM generates grounded answer</text>
+
+    <!-- Arrow from validation down to executor -->
+    <path d="M 950 290 L 950 360 L 480 360 L 480 380" fill="none" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+    <!-- Arrow from step 1 area down -->
+    <path d="M 170 290 L 170 360 L 200 360 L 200 380" fill="none" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+    <!-- Arrow executor → synthesis -->
+    <line x1="480" y1="425" x2="580" y2="425" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+    <!-- Arrow executor → API layer -->
+    <line x1="340" y1="470" x2="340" y2="610" stroke="#f5a623" stroke-width="2" marker-end="url(#arrow-orange)"/>
+    <text x="355" y="545" fill="#f5a623" font-size="9">API calls</text>
+
+    <!-- Arrow API layer → executor (responses) -->
+    <line x1="380" y1="610" x2="380" y2="470" stroke="#88cc88" stroke-width="1.5" stroke-dasharray="3" marker-end="url(#arrow-green)"/>
+    <text x="395" y="545" fill="#88cc88" font-size="9">responses</text>
+
+    <!-- Answer output -->
+    <rect x="900" y="380" width="160" height="90" rx="8" fill="#1a1a3a" stroke="#4ecdc4" stroke-width="2"/>
+    <text x="980" y="420" fill="#4ecdc4" font-size="10" text-anchor="middle" font-weight="600">OUTPUT</text>
+    <text x="980" y="440" fill="#fff" font-size="11" text-anchor="middle">Answer +</text>
+    <text x="980" y="456" fill="#fff" font-size="11" text-anchor="middle">Evidence +</text>
+    <text x="980" y="472" fill="#fff" font-size="11" text-anchor="middle">Execution Trace</text>
+    <line x1="860" y1="425" x2="900" y2="425" stroke="#4ecdc4" stroke-width="2" marker-end="url(#arrow-teal)"/>
+
+    <!-- API boxes -->
+    <rect x="100" y="620" width="130" height="45" rx="6" fill="#1a2a1a" stroke="#2a8055"/>
+    <text x="165" y="647" fill="#ccc" font-size="10" text-anchor="middle">Payroll APIs</text>
+    <rect x="260" y="620" width="130" height="45" rx="6" fill="#1a2a1a" stroke="#2a8055"/>
+    <text x="325" y="647" fill="#ccc" font-size="10" text-anchor="middle">Benefits APIs</text>
+    <rect x="420" y="620" width="130" height="45" rx="6" fill="#1a2a1a" stroke="#2a8055"/>
+    <text x="485" y="647" fill="#ccc" font-size="10" text-anchor="middle">Tax APIs</text>
+    <rect x="580" y="620" width="130" height="45" rx="6" fill="#1a2a1a" stroke="#2a8055"/>
+    <text x="645" y="647" fill="#ccc" font-size="10" text-anchor="middle">Time APIs</text>
+    <rect x="740" y="620" width="130" height="45" rx="6" fill="#1a2a1a" stroke="#2a8055"/>
+    <text x="805" y="647" fill="#ccc" font-size="10" text-anchor="middle">Compliance APIs</text>
+    <rect x="900" y="620" width="130" height="45" rx="6" fill="#1a2a1a" stroke="#2a8055"/>
+    <text x="965" y="647" fill="#ccc" font-size="10" text-anchor="middle">+ 5 more domains</text>
+
+    <!-- Semantic Layer callout -->
+    <rect x="60" y="500" width="200" height="60" rx="6" fill="#152855" stroke="#3498db" stroke-dasharray="3"/>
+    <text x="160" y="525" fill="#3498db" font-size="10" text-anchor="middle" font-weight="600">Semantic Layer</text>
+    <text x="160" y="542" fill="#aaa" font-size="9" text-anchor="middle">74 YAML descriptions</text>
+    <text x="160" y="555" fill="#aaa" font-size="9" text-anchor="middle">FAISS vector index</text>
+    <line x1="170" y1="500" x2="170" y2="290" stroke="#3498db" stroke-width="1" stroke-dasharray="3"/>
+
+    <!-- Graph callout -->
+    <rect x="320" y="500" width="200" height="60" rx="6" fill="#155540" stroke="#1abc9c" stroke-dasharray="3"/>
+    <text x="420" y="525" fill="#1abc9c" font-size="10" text-anchor="middle" font-weight="600">Structural Graph</text>
+    <text x="420" y="542" fill="#aaa" font-size="9" text-anchor="middle">NetworkX: 442 nodes, 789 edges</text>
+    <text x="420" y="555" fill="#aaa" font-size="9" text-anchor="middle">132 dependency edges</text>
+    <line x1="430" y1="500" x2="430" y2="290" stroke="#1abc9c" stroke-width="1" stroke-dasharray="3"/>
+
+    <!-- Bedrock callout -->
+    <rect x="580" y="500" width="200" height="60" rx="6" fill="#1a1040" stroke="#9b59b6" stroke-dasharray="3"/>
+    <text x="680" y="525" fill="#9b59b6" font-size="10" text-anchor="middle" font-weight="600">Amazon Bedrock</text>
+    <text x="680" y="542" fill="#aaa" font-size="9" text-anchor="middle">Haiku: planning + synthesis</text>
+    <text x="680" y="555" fill="#aaa" font-size="9" text-anchor="middle">Titan: embeddings</text>
+    <line x1="690" y1="500" x2="690" y2="290" stroke="#9b59b6" stroke-width="1" stroke-dasharray="3"/>
+
+    <!-- Arrow markers -->
+    <defs>
+        <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4ecdc4"/></marker>
+        <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f5a623"/></marker>
+        <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#88cc88"/></marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ff6b6b"/></marker>
+    </defs>
+</svg>
+</div>
+</section>
+
+<!-- ===== BUILD-TIME DIAGRAM ===== -->
+<section>
+<h2>Build-Time: Constructing the Semantic Layer</h2>
+<div class="diagram-container">
+<svg viewBox="0 0 1200 450" xmlns="http://www.w3.org/2000/svg">
+    <!-- Input -->
+    <rect x="50" y="50" width="180" height="70" rx="8" fill="#2a2a10" stroke="#f5a623" stroke-width="2"/>
+    <text x="140" y="80" fill="#f5a623" font-size="11" text-anchor="middle" font-weight="600">OpenAPI Specs</text>
+    <text x="140" y="98" fill="#aaa" font-size="9" text-anchor="middle">10 YAML files, any domain</text>
+
+    <!-- Step 1: Parse -->
+    <rect x="300" y="50" width="180" height="70" rx="8" fill="#111" stroke="#444" stroke-width="1.5"/>
+    <text x="390" y="75" fill="#fff" font-size="11" text-anchor="middle" font-weight="600">1. Parse & Normalize</text>
+    <text x="390" y="93" fill="#aaa" font-size="9" text-anchor="middle">Extract capabilities,</text>
+    <text x="390" y="105" fill="#aaa" font-size="9" text-anchor="middle">entities, parameters</text>
+    <line x1="230" y1="85" x2="300" y2="85" stroke="#f5a623" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+    <!-- Step 2: Infer Dependencies -->
+    <rect x="550" y="50" width="180" height="70" rx="8" fill="#111" stroke="#444" stroke-width="1.5"/>
+    <text x="640" y="75" fill="#fff" font-size="11" text-anchor="middle" font-weight="600">2. Infer Dependencies</text>
+    <text x="640" y="93" fill="#aaa" font-size="9" text-anchor="middle">Rule-based + LLM</text>
+    <text x="640" y="105" fill="#aaa" font-size="9" text-anchor="middle">field matching, entity flow</text>
+    <line x1="480" y1="85" x2="550" y2="85" stroke="#4ecdc4" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+
+    <!-- Step 3: Build Graph -->
+    <rect x="800" y="50" width="180" height="70" rx="8" fill="#155540" stroke="#1abc9c" stroke-width="2"/>
+    <text x="890" y="75" fill="#1abc9c" font-size="11" text-anchor="middle" font-weight="600">3. Structural Graph</text>
+    <text x="890" y="93" fill="#aaa" font-size="9" text-anchor="middle">NetworkX DiGraph</text>
+    <text x="890" y="105" fill="#aaa" font-size="9" text-anchor="middle">442 nodes, 789 edges</text>
+    <line x1="730" y1="85" x2="800" y2="85" stroke="#4ecdc4" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+
+    <!-- Step 4: Generate Descriptions -->
+    <rect x="300" y="180" width="180" height="70" rx="8" fill="#152855" stroke="#3498db" stroke-width="2"/>
+    <text x="390" y="205" fill="#3498db" font-size="11" text-anchor="middle" font-weight="600">4. LLM Descriptions</text>
+    <text x="390" y="223" fill="#aaa" font-size="9" text-anchor="middle">Rich YAML per capability:</text>
+    <text x="390" y="235" fill="#aaa" font-size="9" text-anchor="middle">preconditions, use cases, relations</text>
+    <path d="M 890 120 L 890 165 L 480 165 L 480 180" fill="none" stroke="#3498db" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+    <path d="M 390 120 L 390 180" fill="none" stroke="#3498db" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+
+    <!-- Step 5: Embed -->
+    <rect x="550" y="180" width="180" height="70" rx="8" fill="#152855" stroke="#3498db" stroke-width="2"/>
+    <text x="640" y="205" fill="#3498db" font-size="11" text-anchor="middle" font-weight="600">5. Embed Descriptions</text>
+    <text x="640" y="223" fill="#aaa" font-size="9" text-anchor="middle">Titan Embeddings → FAISS</text>
+    <text x="640" y="235" fill="#aaa" font-size="9" text-anchor="middle">1024-dim vectors, cosine sim</text>
+    <line x1="480" y1="215" x2="550" y2="215" stroke="#3498db" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+
+    <!-- Step 6: Communities -->
+    <rect x="800" y="180" width="180" height="70" rx="8" fill="#1a1040" stroke="#9b59b6" stroke-width="2"/>
+    <text x="890" y="205" fill="#9b59b6" font-size="11" text-anchor="middle" font-weight="600">6. Communities</text>
+    <text x="890" y="223" fill="#aaa" font-size="9" text-anchor="middle">Louvain clustering</text>
+    <text x="890" y="235" fill="#aaa" font-size="9" text-anchor="middle">+ LLM summaries</text>
+    <line x1="730" y1="215" x2="800" y2="215" stroke="#9b59b6" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+
+    <!-- Outputs -->
+    <rect x="100" y="330" width="250" height="90" rx="8" fill="#155540" stroke="#1abc9c" stroke-width="1.5"/>
+    <text x="225" y="355" fill="#1abc9c" font-size="11" text-anchor="middle" font-weight="600">Structural Graph</text>
+    <text x="225" y="375" fill="#aaa" font-size="9" text-anchor="middle">out/api_graph.json</text>
+    <text x="225" y="392" fill="#888" font-size="9" text-anchor="middle">• Dependency edges (132)</text>
+    <text x="225" y="405" fill="#888" font-size="9" text-anchor="middle">• Cross-domain paths (101)</text>
+
+    <rect x="420" y="330" width="250" height="90" rx="8" fill="#152855" stroke="#3498db" stroke-width="1.5"/>
+    <text x="545" y="355" fill="#3498db" font-size="11" text-anchor="middle" font-weight="600">Semantic Index</text>
+    <text x="545" y="375" fill="#aaa" font-size="9" text-anchor="middle">out/semantic_index/</text>
+    <text x="545" y="392" fill="#888" font-size="9" text-anchor="middle">• FAISS index (74 vectors × 1024d)</text>
+    <text x="545" y="405" fill="#888" font-size="9" text-anchor="middle">• Description metadata</text>
+
+    <rect x="740" y="330" width="250" height="90" rx="8" fill="#1a1040" stroke="#9b59b6" stroke-width="1.5"/>
+    <text x="865" y="355" fill="#9b59b6" font-size="11" text-anchor="middle" font-weight="600">Community Layer</text>
+    <text x="865" y="375" fill="#aaa" font-size="9" text-anchor="middle">semantic/communities.yaml</text>
+    <text x="865" y="392" fill="#888" font-size="9" text-anchor="middle">• 5 clusters with summaries</text>
+    <text x="865" y="405" fill="#888" font-size="9" text-anchor="middle">• Pre-computed plan templates</text>
+
+    <!-- Arrows to outputs -->
+    <path d="M 890 250 L 890 280 L 225 280 L 225 330" fill="none" stroke="#1abc9c" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+    <path d="M 640 250 L 640 280 L 545 280 L 545 330" fill="none" stroke="#3498db" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+    <path d="M 890 250 L 890 330" fill="none" stroke="#9b59b6" stroke-width="1.5" marker-end="url(#arrow-teal)"/>
+
+    <defs>
+        <marker id="arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4ecdc4"/></marker>
+        <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f5a623"/></marker>
+    </defs>
+</svg>
+</div>
+</section>
+
+<!-- ===== SEMANTIC LAYER DETAIL ===== -->
+<section>
+<h2>Inside the Semantic Layer</h2>
+<div class="code"><span class="c-cmt"># Each of 74 capabilities gets a rich description like this:</span>
+<span class="c-key">capability:</span> <span class="c-val">get_paystub</span>
+<span class="c-key">domain:</span> <span class="c-val">payroll</span>
+<span class="c-key">description:</span> <span class="c-val">|</span>
+  <span class="c-val">Returns a complete breakdown of an employee's compensation for a pay period.</span>
+  <span class="c-val">Used by employees reviewing pay, payroll admins investigating discrepancies,</span>
+  <span class="c-val">and HR teams responding to compensation queries.</span>
+<span class="c-key">preconditions:</span>
+  - <span class="c-val">Employee must have active payroll enrollment</span>
+  - <span class="c-val">Pay period must be closed or current</span>
+  - <span class="c-val">Time entries must be submitted and approved</span>
+<span class="c-key">produces:</span>
+  - <span class="c-val">Gross pay, itemized deductions, tax withholdings, net pay</span>
+<span class="c-key">use_cases:</span>
+  - <span class="c-val">"Why is my take-home pay lower this period?"</span>
+  - <span class="c-val">"Verify reported income for a mortgage application"</span>
+<span class="c-key">related:</span>
+  - <span class="c-key">operation_id:</span> <span class="c-val">get_payroll_history</span>
+    <span class="c-key">reason:</span> <span class="c-val">Provides longitudinal context across periods</span>
+  - <span class="c-key">operation_id:</span> <span class="c-val">get_deduction_breakdown</span>
+    <span class="c-key">reason:</span> <span class="c-val">Granular detail when totals are unexpected</span>
+
+<span class="c-cmt"># This text is EMBEDDED — "why did my take-home drop?" matches semantically</span>
+<span class="c-cmt"># even though no keywords overlap with the question.</span></div>
+</section>
+
+<!-- ===== KEY PRINCIPLES ===== -->
+<section>
+<h2>Design Principles</h2>
+<div class="pgrid">
+    <div class="pcard">
+        <h4>Semantic Layer = Retrieval</h4>
+        <p>Rich descriptions embedded in vector store. Questions match capabilities through meaning. "Take-home pay" finds "net pay" without synonym mappings.</p>
+    </div>
+    <div class="pcard">
+        <h4>Graph = Structure Only</h4>
+        <p>Dependency resolution, topological ordering, constraint validation, community detection. Never used for text matching — that's the semantic layer's job.</p>
+    </div>
+    <div class="pcard">
+        <h4>LLM Plans, Graph Validates</h4>
+        <p>LLM generates execution plans from capability descriptions. Graph enforces structural correctness. Repair loop if validation fails.</p>
+    </div>
+    <div class="pcard">
+        <h4>Deterministic Execution</h4>
+        <p>No generated Python. DAG executor runs typed API calls and operators (diff, attribute_delta, extract) in dependency order. Fully reproducible.</p>
+    </div>
+    <div class="pcard">
+        <h4>Zero Domain-Specific Code</h4>
+        <p>No hardcoded keywords, templates, or routing rules. New domain = drop OpenAPI specs + 3 commands. Framework derives everything from API definitions.</p>
+    </div>
+    <div class="pcard">
+        <h4>Evidence-Grounded Answers</h4>
+        <p>LLM synthesizes answers only from structured evidence claims. Every fact traces to a specific API call. Full audit trail from question to answer.</p>
+    </div>
+</div>
+</section>
+
+<!-- ===== SCALABILITY ===== -->
+<section>
+<h2>Scalability</h2>
+<div class="diagram-container" style="padding: 20px;">
+<table style="width:100%; border-collapse:collapse;">
+<tr style="border-bottom:1px solid #333;"><th style="padding:12px; text-align:left; color:#4ecdc4;">Scale</th><th style="padding:12px; color:#4ecdc4;">APIs</th><th style="padding:12px; color:#4ecdc4;">Retrieval</th><th style="padding:12px; color:#4ecdc4;">Graph</th><th style="padding:12px; color:#4ecdc4;">Latency</th><th style="padding:12px; color:#4ecdc4;">Infra</th></tr>
+<tr style="border-bottom:1px solid #222;"><td style="padding:12px; color:#4ecdc4; font-weight:600;">POC (current)</td><td style="padding:12px;">74</td><td style="padding:12px;">FAISS flat</td><td style="padding:12px;">NetworkX</td><td style="padding:12px;">5-9s</td><td style="padding:12px;">Local machine</td></tr>
+<tr style="border-bottom:1px solid #222;"><td style="padding:12px;">Department</td><td style="padding:12px;">200-500</td><td style="padding:12px;">FAISS IVF</td><td style="padding:12px;">NetworkX</td><td style="padding:12px;">5-9s</td><td style="padding:12px;">Local / single EC2</td></tr>
+<tr style="border-bottom:1px solid #222;"><td style="padding:12px;">Enterprise</td><td style="padding:12px;">500-2000</td><td style="padding:12px;">FAISS IVF + GPU</td><td style="padding:12px;">Neptune</td><td style="padding:12px;">5-10s</td><td style="padding:12px;">AWS managed</td></tr>
+<tr><td style="padding:12px;">Platform</td><td style="padding:12px;">2000+</td><td style="padding:12px;">OpenSearch kNN</td><td style="padding:12px;">Neptune + cache</td><td style="padding:12px;">7-12s</td><td style="padding:12px;">Distributed</td></tr>
+</table>
+<p style="color:#666; margin-top:15px; font-size:0.85em; text-align:center;">Latency floor = 2 Bedrock LLM calls (~4s). Retrieval + graph ops are sub-second at any scale.</p>
+</div>
+</section>
+
+<!-- ===== ADD DOMAIN ===== -->
+<section>
+<h2>Adding a New Domain (Zero Code Changes)</h2>
+<div class="code"><span class="c-cmt"># 1. Drop OpenAPI specs</span>
+specs/sample_healthcare/*.yaml
+
+<span class="c-cmt"># 2. Build structural graph</span>
+<span class="c-val">python -m api_kg.cli build --specs-dir ./specs/sample_healthcare</span>
+
+<span class="c-cmt"># 3. Generate semantic descriptions (LLM-enriched)</span>
+<span class="c-val">python -m api_kg.cli describe --specs-dir ./specs/sample_healthcare</span>
+
+<span class="c-cmt"># 4. Build vector index + communities</span>
+<span class="c-val">python -m api_kg.cli index</span>
+
+<span class="c-cmt"># 5. Ask questions — works immediately</span>
+<span class="c-val">python -m api_kg.cli ask "What drug interactions exist for patient P-1042?"</span></div>
+</section>
+
+</div>
+</body>
+</html>

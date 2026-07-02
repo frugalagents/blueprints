@@ -1,0 +1,248 @@
+openapi: 3.0.3
+info:
+  title: Payroll API
+  version: 1.0.0
+  x-domain: payroll
+paths:
+  /payroll/paystub/{employee_id}:
+    get:
+      operationId: get_paystub
+      summary: Get paystub with gross pay, net pay, deductions, and taxes
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pay_period
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employee_id:
+                    type: string
+                  pay_period:
+                    type: string
+                  gross_pay:
+                    type: number
+                  net_pay:
+                    type: number
+                  deductions:
+                    type: string
+                  taxes:
+                    type: string
+                  earnings:
+                    type: string
+  /payroll/history/{employee_id}:
+    get:
+      operationId: get_payroll_history
+      summary: Get payroll history for identifying pay changes over time
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: since
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: string
+                  pay_period:
+                    type: string
+                  gross_pay:
+                    type: number
+                  net_pay:
+                    type: number
+  /payroll/adjustments/{employee_id}:
+    get:
+      operationId: get_payroll_adjustments
+      summary: Get payroll adjustments (retro pay, corrections, one-time)
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pay_period
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  adjustments:
+                    type: string
+                  type:
+                    type: string
+                  adjustment_amount:
+                    type: number
+                  reason:
+                    type: string
+                  effective_date:
+                    type: string
+  /payroll/deductions/{employee_id}:
+    get:
+      operationId: get_deduction_breakdown
+      summary: Get detailed deduction breakdown by category
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pay_period
+        in: query
+        required: false
+        schema:
+          type: string
+      x-depends-on:
+      - get_benefits_elections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pre_tax_deductions:
+                    type: string
+                  post_tax_deductions:
+                    type: string
+                  type:
+                    type: string
+                  deduction_amount:
+                    type: number
+  /payroll/ytd/{employee_id}:
+    get:
+      operationId: get_ytd_earnings
+      summary: Get year-to-date earnings and withholdings
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ytd_gross_pay:
+                    type: number
+                  ytd_net_pay:
+                    type: number
+                  ytd_federal_tax:
+                    type: number
+                  ytd_state_tax:
+                    type: number
+                  ytd_401k_amount:
+                    type: number
+  /payroll/garnishments/{employee_id}:
+    get:
+      operationId: get_garnishments
+      summary: Get active wage garnishments and court orders
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  garnishments:
+                    type: string
+                  type:
+                    type: string
+                  garnishment_amount:
+                    type: number
+                  case_number:
+                    type: number
+                  remaining_balance:
+                    type: number
+  /payroll/direct-deposit/{employee_id}:
+    get:
+      operationId: get_direct_deposit
+      summary: Get direct deposit allocation
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accounts:
+                    type: string
+                  bank:
+                    type: string
+                  account_type:
+                    type: string
+                  allocation_pct:
+                    type: number
+  /payroll/pay-schedule:
+    get:
+      operationId: get_pay_schedule
+      summary: Get pay schedule and upcoming pay dates
+      parameters:
+      - name: pay_group
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  frequency:
+                    type: string
+                  next_pay_date:
+                    type: string
+                  period_start:
+                    type: string
+                  period_end:
+                    type: string

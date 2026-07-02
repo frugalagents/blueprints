@@ -1,0 +1,48 @@
+capability: get_performance_reviews
+domain: performance
+method: GET
+path: /performance/reviews/{employee_id}
+summary: Retrieve the performance review history and overall ratings for an employee
+description: Returns a chronological list of all performance reviews for a given employee,
+  optionally filtered by year, including each review's period, overall rating, completion
+  status, and the reviewer's identity. This API is the starting point for understanding
+  an employee's performance trajectory over time and is commonly used by managers,
+  HR business partners, and compensation teams before making decisions about merit
+  increases, promotions, or performance improvement plans. It answers high-level questions
+  about how an employee has been rated without exposing the full narrative detail
+  of each review.
+side_effect: read
+preconditions:
+- The employee must exist in the HR system with a valid employee_id
+- At least one performance review must have been completed or initiated for the employee
+- The caller must have performance read permissions for the target employee
+- If filtering by year, the year must be a valid calendar year with review data
+produces:
+- A list of performance review records associated with the employee
+- Unique review identifiers that can be used to fetch full review details
+- The review period (e.g., Q4 2023, Annual 2022) for each review
+- Overall performance rating per review cycle
+- Completion status of each review (draft, submitted, finalized)
+- The name or ID of the reviewer who conducted each review
+use_cases:
+- What has this employee's overall performance rating been over the past three years?
+- Has this employee ever received a below-expectations rating that might warrant a
+  performance improvement plan?
+- Which employees on my team have not yet had their annual review completed for this
+  cycle?
+related:
+- operation_id: get_review_details
+  reason: Once a review_id is retrieved from this list, get_review_details provides
+    the full competency scores, strengths, and manager comments for that specific
+    review.
+- operation_id: submit_merit_increase
+  reason: Merit increase submissions typically require a completed performance review
+    as justification; this API confirms review history and ratings before submission.
+- operation_id: create_improvement_plan
+  reason: Creating a performance improvement plan requires evidence of prior review
+    ratings; this API surfaces the historical rating context needed to justify the
+    plan.
+- operation_id: get_peer_feedback
+  reason: Peer feedback is often collected as part of or alongside formal reviews;
+    cross-referencing both provides a complete picture of an employee's performance
+    standing.

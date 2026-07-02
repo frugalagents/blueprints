@@ -1,0 +1,52 @@
+capability: get_recruiting_pipeline_metrics
+domain: recruiting
+method: GET
+path: /recruiting/pipeline-metrics
+summary: Retrieve recruiting pipeline performance analytics by department and time
+  period
+description: This API aggregates and returns key recruiting performance indicators
+  for a given department and time period, including the number of open positions,
+  total applicant volume, average time to fill a role, and offer acceptance rate.
+  Use this when talent acquisition leaders, HR business partners, or executives need
+  to assess the health and efficiency of the hiring pipeline. It helps answer strategic
+  questions like 'Are we filling roles fast enough to meet headcount targets?' and
+  'Which departments are struggling to attract or close candidates?'
+side_effect: read
+preconditions:
+- At least one job posting or hiring requisition must exist for the specified department
+  and period to return meaningful data
+- The department identifier must be valid and recognized in the HR system
+- The period parameter must be a valid and supported time range format
+produces:
+- The current count of open positions in the specified department, indicating unfilled
+  headcount demand
+- Total applicant volume across all open roles, reflecting top-of-funnel recruiting
+  activity
+- Average time-to-fill metric showing how long it typically takes to close a role
+  from posting to accepted offer
+- Offer acceptance rate revealing how effectively the team is converting selected
+  candidates into hires
+use_cases:
+- "A VP of Talent asks: 'How is our Engineering department performing on recruiting\
+  \ this quarter \u2014 are we filling roles faster or slower than last quarter, and\
+  \ are candidates accepting our offers at a healthy rate?'"
+- An HR business partner preparing for a workforce planning meeting needs to show
+  leadership how many positions are currently open and how long they've been sitting
+  unfilled.
+- A recruiting manager wants to identify which departments have low offer acceptance
+  rates so they can investigate whether compensation, process, or candidate experience
+  is causing candidates to decline.
+related:
+- "list_job_postings \u2014 provides the underlying list of active job postings that\
+  \ feed into open position counts and applicant volume metrics reported by this API"
+- "list_hiring_requisitions \u2014 requisitions represent approved headcount demand;\
+  \ this API's open position count is derived from approved requisitions, making it\
+  \ a key upstream data source"
+- "get_compensation_budget \u2014 offer acceptance rate can be influenced by compensation\
+  \ competitiveness; pairing pipeline metrics with compensation budget data helps\
+  \ diagnose why acceptance rates may be low"
+- "get_performance_reviews / get_rating_calibration \u2014 used to contextualize the\
+  \ quality of hires flowing through the pipeline relative to team performance benchmarks"
+- "search_employees / get_employee_profile \u2014 helps correlate pipeline metrics\
+  \ with actual headcount data to validate whether filled positions are reflected\
+  \ in the employee roster"

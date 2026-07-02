@@ -1,0 +1,286 @@
+openapi: 3.0.3
+info:
+  title: Performance Management API
+  version: 1.0.0
+  x-domain: performance
+paths:
+  /performance/reviews/{employee_id}:
+    get:
+      operationId: get_performance_reviews
+      summary: Get performance review history
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: string
+                  review_id:
+                    type: string
+                  period:
+                    type: string
+                  overall_rating:
+                    type: number
+                  status:
+                    type: string
+                  reviewer:
+                    type: string
+  /performance/reviews/{review_id}/details:
+    get:
+      operationId: get_review_details
+      summary: Get detailed review with competency scores
+      parameters:
+      - name: review_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  review_id:
+                    type: string
+                  employee_id:
+                    type: string
+                  competency_scores:
+                    type: string
+                  strengths:
+                    type: string
+                  development_areas:
+                    type: string
+                  manager_comments:
+                    type: string
+  /performance/goals/{employee_id}:
+    get:
+      operationId: get_employee_goals
+      summary: Get employee goals and OKRs
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  goals:
+                    type: string
+                  goal_id:
+                    type: string
+                  title:
+                    type: string
+                  target_date:
+                    type: string
+                  progress_pct:
+                    type: number
+                  status:
+                    type: string
+    post:
+      operationId: create_employee_goal
+      summary: Create a new goal for employee
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                target_date:
+                  type: string
+                key_results:
+                  type: string
+                weight:
+                  type: number
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  goal_id:
+                    type: string
+                  status:
+                    type: string
+  /performance/feedback/{employee_id}:
+    get:
+      operationId: get_peer_feedback
+      summary: Get 360-degree peer feedback
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: period
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  feedback:
+                    type: string
+                  from:
+                    type: string
+                  relationship:
+                    type: string
+                  rating:
+                    type: number
+                  comments:
+                    type: string
+                  submitted_date:
+                    type: string
+  /performance/ratings/calibration:
+    get:
+      operationId: get_rating_calibration
+      summary: Get team rating distribution for calibration
+      parameters:
+      - name: department
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: review_period
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  department:
+                    type: string
+                  distribution:
+                    type: string
+                  rating:
+                    type: string
+                  count:
+                    type: integer
+                  percentage:
+                    type: number
+  /performance/improvement-plans/{employee_id}:
+    get:
+      operationId: get_improvement_plan
+      summary: Get performance improvement plan details
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan_id:
+                    type: string
+                  employee_id:
+                    type: string
+                  start_date:
+                    type: string
+                  end_date:
+                    type: string
+                  objectives:
+                    type: string
+                  milestones:
+                    type: string
+                  status:
+                    type: string
+                  check_in_frequency:
+                    type: string
+    post:
+      operationId: create_improvement_plan
+      summary: Create a performance improvement plan
+      x-depends-on:
+      - get_performance_reviews
+      parameters:
+      - name: employee_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                objectives:
+                  type: string
+                duration_days:
+                  type: integer
+                milestones:
+                  type: string
+      responses:
+        '201':
+          description: Plan created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan_id:
+                    type: string
+                  status:
+                    type: string
+                  start_date:
+                    type: string

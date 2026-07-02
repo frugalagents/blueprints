@@ -1,0 +1,44 @@
+capability: get_audit_trail
+domain: compliance
+method: GET
+path: /compliance/audit-trail/{employee_id}
+summary: Retrieve a chronological audit trail of all HR, payroll, and benefits changes
+  for an employee
+description: "This API returns a time-ordered log of every recorded change made to\
+  \ an employee's HR, payroll, and benefits records, optionally filtered to events\
+  \ occurring after a specified date. It is used by compliance officers, HR auditors,\
+  \ and legal teams to reconstruct the history of changes for an employee \u2014 for\
+  \ example, during an internal investigation, regulatory audit, or dispute resolution.\
+  \ Each event in the trail captures what changed, when it changed, and who made the\
+  \ change. It helps answer questions about whether proper procedures were followed\
+  \ and provides an immutable record for accountability purposes."
+side_effect: read
+preconditions:
+- Employee must exist in the system with a valid employee_id
+- The requesting user must have audit or compliance-level access permissions
+- If a 'since' date is provided, it must be a valid date in the past
+produces:
+- Chronological list of all recorded changes to the employee's HR, payroll, and benefits
+  records
+- Timestamps and actor information (who made each change) for full accountability
+- Change details including what was modified and the before/after values
+- Filtered event history when a 'since' date is provided, enabling period-specific
+  audits
+use_cases:
+- Who changed this employee's compensation and when, and was the proper approval process
+  followed?
+- What HR and payroll changes were made to this employee's record in the 90 days leading
+  up to their termination?
+- Can we produce a complete change history for this employee to satisfy a regulatory
+  audit request?
+related:
+- operation_id: get_compliance_violations
+  reason: The audit trail can identify the specific actions or changes that triggered
+    a compliance violation, supporting root cause analysis and remediation.
+- operation_id: get_compliance_checks
+  reason: Audit trail events provide historical context that explains why an employee's
+    current compliance check status is passing or failing.
+- operation_id: get_employee_profile
+  reason: The employee profile provides current state context that, combined with
+    the audit trail, allows reviewers to understand how the employee's record evolved
+    over time.
