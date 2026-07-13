@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Launch Claude Code through the LLM Gateway.
+
+Developers run this instead of `claude` directly. It:
+1. Authenticates with Cognito (prompts for creds or uses AWS SSO session)
+2. Sets the env vars Claude Code needs
+3. Execs into `claude` with the token injected
+
+Install: copy this to /usr/local/bin/claude-gateway (or add to PATH)
+Usage:   claude-gateway [any claude args...]
+"""
+
+import base64
+import hashlib
+import hmac
+import os
+import subprocess
+import sys
+import time
+
+import boto3
+
+# --- Configuration (distribute via managed config, MDM, or internal package) ---
+REGION = "us-east-1"
+POOL_ID = "us-east-1_NdI0yVplG"
+CLIENT_ID = "22ccb5rq5493k8gon7bckeb3gi"
+CLIENT_SECRET = "PLACEHOLDER"  # In production: fetch from Secrets Manager or embed at build time
+INFERENCE_URL = "https://llm-gateway-authed-6ybw1vckbw.gateway.bedrock-agentcore.us-east-1.amazonaws.com/inference"
+
+# Token cache file (avoids re-auth on every invocation)
+TOKEN_CACHE = os.path.expanduser("~/.cache/claude-gateway-token.json")
+# ---------------------------------------------------------------------------
+
+
+def get_client_secret() -> str:
+    """Get client secret. In production, fetch from Secrets Manager."""
+    # Option 1: Hardcoded (for internal distribution only)
+    if CLIENT_SECRET != "PLACEHOLDER":
+        return CLIENT_SECRET
+
+    # Option 2: From env var
+    secret = os.environ.get("CLAUDE_GATEWAY_CLIENT_SECRET")
+    if secret:
+        return secret
+
+    # Option 3: From AWS Secrets Manager
+    try:
+        sm = boto3.client("secretsmanager", region_name=REGION)
+        resp = sm.get_secret_value(SecretId="claude-gateway-client-secret")
+        return resp["SecretString"]
+    except Exception:
+        pass
+
+    print("Error: No client secret available.")
+    print("Set CLAUDE_GATEWAY_CLIENT_SECRET or configure Secrets Manager.")
+    sys.exit(1)
+
+
+def compute_secret_hash(username: str, client_id: str, client_secret: str) -> str:
+    msg = username + client_id
+    return base64.b64encode(
+        hmac.new(client_secret.encode(), msg.encode(), hashlib.sha256).digest()
+    ).decode()
+
+
+def load_cached_token() -> str | None:
+    """Load cached token if it exists and isn't expired."""
+    import json
+    try:
+        with open(TOKEN_CACHE) as f:
+            cache = json.load(f)
+        # Check expiry (with 5-min buffer)
+        if cache.get("expires_at", 0) > time.time() + 300:
+            return cache["access_token"]
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        pass
+    return None
+
+
+def save_cached_token(access_token: str, expires_in: int):
+    """Cache the token to disk."""
+    import json
+    os.makedirs(os.path.dirname(TOKEN_CACHE), exist_ok=True)
+    with open(TOKEN_CACHE, "w") as f:
+        json.dump({
+            "access_token": access_token,
+            "expires_at": time.time() + expires_in,
+        }, f)
+    os.chmod(TOKEN_CACHE, 0o600)
+
+
+def authenticate() -> str:
+    """Authenticate and return an access token."""
+    # Try cache first
+    cached = load_cached_token()
+    if cached:
+        return cached
+
+    # Get credentials
+    username = os.environ.get("CLAUDE_GATEWAY_USER")
+    password = os.environ.get("CLAUDE_GATEWAY_PASSWORD")
+
+    if not username:
+        username = input("Gateway username: ")
+    if not password:
+        import getpass
+        password = getpass.getpass("Gateway password: ")
+
+    client_secret = get_client_secret()
+    secret_hash = compute_secret_hash(username, CLIENT_ID, client_secret)
+
+    cognito = boto3.client("cognito-idp", region_name=REGION)
+    resp = cognito.initiate_auth(
+        ClientId=CLIENT_ID,
+        AuthFlow="USER_PASSWORD_AUTH",
+        AuthParameters={
+            "USERNAME": username,
+            "PASSWORD": password,
+            "SECRET_HASH": secret_hash,
+        },
+    )
+
+    result = resp["AuthenticationResult"]
+    token = result["AccessToken"]
+    expires_in = result.get("ExpiresIn", 3600)
+
+    save_cached_token(token, expires_in)
+    return token
+
+
+def main():
+    token = authenticate()
+
+    # Set env vars for Claude Code
+    env = os.environ.copy()
+    env["ANTHROPIC_BASE_URL"] = INFERENCE_URL
+    env["ANTHROPIC_AUTH_TOKEN"] = token
+
+    # Exec into claude with all remaining args
+    claude_args = sys.argv[1:]
+    cmd = ["claude"] + claude_args
+
+    try:
+        os.execvpe("claude", cmd, env)
+    except FileNotFoundError:
+        print("Error: 'claude' not found in PATH. Install Claude Code first.")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

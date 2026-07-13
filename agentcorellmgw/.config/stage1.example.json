@@ -1,0 +1,9 @@
+{
+  "region": "us-east-1",
+  "account_id": "YOUR_AWS_ACCOUNT_ID",
+  "model_id": "us.anthropic.claude-sonnet-4-6",
+  "guardrail_id": "YOUR_GUARDRAIL_ID",
+  "guardrail_version": "2",
+  "role_name": "AgentCoreGatewayRole",
+  "role_arn": "arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/AgentCoreGatewayRole"
+}

@@ -70,6 +70,13 @@ secrets.json
 *password*
 *token*
 
+# Configuration files with sensitive data
+**/.config/*.json
+!**/.config/*.example.json
+!**/.config/README.md
+config/*.json
+!config/*.example.json
+
 # Node.js
 node_modules/
 npm-debug.log*

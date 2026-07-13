@@ -1,0 +1,11 @@
+{
+  "gateway_id": "YOUR_GATEWAY_ID",
+  "gateway_arn": "arn:aws:bedrock-agentcore:us-east-1:YOUR_AWS_ACCOUNT_ID:gateway/YOUR_GATEWAY_ID",
+  "gateway_url": "https://YOUR_GATEWAY_ID.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "inference_url": "https://YOUR_GATEWAY_ID.gateway.bedrock-agentcore.us-east-1.amazonaws.com/inference",
+  "target_id": "YOUR_TARGET_ID",
+  "policy_engine_id": "YOUR_POLICY_ENGINE_ID",
+  "policy_engine_arn": "arn:aws:bedrock-agentcore:us-east-1:YOUR_AWS_ACCOUNT_ID:policy-engine/YOUR_POLICY_ENGINE_ID",
+  "permit_policy_id": "YOUR_PERMIT_POLICY_ID",
+  "inference_model": "bedrock-mantle/anthropic.claude-sonnet-5"
+}

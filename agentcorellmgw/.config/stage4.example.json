@@ -1,0 +1,21 @@
+{
+  "gateway_id": "YOUR_GATEWAY_ID",
+  "gateway_arn": "arn:aws:bedrock-agentcore:us-east-1:YOUR_AWS_ACCOUNT_ID:gateway/YOUR_GATEWAY_ID",
+  "gateway_url": "https://YOUR_GATEWAY_ID.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "inference_url": "https://YOUR_GATEWAY_ID.gateway.bedrock-agentcore.us-east-1.amazonaws.com/inference",
+  "target_id": "YOUR_TARGET_ID",
+  "policy_engine_id": "YOUR_POLICY_ENGINE_ID",
+  "policy_engine_arn": "arn:aws:bedrock-agentcore:us-east-1:YOUR_AWS_ACCOUNT_ID:policy-engine/YOUR_POLICY_ENGINE_ID",
+  "permit_policy_id": "YOUR_PERMIT_POLICY_ID",
+  "inference_model": "bedrock-mantle/anthropic.claude-sonnet-5",
+  "guardrail_id": "YOUR_GUARDRAIL_ID",
+  "guardrail_version": "2",
+  "authorizer_type": "CUSTOM_JWT",
+  "cognito_pool_id": "YOUR_COGNITO_POOL_ID",
+  "cognito_client_id": "YOUR_COGNITO_CLIENT_ID",
+  "cognito_client_secret": "YOUR_COGNITO_CLIENT_SECRET",
+  "discovery_url": "https://cognito-idp.us-east-1.amazonaws.com/YOUR_COGNITO_POOL_ID/.well-known/openid-configuration",
+  "issuer": "https://cognito-idp.us-east-1.amazonaws.com/YOUR_COGNITO_POOL_ID",
+  "original_gateway_id": "YOUR_ORIGINAL_GATEWAY_ID",
+  "anthropic_base_url": "https://YOUR_GATEWAY_ID.gateway.bedrock-agentcore.us-east-1.amazonaws.com/inference"
+}

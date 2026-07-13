@@ -1,0 +1,126 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Gateway Invocations",
+        "metrics": [
+          [
+            "AWS/Bedrock-AgentCore",
+            "Invocations",
+            "Name",
+            "llm-gateway-authed-6ybw1vckbw"
+          ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Errors & Throttles",
+        "metrics": [
+          [
+            "AWS/Bedrock-AgentCore",
+            "SystemErrors",
+            "Name",
+            "llm-gateway-authed-6ybw1vckbw"
+          ],
+          [
+            "AWS/Bedrock-AgentCore",
+            "UserErrors",
+            "Name",
+            "llm-gateway-authed-6ybw1vckbw"
+          ],
+          [
+            "AWS/Bedrock-AgentCore",
+            "Throttles",
+            "Name",
+            "llm-gateway-authed-6ybw1vckbw"
+          ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Latency (p50, p90, p99)",
+        "metrics": [
+          [
+            "AWS/Bedrock-AgentCore",
+            "Latency",
+            "Name",
+            "llm-gateway-authed-6ybw1vckbw",
+            {
+              "stat": "p50"
+            }
+          ],
+          [
+            "AWS/Bedrock-AgentCore",
+            "Latency",
+            "Name",
+            "llm-gateway-authed-6ybw1vckbw",
+            {
+              "stat": "p90"
+            }
+          ],
+          [
+            "AWS/Bedrock-AgentCore",
+            "Latency",
+            "Name",
+            "llm-gateway-authed-6ybw1vckbw",
+            {
+              "stat": "p99"
+            }
+          ]
+        ],
+        "period": 300,
+        "region": "us-east-1"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Bedrock Token Usage",
+        "metrics": [
+          [
+            "AWS/Bedrock",
+            "InputTokenCount",
+            "ModelId",
+            "anthropic.claude-sonnet-5"
+          ],
+          [
+            "AWS/Bedrock",
+            "OutputTokenCount",
+            "ModelId",
+            "anthropic.claude-sonnet-5"
+          ]
+        ],
+        "period": 300,
+        "stat": "Sum",
+        "region": "us-east-1"
+      }
+    }
+  ]
+}
