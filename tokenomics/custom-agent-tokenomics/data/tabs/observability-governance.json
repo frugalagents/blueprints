@@ -1,0 +1,54 @@
+{
+  "id": "observability-governance",
+  "title": "Observability, Budgets & Governance at Scale",
+  "tier": 9,
+  "tierLabel": "Closing tab -- how you know it's working, and how you stop it if it isn't",
+  "status": "stable",
+  "summary": "There is no /usage for a production agent. Cost attribution, dashboards, rate limits, and kill switches are the closing piece that lets everything built in Tiers 1-8 actually be verified and governed once it's running unattended.",
+  "whyItMatters": "Every optimization in this workshop is unverifiable without measurement. Without per-task/per-user cost attribution, you can't tell a cascade's escalation rate (Tab 4), a cache's hit rate (Tab 9), or a circuit breaker's trigger rate (Tab 8) -- you're optimizing blind.",
+  "concepts": [
+    {
+      "heading": "Attribute cost at the finest grain you'll actually query",
+      "body": "Log token usage per call tagged with task id, user/tenant id, model tier used, and which tool(s) were invoked -- not just an aggregate daily total. The finest grain you log is the finest grain you can later slice a cost spike down to; you cannot add granularity retroactively to old logs."
+    },
+    {
+      "heading": "Budgets need to be enforceable, not just visible",
+      "body": "A dashboard that shows spend after the fact doesn't stop an incident in progress. Per-user, per-tenant, or per-task budget ceilings need to be checked in the same pre-call hook path built in Tab 8, so a budget breach actually blocks further spend rather than just being visible in tomorrow's report."
+    },
+    {
+      "heading": "A kill switch is the last line, not a substitute for the earlier tiers",
+      "body": "A global rate limit or emergency stop (disable the agent entirely, per-tenant or fleet-wide) is what you reach for when something upstream failed -- a bad model routing decision, an infinite loop that got past the circuit breaker, a misconfigured cache. It's cheap insurance, but it is not a reason to skip the guardrails in Tab 8."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Build a per-task cost ledger and a tenant-level budget enforcement check",
+      "goal": "Log every call with enough dimensions to answer 'which tenant/task/model tier is driving spend,' and enforce a hard per-tenant daily budget in the same pre-call path as Tab 8's guardrails.",
+      "steps": [
+        "Log every agent(...) call's response.metrics.accumulated_usage, tagged with tenant_id, task_id, and the BedrockModel's model_id, to a structured log (or a simple SQLite table for a first pass).",
+        "Write a query that sums cost by tenant for the current day. → Expect: you can identify, without guessing, which tenant is responsible for any given day's spend.",
+        "Wire a tenant-level budget check into the Tab 8 AgentGuardrails hook: before allowing a tool call, sum today's spend for this tenant_id; if over their daily budget, set event.cancel_tool with a clear budget-exceeded message. → Expect: a tenant deliberately driven over budget in a test is blocked on the next tool call, not merely flagged after the fact.",
+        "Simulate a runaway scenario (a loop that would exceed budget) and confirm the enforcement check actually halts it before the budget is exceeded, not after. → Expect: total spend for that tenant caps at or near the configured limit, not past it."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "import sqlite3\nfrom strands import Agent\nfrom strands.hooks import HookProvider, HookRegistry, BeforeToolCallEvent\nfrom strands.models import BedrockModel\n\nconn = sqlite3.connect(\"cost_ledger.db\")\nconn.execute(\"\"\"\n    CREATE TABLE IF NOT EXISTS calls (\n        ts REAL, tenant_id TEXT, task_id TEXT, model TEXT,\n        input_tokens INTEGER, output_tokens INTEGER\n    )\n\"\"\")\n\ndef log_call(tenant_id, task_id, model_id, accumulated_usage, ts):\n    conn.execute(\n        \"INSERT INTO calls VALUES (?, ?, ?, ?, ?, ?)\",\n        (ts, tenant_id, task_id, model_id,\n         accumulated_usage.get(\"inputTokens\", 0), accumulated_usage.get(\"outputTokens\", 0)),\n    )\n    conn.commit()\n\ndef today_token_spend(tenant_id, day_start_ts):\n    row = conn.execute(\n        \"SELECT COALESCE(SUM(input_tokens + output_tokens), 0) FROM calls \"\n        \"WHERE tenant_id = ? AND ts >= ?\",\n        (tenant_id, day_start_ts),\n    ).fetchone()\n    return row[0]\n\nclass TenantBudgetGuardrail(HookProvider):\n    def __init__(self, tenant_id: str, day_start_ts: float, daily_token_budget: int):\n        self.tenant_id = tenant_id\n        self.day_start_ts = day_start_ts\n        self.daily_token_budget = daily_token_budget\n\n    def register_hooks(self, registry: HookRegistry) -> None:\n        registry.add_callback(BeforeToolCallEvent, self._enforce_budget)\n\n    def _enforce_budget(self, event: BeforeToolCallEvent) -> None:\n        spent = today_token_spend(self.tenant_id, self.day_start_ts)\n        if spent >= self.daily_token_budget:\n            event.cancel_tool = (\n                f\"Tenant {self.tenant_id} has used {spent} tokens today, \"\n                f\"budget is {self.daily_token_budget}. Conclude now.\"\n            )\n\nagent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"),\n    hooks=[TenantBudgetGuardrail(tenant_id=\"acme-corp\", day_start_ts=0, daily_token_budget=2_000_000)],\n)\n"
+      },
+      "costImpact": "Without per-tenant attribution, a single misbehaving tenant or task can silently dominate spend for days before anyone notices in an aggregate report. Enforced budgets convert 'we found out at month end' into 'the call was blocked in real time,' bounding worst-case exposure to roughly one budget period per tenant."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Usage and cost reporting guidance",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/usage-cost-api",
+      "dateChecked": "2026-08-11",
+      "claim": "Usage fields returned per API call (input/output/cache tokens) are the raw data this tab's attribution ledger is built from -- there is no separate usage dashboard for custom API integrations, so self-instrumentation is required."
+    },
+    {
+      "title": "Strands Agents — Hooks concept guide (BeforeToolCallEvent.cancel_tool)",
+      "url": "https://strandsagents.com/docs/user-guide/concepts/agents/hooks/",
+      "dateChecked": "2026-08-11",
+      "claim": "BeforeToolCallEvent.cancel_tool as the enforcement point for blocking a tool call, reused here for tenant-level budget enforcement built directly on the Tab 8 guardrail pattern."
+    }
+  ]
+}

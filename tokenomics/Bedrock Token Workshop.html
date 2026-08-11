@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Bedrock Token Workshop</title>
+<style>
+  :root {
+    --navy:#0B1F3A; --teal:#1C7293; --amber:#F5A623; --ink:#1A2433;
+    --grey:#6B7A8D; --line:#E2E8F0; --bg:#ffffff; --code-bg:#0f172a;
+    --aws:#FF9900; --explainbg:#f6f8fb; --costbg:#fff4e0;
+  }
+  * { box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink); line-height:1.6; max-width:960px; margin:0 auto;
+    padding:56px 28px 96px; background:var(--bg); -webkit-font-smoothing:antialiased;
+  }
+  h1 { font-family:Georgia,"Times New Roman",serif; font-size:2.3rem; line-height:1.15;
+       color:var(--navy); margin:0 0 .3em; letter-spacing:-.01em; }
+  h2 { font-family:Georgia,serif; font-size:1.5rem; color:var(--navy);
+       margin:2em 0 .3em; padding-top:1em; border-top:2px solid var(--line); }
+  h3 { font-size:1.05rem; color:var(--teal); margin:1.4em 0 .4em; font-weight:700; }
+  h4 { font-size:.95rem; color:var(--navy); margin:1em 0 .3em; font-weight:700; }
+  .lede { font-size:1rem; color:var(--grey); margin:0 0 1.2em; font-weight:500; }
+  p { margin:.55em 0; }
+  em { color:var(--grey); }
+  strong { color:var(--ink); }
+  a { color:var(--teal); }
+  code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.86em;
+         background:#eef2f7; color:#b23; padding:.12em .4em; border-radius:4px; }
+  pre { background:var(--code-bg); color:#e2e8f0; padding:14px 16px; border-radius:10px;
+        overflow-x:auto; font-size:.78rem; line-height:1.5; margin:.5em 0;
+        box-shadow:0 2px 10px rgba(11,31,58,.12); }
+  pre code { background:none; color:inherit; padding:0; font-size:inherit; }
+  table { border-collapse:collapse; width:100%; margin:.8em 0; font-size:.85rem; }
+  th { background:var(--navy); color:#fff; text-align:left; padding:7px 9px; font-weight:600; }
+  td { border-bottom:1px solid var(--line); padding:6px 9px; vertical-align:top; }
+  tr:nth-child(even) td { background:#f8fafc; }
+  hr { border:none; border-top:1px solid var(--line); margin:1.8em 0; }
+  ul,ol { padding-left:1.3em; }
+  li { margin:.3em 0; }
+  input[type=checkbox] { margin-right:.5em; }
+
+  .badge { display:inline-block; font-size:.66rem; font-weight:700; letter-spacing:.03em;
+           text-transform:uppercase; padding:.25em .6em; border-radius:5px; margin-left:.5em;
+           vertical-align:middle; }
+  .badge.aws { background:#fff3e0; color:#8a5300; border:1px solid var(--aws); }
+
+  /* Tier banner at the top of each Customize tab */
+  .tier { display:flex; align-items:center; gap:12px; margin:0 0 1.2em; padding:12px 16px;
+          background:var(--navy); color:#fff; border-radius:10px; font-size:.85rem; }
+  .tier .tiernum { display:flex; align-items:center; justify-content:center; min-width:34px; height:34px;
+                   border-radius:50%; background:#fff; color:var(--navy); font-weight:800; font-size:.95rem; }
+  .tier .tierlabel { font-weight:700; font-size:.95rem; }
+  .tier .tierwhy { color:#cfd8e8; font-weight:400; }
+
+  /* Explain block: concept-only content, no exercise attached */
+  .explain { margin:1em 0; padding:.9em 1.1em; background:var(--explainbg);
+             border-left:4px solid var(--teal); border-radius:6px; font-size:.92rem; }
+  .explain .source { display:block; margin-top:.6em; font-size:.74rem; color:var(--grey); font-style:italic; }
+
+  /* Exercise card: single global number, short why, numbered actions w/ inline Expect, optional cost line */
+  .ex { margin:1.2em 0; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .exhead { display:flex; align-items:baseline; gap:10px; padding:11px 16px;
+            background:var(--teal); color:#fff; }
+  .exnum { display:flex; align-items:center; justify-content:center; min-width:30px; height:26px;
+           padding:0 8px; border-radius:14px; background:#fff; color:var(--teal); font-weight:800; font-size:.78rem;
+           flex-shrink:0; }
+  .extitle { font-weight:700; font-size:.95rem; }
+  .exbody { padding:10px 18px 16px; }
+  .exwhy { font-size:.9rem; color:var(--ink); margin:.4em 0 .8em; }
+  .exsteps { margin:0; padding-left:1.4em; }
+  .exsteps li { margin:.5em 0; font-size:.91rem; }
+  .exsteps pre { margin:.4em 0; }
+  .expect { color:#1a6b3d; font-weight:700; }
+  .exd.cost { margin-top:.9em; padding:.6em .9em; background:var(--costbg); border-left:3px solid var(--amber);
+              border-radius:6px; font-size:.87rem; }
+  .exd.cost strong { color:#8a5300; }
+
+  .note { margin:1em 0; padding:.85em 1.05em; background:#fff8ea;
+          border-left:4px solid var(--amber); border-radius:6px; font-size:.88rem; }
+  .note strong { color:var(--navy); }
+
+  .diagram { margin:1.2em 0; padding:1.1em; background:#f8fafc; border:1px solid var(--line);
+             border-radius:10px; text-align:center; font-size:.85rem; }
+  .diagram .row { display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap; margin:.5em 0; }
+  .diagram .box { background:#fff; border:2px solid var(--navy); border-radius:8px; padding:.6em 1em;
+                   font-weight:700; color:var(--navy); min-width:100px; }
+  .diagram .box.mid { border-color:var(--teal); color:var(--teal); }
+  .diagram .arrow { color:var(--grey); font-size:1.1rem; }
+  .diagram .caption { color:var(--grey); font-size:.8rem; margin-top:.5em; }
+
+  .tabnav { display:flex; flex-wrap:wrap; gap:6px; margin:1.6em 0 0; position:sticky; top:0;
+            background:#fff; padding:12px 0 10px; z-index:5; border-bottom:2px solid var(--line); }
+  .tabnav button { font:inherit; font-weight:700; font-size:.72rem; padding:8px 11px;
+                   border-radius:8px 8px 0 0; border:1px solid var(--line); border-bottom:none;
+                   background:#f8fafc; color:var(--grey); cursor:pointer; transition:.15s; }
+  .tabnav button:hover { background:#eef2f7; color:var(--navy); }
+  .tabnav button.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+  .tabpanel { display:none; padding-top:1.5em; }
+  .tabpanel.active { display:block; }
+
+  .cl { list-style:none; padding-left:0; }
+  .cl li { margin:.45em 0; font-size:.92rem; }
+
+  .stat { display:inline-block; background:#fff; border:2px solid var(--amber); border-radius:10px;
+          padding:.55em .9em; margin:.3em; font-weight:800; color:var(--navy); text-align:center; }
+  .stat .n { display:block; font-size:1.2rem; }
+  .stat .l { display:block; font-size:.65rem; color:var(--grey); font-weight:600; text-transform:uppercase; }
+
+  .playbook { counter-reset: pb; list-style:none; padding-left:0; }
+  .playbook li { counter-increment: pb; position:relative; padding:.5em 0 .5em 2.4em; font-size:.92rem;
+                 border-bottom:1px solid var(--line); }
+  .playbook li::before { content: counter(pb); position:absolute; left:0; top:.4em;
+                          display:flex; align-items:center; justify-content:center; width:1.7em; height:1.7em;
+                          border-radius:50%; background:var(--navy); color:#fff; font-weight:800; font-size:.78rem; }
+  .playbook li .exref { color:var(--teal); font-weight:700; }
+
+  @media print {
+    body { padding:0 12px; max-width:none; font-size:11pt; }
+    .tabnav { display:none; }
+    .tabpanel { display:block !important; page-break-before:always; }
+    h2 { page-break-after:avoid; }
+    pre, table, .ex { page-break-inside:avoid; }
+    a { color:var(--ink); text-decoration:none; }
+  }
+</style>
+</head>
+<body>
+
+<h1>The Bedrock Token Workshop</h1>
+<p class="lede">A half-day, hands-on workshop that follows the same path any real adoption follows: install and connect first, use what already ships built-in second, then customize — cheapest and simplest customization before the most powerful and most expensive. Every exercise is globally numbered (Exercise 1 through 29) so you can always say exactly where you are. Each exercise is a short "why," a numbered list of actions with a bolded <strong>→ Expect:</strong> outcome you check after each one, and — where a real number or mechanism applies — a short cost-impact line.</p>
+<hr>
+
+<div class="note">
+<strong>Before you begin.</strong> You need a terminal and Claude Code installed. If you've never used a terminal, that's fine — every command below is written out in full. Install with: <code>curl -fsSL https://claude.ai/install.sh | bash</code> (macOS/Linux) or <code>irm https://claude.ai/install.ps1 | iex</code> (Windows PowerShell).
+</div>
+
+<div class="note">
+<strong>The shape of this workshop.</strong> Tabs 1–3 involve writing zero custom files — install, connect, and learn what's already built in. Tabs 4–7 are four <em>increasing</em> tiers of customization: plain text, then invokable procedures, then real scripting, then external integrations. Tab 8 is judgment — when to reach for which tool. Tab 9 is the recap and a linear day-one runbook. Every command, config snippet, and recommendation is drawn from Claude Code's own official documentation; look for the small italic <em>Source</em> line under explanatory blocks.
+</div>
+
+<div class="tabnav" id="tabnav">
+  <button class="active" data-tab="foundations">1 · Foundations &amp; Economics</button>
+  <button data-tab="bedrock">2 · Bedrock Setup &amp; Routing</button>
+  <button data-tab="toolkit">3 · Built-in Toolkit</button>
+  <button data-tab="level1">4 · Level 1 — Text &amp; Config</button>
+  <button data-tab="level2">5 · Level 2 — Skills &amp; Subagents</button>
+  <button data-tab="level3">6 · Level 3 — Hooks &amp; Automation</button>
+  <button data-tab="level4">7 · Level 4 — MCP &amp; Plugins</button>
+  <button data-tab="habits">8 · Habits &amp; Workflow</button>
+  <button data-tab="checklist">9 · Checklist &amp; New Project Playbook</button>
+</div>
+
+<div class="tabpanels">
+
+<!-- ============================================================ -->
+<!-- TAB 1: FOUNDATIONS & ECONOMICS -->
+<!-- ============================================================ -->
+<div class="tabpanel active" id="tab-foundations">
+<h2 style="border-top:none;margin-top:0;">1 · Foundations &amp; Economics</h2>
+<p class="lede">Everything in this workshop is a technique for managing one resource: the context Claude Code sends to the model on every request, and the tokens that context costs. This tab builds the mental model, in plain language, then proves it with a real number you'll watch move.</p>
+
+<h3>What Claude Code actually is</h3>
+<div class="explain">
+  <p>Claude Code is <strong>not</strong> a chatbot. A chatbot answers a question and waits. Claude Code is <strong>agentic</strong>: you describe an outcome, and it reads files, runs commands, writes code, and works through multi-step problems on its own.</p>
+  <p>It's also metered: every word it reads, every file it opens, every line it writes back costs a small amount of money. <strong>The cost isn't in what Claude produces — it's in what it has to read and re-read to produce it.</strong> A one-line answer at the end of a long, messy exploration can cost 100x more than the same answer given with the right context already in place.</p>
+  <span class="source">Source: Claude Code docs — Best Practices, opening section.</span>
+</div>
+
+<h3>The harness: what sits between you and the model</h3>
+<div class="explain">
+  <p>The underlying model has no memory of its own — each call starts from zero. <strong>Claude Code is the program that decides what gets handed to it</strong> — the "harness." Every message, it assembles a package: your standing instructions (<code>CLAUDE.md</code>), every tool description, the full conversation so far, and every prior file read or command result. It sends that package, gets a response, and if a tool runs, the result is added to the package for the <em>next</em> request.</p>
+  <p>The package never shrinks on its own — it only grows. This is why a session starts cheap and gets expensive fast.</p>
+  <span class="source">Source: Claude Code docs — Best Practices, "Most best practices are based on one constraint"; Manage Costs, "Why usage climbs in a long session."</span>
+</div>
+
+<div class="diagram">
+  <div class="row">
+    <div class="box">YOU<br><span style="font-weight:400;font-size:.78rem">prompts, approvals</span></div>
+    <div class="arrow">→</div>
+    <div class="box mid">THE HARNESS<br><span style="font-weight:400;font-size:.78rem">CLAUDE.md · permissions<br>hooks · context manager</span></div>
+    <div class="arrow">→</div>
+    <div class="box">MODEL<br><span style="font-weight:400;font-size:.78rem">stateless inference</span></div>
+  </div>
+  <div class="caption">Tool results loop back into context through the harness — this is where cost compounds turn over turn.</div>
+</div>
+
+<h3>The configuration hierarchy</h3>
+<div class="explain">
+  <table>
+  <tr><th>Layer</th><th>Where it lives</th><th>Plain-English scope</th></tr>
+  <tr><td><strong>Managed policy</strong></td><td>OS-level path, deployed by IT/DevOps</td><td>A company-wide rule nobody on the machine can turn off.</td></tr>
+  <tr><td><strong>User</strong></td><td><code>~/.claude/</code></td><td>Your personal setup, follows you into every project on this machine.</td></tr>
+  <tr><td><strong>Project</strong></td><td><code>.claude/</code> and <code>CLAUDE.md</code> at repo root</td><td>Team truth, committed to git — a teammate gets it just by cloning.</td></tr>
+  <tr><td><strong>Local</strong></td><td><code>CLAUDE.local.md</code>, <code>.claude/settings.local.json</code></td><td>Your personal notes for one project, gitignored.</td></tr>
+  </table>
+  <p><strong>Cost impact:</strong> a rule that only you need, filed at Project instead of Local, gets loaded into every teammate's context on every session. Put genuinely universal rules at Project/Managed; everything else at User/Local.</p>
+  <span class="source">Source: Claude Code docs — Best Practices, "Configure your environment"; Memory, "Choose where to put CLAUDE.md files."</span>
+</div>
+
+<h3>The complexity ladder this workshop climbs</h3>
+<div class="explain">
+  <table>
+  <tr><th>Tier</th><th>Mechanism</th><th>What it costs, when it costs it</th></tr>
+  <tr><td>Built-in (Tab 3)</td><td>Slash commands</td><td>Free to run — the risk is not knowing they exist.</td></tr>
+  <tr><td>Level 1 (Tab 4)</td><td><code>CLAUDE.md</code>, <code>permissions.json</code></td><td><code>CLAUDE.md</code>: billed every turn, no exceptions. Permissions: not billed — pure enforcement.</td></tr>
+  <tr><td>Level 2 (Tab 5)</td><td>Skills, subagents</td><td>Only when invoked — dormant otherwise. This is the cheapest way to hold a lot of capability.</td></tr>
+  <tr><td>Level 3 (Tab 6)</td><td>Hooks</td><td>Not billed as context — but a badly written one can silently waste real cost (or block real work).</td></tr>
+  <tr><td>Level 4 (Tab 7)</td><td>MCP servers, plugins</td><td>Standing cost on every session from the moment you connect, whether used that turn or not.</td></tr>
+  </table>
+  <p>Notice the ordering isn't arbitrary: it's cheapest-and-simplest to most-powerful-and-most-expensive. That's the order this workshop follows too.</p>
+</div>
+
+<h3>Why this is worth caring about: the real numbers</h3>
+<div class="explain">
+  <div style="text-align:center;margin:.8em 0;">
+    <span class="stat"><span class="n">~$13</span><span class="l">avg cost / developer / active day</span></span>
+    <span class="stat"><span class="n">$150–250</span><span class="l">typical cost / developer / month</span></span>
+    <span class="stat"><span class="n">&lt;$30/day</span><span class="l">covers 90% of users</span></span>
+  </div>
+  <p>Two things drive a developer above that median more than anything: <strong>long sessions that never get cleared</strong>, and <strong>leaving a frontier-tier model as the default for everything</strong>. Both are fixable with a habit, not a purchase. Claude's performance also degrades as context fills — managing it well is a cost lever <em>and</em> a quality lever at once.</p>
+  <p><strong>Cost impact:</strong> a 50-person team drifting to $200/dev/month instead of $60 is roughly $84,000/year in avoidable spend, for identical output, on habits alone.</p>
+  <span class="source">Source: Claude Code docs — Manage Costs, opening paragraph and "When a developer asks about a limit."</span>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">1</span><span class="extitle">See it for yourself — the five-line proof</span></div>
+  <div class="exbody">
+    <p class="exwhy">You'll run the identical instruction twice — once with no standing instructions, once with a five-line <code>CLAUDE.md</code>. The only variable is that file. Whatever the cost difference is, that file caused it.</p>
+    <ol class="exsteps">
+      <li>Create an empty folder. Add 3–4 small text files, and inside them type a made-up function name — the same name — at least 5 times total, spread across at least 3 files (e.g. <code>calculateTotal</code>). <strong class="expect">→ Expect:</strong> running <code>grep -rn calculateTotal .</code> prints at least 5 matches across 3+ files.</li>
+      <li>In that folder, run <code>claude</code>, then <code>/clear</code>, then this exact prompt: <pre><code>Rename calculateTotal to computeTotal everywhere in this folder, then check for anything that would now fail to compile or lint.</code></pre> Wait for it to finish. <strong class="expect">→ Expect:</strong> it reports the rename done.</li>
+      <li>Run <code>/usage</code> and write down the total tokens and dollar cost as "Run 1." <strong class="expect">→ Expect:</strong> a real number, not zero.</li>
+      <li><code>/clear</code>, then create <code>CLAUDE.md</code> in the same folder with exactly:
+      <pre><code># Project
+Rename/search tasks: use grep/rg to find all occurrences before editing — never open every file to scan by eye.
+
+# Response style
+Be terse. Show a summary of files changed, not full diffs, unless asked.</code></pre>
+      <strong class="expect">→ Expect:</strong> running <code>/context</code> shows <code>CLAUDE.md</code> listed under Memory files.</li>
+      <li>Give the <strong>identical</strong> prompt from step 2, word for word. <strong class="expect">→ Expect:</strong> it finishes, using grep/rg instead of opening files one by one.</li>
+      <li>Run <code>/usage</code> again and compare to "Run 1." <strong class="expect">→ Expect:</strong> the new number is noticeably lower.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> you just measured, in real dollars, the effect of five lines of standing instruction. Every tab from here on is this same lever, generalized and made permanent.</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 2: BEDROCK SETUP & ROUTING -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-bedrock">
+<h2 style="border-top:none;margin-top:0;">2 · Bedrock Setup &amp; Routing <span class="badge aws">Amazon Bedrock</span></h2>
+<p class="lede">Pure setup — no customization yet. By the end of this tab, Claude Code talks to Amazon Bedrock, with model versions pinned deliberately instead of left to drift.</p>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">2</span><span class="extitle">Confirm Claude Code is installed</span></div>
+  <div class="exbody">
+    <p class="exwhy">Rule out an install problem before troubleshooting anything AWS-specific.</p>
+    <ol class="exsteps">
+      <li>Run <code>claude --version</code>. <strong class="expect">→ Expect:</strong> a version number followed by <code>(Claude Code)</code>. If "command not found," run the install command from the top of this page first.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">3</span><span class="extitle">Enable Anthropic model access in the Bedrock console</span></div>
+  <div class="exbody">
+    <p class="exwhy">AWS requires every account to explicitly request access to a model family — a one-time form, not a purchase or a waiting period.</p>
+    <ol class="exsteps">
+      <li>Open the Amazon Bedrock console → Model catalog → select Claude Sonnet 4.6 (and Opus/Haiku if you want all three tiers, recommended since later tabs use more than one) → submit the use-case access form. <strong class="expect">→ Expect:</strong> the Model catalog immediately shows access as granted for each model — no approval delay.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">4</span><span class="extitle">Attach the IAM permissions</span></div>
+  <div class="exbody">
+    <p class="exwhy">The identity you authenticate as needs exactly the permissions to call models — no more, no less.</p>
+    <ol class="exsteps">
+      <li>In IAM, attach this policy to your role or user:
+      <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowModelAndInferenceProfileAccess",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream",
+        "bedrock:ListInferenceProfiles",
+        "bedrock:GetInferenceProfile"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:*:*:inference-profile/*",
+        "arn:aws:bedrock:*:*:application-inference-profile/*",
+        "arn:aws:bedrock:*:*:foundation-model/*"
+      ]
+    },
+    {
+      "Sid": "AllowMarketplaceSubscription",
+      "Effect": "Allow",
+      "Action": ["aws-marketplace:ViewSubscriptions", "aws-marketplace:Subscribe"],
+      "Resource": "*",
+      "Condition": { "StringEquals": { "aws:CalledViaLast": "bedrock.amazonaws.com" } }
+    }
+  ]
+}</code></pre>
+      </li>
+      <li>Run <code>aws bedrock list-inference-profiles --region us-east-1</code>. <strong class="expect">→ Expect:</strong> a JSON list, not an <code>AccessDenied</code> error. If it names a specific missing permission, add exactly that and re-run.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">5</span><span class="extitle">Get AWS credentials into your terminal</span></div>
+  <div class="exbody">
+    <p class="exwhy">Claude Code uses the same standard AWS credential chain as every AWS CLI tool — no separate login system.</p>
+    <ol class="exsteps">
+      <li>Pick exactly one: <code>aws configure</code> (named profile) · <code>aws sso login --profile=your-profile-name</code> then <code>export AWS_PROFILE=your-profile-name</code> (SSO) · <code>export AWS_BEARER_TOKEN_BEDROCK=your-key</code> (Bedrock API key, simplest, no AWS CLI needed).</li>
+      <li>If you used a profile or SSO, run <code>aws sts get-caller-identity</code>. <strong class="expect">→ Expect:</strong> your AWS account ID and ARN print back, not an error. (Skip this check for the API-key option — Exercise 6 verifies that path instead.)</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">6</span><span class="extitle">Point Claude Code at Bedrock</span></div>
+  <div class="exbody">
+    <p class="exwhy">Switch the provider from the default to Amazon Bedrock using the credentials from Exercise 5.</p>
+    <ol class="exsteps">
+      <li>Run <code>claude</code>. At the first login prompt, choose <strong>3rd-party platform → Amazon Bedrock</strong>. Already signed in elsewhere? Run <code>/setup-bedrock</code> inside a session instead — same wizard.</li>
+      <li>Once at a normal chat prompt, run <code>/status</code>. <strong class="expect">→ Expect:</strong> it says <strong>Amazon Bedrock</strong> as the provider, with a resolved AWS region. If not, repeat step 1.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">7</span><span class="extitle">Pin your model versions</span></div>
+  <div class="exbody">
+    <p class="exwhy">Without pinning, the "sonnet"/"opus" shorthand resolves to whatever the current default is — and that can silently move to a newer, pricier model.</p>
+    <ol class="exsteps">
+      <li>If the Exercise 6 wizard already offered to pin models and you accepted, skip to step 2. Otherwise, before starting <code>claude</code>:
+      <pre><code>export ANTHROPIC_DEFAULT_SONNET_MODEL='us.anthropic.claude-sonnet-4-6'
+export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:0'</code></pre>
+      Match the prefix to your region: <code>us.</code> for <code>us-*</code>, <code>eu.</code> for <code>eu-*</code>, <code>apac.</code> for <code>ap-*</code>, <code>global.</code> otherwise.</li>
+      <li>Run <code>/status</code> again. <strong class="expect">→ Expect:</strong> it lists the exact full model ID you set, not a bare word like <code>sonnet</code>.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> an unpinned deployment that silently upgrades from Sonnet-tier to Opus-tier is a real, documented failure mode — Opus costs meaningfully more per token. Pinning costs nothing and prevents an invisible, un-budgeted increase.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">8</span><span class="extitle">Switch model tier mid-session</span></div>
+  <div class="exbody">
+    <p class="exwhy">There is no automatic "this is simple, use a cheaper model" feature. The only manual, whole-session control is <code>/model</code>. Sonnet handles most coding work well and costs less than Opus; reserve Opus for genuinely hard architectural or multi-step reasoning.</p>
+    <ol class="exsteps">
+      <li>Run <code>/model</code> and select a different tier than your current default (e.g. Haiku if you're on Sonnet). <strong class="expect">→ Expect:</strong> the status line reflects the new model.</li>
+      <li>Ask a trivial one-word-answer question. <strong class="expect">→ Expect:</strong> the reply returns noticeably faster than on the previous tier — the cheaper model is actually doing the work.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 3: BUILT-IN TOOLKIT -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-toolkit">
+<h2 style="border-top:none;margin-top:0;">3 · Built-in Toolkit</h2>
+<p class="lede">Still no custom files. This tab is the cockpit walkthrough — every command already ships with Claude Code. Get fluent here before writing a single line of your own configuration in Tabs 4–7.</p>
+
+<h3>The full panel, in one table</h3>
+<div class="explain">
+  <table>
+  <tr><th>Command</th><th>What it does</th><th>Why it matters for cost</th></tr>
+  <tr><td><code>/model</code></td><td>Switch model. No argument opens a picker.</td><td>Manual control over which price tier is working right now.</td></tr>
+  <tr><td><code>/effort</code></td><td>Set reasoning effort: <code>low/medium/high/xhigh/max/ultracode</code>. No argument opens a slider.</td><td>Reasoning tokens are billed as output. Lower effort on simple tasks is close to pure savings.</td></tr>
+  <tr><td><code>/clear</code></td><td>Brand-new conversation, empty context.</td><td>The single highest-leverage cost command in the whole tool.</td></tr>
+  <tr><td><code>/compact</code></td><td>Summarize the conversation to free space without fully clearing it. Accepts focus instructions.</td><td>Frees context mid-task when you still need continuity.</td></tr>
+  <tr><td><code>/context</code></td><td>Visualize context usage as a colored grid, by category, with suggestions.</td><td>How you find out <em>what</em> is costing tokens, not just that something is.</td></tr>
+  <tr><td><code>/usage</code> (alias <code>/cost</code>)</td><td>Token usage and estimated dollar cost for this session.</td><td>The direct answer to "how much has this cost me."</td></tr>
+  <tr><td><code>/memory</code></td><td>Edit CLAUDE.md files, view/toggle auto-memory.</td><td>Audit and edit the file billed on every turn, without leaving the session.</td></tr>
+  <tr><td><code>/status</code></td><td>Provider, model, region for this session.</td><td>Confirms what's actually active.</td></tr>
+  <tr><td><code>/doctor</code></td><td>Setup checkup: unused skills/MCP servers, slow hooks, version check.</td><td>Catches configuration bloat before it quietly costs you.</td></tr>
+  <tr><td><code>/hooks</code></td><td>View configured hooks per lifecycle event.</td><td>Confirms a hook is actually registered.</td></tr>
+  <tr><td><code>/mcp</code></td><td>Manage MCP server connections, auth, enable/disable.</td><td>Where you check what's connected and disable what you don't need.</td></tr>
+  <tr><td><code>/config</code></td><td>Settings UI for theme, model, output style. Accepts <code>key=value</code>.</td><td>Set a default model without hand-editing JSON.</td></tr>
+  <tr><td><code>/rewind</code></td><td>Roll conversation and/or code back to an earlier checkpoint.</td><td>Recovery tool for course-correcting early (Tab 8).</td></tr>
+  </table>
+  <span class="source">Source: Claude Code docs — Commands reference (built-in slash commands).</span>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">9</span><span class="extitle">Test-drive the panel, one command at a time</span></div>
+  <div class="exbody">
+    <p class="exwhy">Type every cost-relevant command at least once now, so none of them are unfamiliar the first time you need one under pressure.</p>
+    <ol class="exsteps">
+      <li>In any real repo, run <code>/status</code>, then <code>/context</code>, then <code>/usage</code>. <strong class="expect">→ Expect:</strong> you can describe, in one sentence each, what each screen showed.</li>
+      <li>Run <code>/model</code> and actually pick an option (don't press Escape). <strong class="expect">→ Expect:</strong> a confirmation of the new model.</li>
+      <li>Run <code>/effort</code> and pick a level. <strong class="expect">→ Expect:</strong> a confirmation of the new effort level.</li>
+      <li>Run <code>/hooks</code>. <strong class="expect">→ Expect:</strong> it plainly reports no hooks configured yet (you'll add real ones in Tab 6) — remember what "empty" looks like so you notice when it isn't, later.</li>
+      <li>Run <code>/doctor</code>. <strong class="expect">→ Expect:</strong> a clean report. Read it fully, even the fine parts — this is your baseline for "healthy."</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> every command here is free to run. The real risk is not knowing they exist and therefore never catching a bloated session or unpinned model until the bill already reflects it.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">10</span><span class="extitle">Set your personal defaults through /config</span></div>
+  <div class="exbody">
+    <p class="exwhy"><code>/config</code> writes settings for you — no hand-edited JSON needed for a simple default.</p>
+    <ol class="exsteps">
+      <li>Run <code>/config</code> with no arguments and browse the menu without changing anything. <strong class="expect">→ Expect:</strong> you can find the model and output-style settings.</li>
+      <li>Run <code>/config model=sonnet</code>. <strong class="expect">→ Expect:</strong> a confirmation it was set.</li>
+      <li>Open a brand-new terminal, run <code>claude</code>, then <code>/status</code>. <strong class="expect">→ Expect:</strong> the new session starts on the model you set — without running <code>/model</code> again.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> a default set once removes an entire category of "I forgot to check which model I was on" waste, for every future session on this machine.</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 4: LEVEL 1 — TEXT & DECLARATIVE CONFIG -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-level1">
+<h2 style="border-top:none;margin-top:0;">4 · Level 1 — Text &amp; Declarative Config</h2>
+<div class="tier"><span class="tiernum">1</span><span class="tierlabel">Plain English + flat JSON.</span><span class="tierwhy">No logic, no scripting — the simplest tier of customization there is.</span></div>
+<p class="lede"><code>CLAUDE.md</code> and <code>permissions</code> rules are both just text you write once. This tab produces a real, runnable project and a real <code>CLAUDE.md</code> for it — not a hypothetical.</p>
+
+<h3>What belongs in CLAUDE.md, and what doesn't</h3>
+<div class="explain">
+  <p><code>CLAUDE.md</code> is read at the start of every conversation — billed every turn, no exceptions. The test: for every line, ask <em>"would removing this cause a mistake?"</em> If no, delete it.</p>
+  <table>
+  <tr><th>✅ Include</th><th>❌ Exclude</th></tr>
+  <tr><td>Bash commands Claude can't guess</td><td>Anything Claude can figure out from your code</td></tr>
+  <tr><td>Code style rules that differ from defaults</td><td>Standard language conventions Claude already knows</td></tr>
+  <tr><td>Testing instructions, preferred test runners</td><td>Detailed API docs — link instead</td></tr>
+  <tr><td>Repository etiquette (branches, PRs)</td><td>Information that changes frequently</td></tr>
+  <tr><td>Non-obvious gotchas</td><td>Self-evident advice like "write clean code"</td></tr>
+  </table>
+  <p>Target: <strong>under 200 lines</strong>. Longer reliably degrades adherence, not just cost.</p>
+  <span class="source">Source: Claude Code docs — Best Practices, "Write an effective CLAUDE.md."</span>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">11</span><span class="extitle">Build a real scratch project and a real CLAUDE.md for it</span></div>
+  <div class="exbody">
+    <p class="exwhy">Every command in the <code>CLAUDE.md</code> below is real and actually runs against this tiny, dependency-free Node.js project. Check <code>node --version</code> first (18+ works); no Node? Ask your facilitator for an equivalent — the lesson transfers.</p>
+    <ol class="exsteps">
+      <li>Create a folder, then <code>mkdir -p src tests</code>. Create <code>package.json</code>:
+      <pre><code>{
+  "name": "claude-md-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "test": "node --test", "lint": "node --check src/math.js" }
+}</code></pre>
+      Create <code>src/math.js</code>:
+      <pre><code>export function calculateTotal(items) {
+  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+}</code></pre>
+      Create <code>tests/math.test.js</code>:
+      <pre><code>import { test } from 'node:test';
+import assert from 'node:assert';
+import { calculateTotal } from '../src/math.js';
+
+test('calculateTotal sums price * quantity', () => {
+  const items = [{ price: 10, quantity: 2 }, { price: 5, quantity: 3 }];
+  assert.strictEqual(calculateTotal(items), 35);
+});</code></pre>
+      Run <code>npm test</code>. <strong class="expect">→ Expect:</strong> 1 test passes. Fix the files before continuing if it doesn't.</li>
+      <li>In the same folder, create <code>CLAUDE.md</code>:
+      <pre><code># Project
+Tiny Node.js demo package. Source in src/, tests in tests/. No external
+dependencies — uses Node's built-in test runner.
+
+# Commands
+- Run tests: npm test
+- Check syntax (our "lint" until we add a real linter): npm run lint
+
+# Code style
+- Use ES modules (import/export), not CommonJS (require)
+- One exported function per file
+
+# Workflow
+- After changing any function in src/, run npm test and confirm it passes
+  before saying the task is done
+- Use rg or grep to find every call site of a function before renaming it —
+  never open files one at a time to scan by eye
+
+# Gotchas
+- calculateTotal expects an array of {price, quantity} objects — it does
+  not accept a flat array of numbers</code></pre>
+      Start <code>claude</code>, run <code>/context</code>. <strong class="expect">→ Expect:</strong> <code>CLAUDE.md</code> appears under Memory files with a token count — that's the fixed tax it now adds every turn.</li>
+      <li>Ask: <em>"Add a function applyDiscount(total, percent) to src/math.js that reduces a total by a percentage. Export it, add a test for it, and follow our workflow rules."</em> <strong class="expect">→ Expect:</strong> Claude runs <code>npm test</code> on its own before declaring done, without being told to this time.</li>
+      <li>Run <code>npm test</code> yourself, independently. <strong class="expect">→ Expect:</strong> 2 passing tests, not 1. Then delete the Workflow section, <code>/clear</code>, and ask for one more similar function. <strong class="expect">→ Expect:</strong> notice whether it still runs tests unprompted — the contrast proves the earlier behavior came from the file, not instinct.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> a file under 200 focused lines costs a small, fixed amount per turn and improves reliability. The workflow rule you watched fire prevents an entire category of expensive rework — without it, a broken implementation ships, you notice later, and correcting it re-bills the whole conversation a second time.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">12</span><span class="extitle">Deny access to sensitive files</span></div>
+  <div class="exbody">
+    <p class="exwhy"><code>CLAUDE.md</code> is advisory — Claude tries to follow it, no guarantee. <code>permissions</code> rules in <code>.claude/settings.json</code> are enforced by the program itself, before Claude can act, regardless of what the model decides.</p>
+    <ol class="exsteps">
+      <li>In your scratch repo: <code>mkdir secrets && echo "fake-api-key=123" > secrets/keys.txt</code>.</li>
+      <li>Create or edit <code>.claude/settings.json</code>:
+      <pre><code>{
+  "permissions": {
+    "deny": ["Read(./secrets/**)"]
+  }
+}</code></pre>
+      Ask: <em>"What's in secrets/keys.txt?"</em> <strong class="expect">→ Expect:</strong> Claude reports it cannot read the file.</li>
+      <li>Remove the <code>deny</code> rule, ask the exact same question again. <strong class="expect">→ Expect:</strong> it can now read the file — the back-to-back contrast proves the rule, not the model's judgment, was blocking it. Put the rule back before moving on.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> primarily risk-elimination, not cost-saving — but an accidental read of a large secrets dump or log file is exactly the kind of one-time event that spikes a session's token usage unpredictably. Denying the path removes that risk for every session, forever.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">13</span><span class="extitle">Let a built-in checkup catch drift automatically</span></div>
+  <div class="exbody">
+    <p class="exwhy">Files that are useful when written tend to grow as people add "just one more rule." <code>/doctor</code> flags content Claude could already infer, while leaving non-obvious rules alone.</p>
+    <ol class="exsteps">
+      <li>Open your <code>CLAUDE.md</code> from Exercise 11 and add a few lines that just restate the obvious — e.g. your <code>package.json</code>'s dependency list, typed out by hand.</li>
+      <li>Run <code>/doctor</code>. <strong class="expect">→ Expect:</strong> it names the padding you just added as safe to remove, and leaves your original non-obvious rules alone. Accept the suggestion and remove the padding.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> run this monthly (or in CI), and a file that would otherwise silently grow past the 200-line danger zone gets caught before it costs real money or reliability.</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 5: LEVEL 2 — SKILLS & SUBAGENTS -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-level2">
+<h2 style="border-top:none;margin-top:0;">5 · Level 2 — Skills &amp; Subagents</h2>
+<div class="tier"><span class="tiernum">2</span><span class="tierlabel">Named, invokable procedures.</span><span class="tierwhy">Still just files with frontmatter — no shell scripting — but now they load only on demand instead of every turn.</span></div>
+<p class="lede">A skill is a procedure Claude loads only when it's actually relevant. A subagent is a whole separate Claude Code instance, with its own tools and its own model, that you delegate a task to.</p>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">14</span><span class="extitle">Move an occasional procedure out of CLAUDE.md into a skill</span></div>
+  <div class="exbody">
+    <p class="exwhy">If a procedure only matters for one kind of task, putting it in <code>CLAUDE.md</code> means it's billed every turn even on days nobody does that task. A skill (<code>.claude/skills/&lt;name&gt;/SKILL.md</code>) loads only when invoked.</p>
+    <ol class="exsteps">
+      <li>Create <code>.claude/skills/api-endpoint/SKILL.md</code>:
+      <pre><code>---
+name: api-endpoint
+description: Steps for adding a new REST API endpoint in this project
+---
+# Adding a new API endpoint
+1. Add the route in src/routes/
+2. Add the handler in src/handlers/
+3. Add an integration test in tests/api/
+4. Update the OpenAPI spec in docs/openapi.yaml</code></pre>
+      </li>
+      <li>Start a fresh session, run <code>/context</code>. <strong class="expect">→ Expect:</strong> the skill's content does <strong>not</strong> appear anywhere — invisible until you ask Claude to add an API endpoint, or type <code>/api-endpoint</code> directly.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> every procedure correctly moved out of <code>CLAUDE.md</code> and into a skill is tokens that stop being billed on days nobody needs that procedure.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">15</span><span class="extitle">Permanently pin a cheap model to a recurring simple task</span></div>
+  <div class="exbody">
+    <p class="exwhy">A subagent's own file can pin its model, independent of whatever your main session is running — guaranteeing the cheap tier without anyone remembering to run <code>/model</code> by hand.</p>
+    <ol class="exsteps">
+      <li>Create <code>.claude/agents/quick-reviewer.md</code>:
+      <pre><code>---
+name: quick-reviewer
+description: Reviews the current diff for critical/major issues only. Use after non-trivial edits.
+tools: Read, Grep, Glob
+model: haiku
+---
+
+You review diffs. Report only Critical and Major issues. Be terse.</code></pre>
+      </li>
+      <li>Make a small, deliberately flawed edit to any file (e.g. remove a null check). Ask: <em>"Use the quick-reviewer agent to review my latest change."</em> <strong class="expect">→ Expect:</strong> the transcript shows a delegation line like <code>quick-reviewer (Review latest change)</code>.</li>
+      <li>Run <code>/usage</code>. <strong class="expect">→ Expect:</strong> this review's tokens are billed at Haiku's rate, regardless of your main session's model.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> any task your team does repeatedly and knows is low-complexity — reviews, lint fixes, commit messages — is a candidate for this exact pattern. Written once, it guarantees the cheap tier forever, for every teammate, with zero ongoing discipline.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">16</span><span class="extitle">Build a subagent whose entire purpose is cutting context and cost</span></div>
+  <div class="exbody">
+    <p class="exwhy">A subagent runs in its own, separate context window — it can read dozens of files, and only its summary returns to your main conversation. This one is read-only (can't rack up cost by editing) and pinned to Haiku.</p>
+    <ol class="exsteps">
+      <li>Create <code>.claude/agents/codebase-researcher.md</code>:
+      <pre><code>---
+name: codebase-researcher
+description: Investigates how something works across the codebase — reads
+  many files to answer a question — without polluting the main conversation.
+tools: Read, Grep, Glob
+model: haiku
+---
+
+You are a research-only subagent. You investigate and report; you never edit files.
+
+Rules for keeping your report cheap to read:
+- Do not paste full file contents back. Quote at most 3-5 line snippets,
+  with a file path and line number, as evidence.
+- Lead with a 2-4 sentence summary. Put supporting detail after.
+- If you read more than 15 files and still don't have the answer, stop
+  and report what you've ruled out.
+- End with a short list of exact file paths relevant to the question.</code></pre>
+      Run <code>cat .claude/agents/codebase-researcher.md</code>. <strong class="expect">→ Expect:</strong> the frontmatter block between the <code>---</code> markers saved exactly as written — a broken frontmatter block is the most common reason a subagent silently fails to register.</li>
+      <li>In a real repo, ask: <em>"Use the codebase-researcher agent to investigate how our authentication system handles token refresh, and whether we have any existing OAuth utilities I should reuse."</em> (Substitute any real "how does X work across files" question if you have no auth system.) <strong class="expect">→ Expect:</strong> the summary leads with 2-4 sentences, not a wall of pasted file content.</li>
+      <li>Run <code>/context</code>. <strong class="expect">→ Expect:</strong> the individual files the subagent read do <strong>not</strong> appear in your main session's breakdown — only the summary. Then run <code>/usage</code>. <strong class="expect">→ Expect:</strong> the research billed at Haiku's rate, even if your main session is on Sonnet or Opus.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> this file compounds two savings at once — isolation (research noise never touches your repeatedly-rebilled main conversation) and model tier (Haiku pricing regardless of your session's tier). Research/investigation tasks are the highest-leverage place to apply both together.</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 6: LEVEL 3 — HOOKS & AUTOMATION -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-level3">
+<h2 style="border-top:none;margin-top:0;">6 · Level 3 — Hooks &amp; Automation</h2>
+<div class="tier"><span class="tiernum">3</span><span class="tierlabel">Real scripting.</span><span class="tierwhy">Shell scripts that read JSON on stdin and return a decision — the first tier where a bug in your own code can break something.</span></div>
+<p class="lede">Hooks are deterministic: the script decides, not the model. Unlike <code>CLAUDE.md</code>, which is advisory, a hook fires every time, with zero exceptions.</p>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">17</span><span class="extitle">Write an enforcement hook — block edits to a file, with zero exceptions</span></div>
+  <div class="exbody">
+    <p class="exwhy">A <code>PreToolUse</code> hook can inspect a pending action and block it before it runs. Claude can even write this script for you if you describe it in plain English.</p>
+    <ol class="exsteps">
+      <li>Create <code>.claude/hooks/protect-files.sh</code>:
+      <pre><code>#!/bin/bash
+INPUT=$(cat)
+PATH_ARG=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+case "$PATH_ARG" in
+  *".env"*)
+    echo "Blocked: edits to $PATH_ARG are not allowed by policy." &gt;&amp;2
+    exit 2
+    ;;
+esac
+exit 0</code></pre>
+      Run <code>chmod +x .claude/hooks/protect-files.sh</code>.</li>
+      <li>Wire it into <code>.claude/settings.json</code>:
+      <pre><code>{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh" }] }
+    ]
+  }
+}</code></pre>
+      </li>
+      <li>Create a dummy <code>.env</code> file. Ask: <em>"Add a comment to the top of .env"</em>. <strong class="expect">→ Expect:</strong> Claude's reply shows the exact text <code>Blocked: edits to ...env are not allowed by policy.</code></li>
+      <li>Open <code>.env</code> yourself. <strong class="expect">→ Expect:</strong> completely unchanged — the edit was stopped before it happened, so no tokens were even spent generating the blocked content.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">18</span><span class="extitle">Write a hook that directly cuts token cost</span></div>
+  <div class="exbody">
+    <p class="exwhy">When Claude runs a test suite, the entire output — every passing test — is read into context and billed, even though only failures matter. A hook can rewrite the command itself to filter before it runs. This is Claude Code's own documented example for this exact problem.</p>
+    <ol class="exsteps">
+      <li>Run <code>mkdir -p ~/.claude/hooks</code> (user-level, so this applies to every project on your machine). Create <code>~/.claude/hooks/filter-test-output.sh</code>:
+      <pre><code>#!/bin/bash
+input=$(cat)
+cmd=$(echo "$input" | jq -r '.tool_input.command')
+
+if [[ "$cmd" =~ ^(npm test|pytest|go test) ]]; then
+  filtered_cmd="$cmd 2>&1 | grep -A 5 -E '(FAIL|ERROR|error:)' | head -100"
+  echo "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"updatedInput\":{\"command\":\"$filtered_cmd\"}}}"
+else
+  echo "{}"
+fi</code></pre>
+      Run <code>chmod +x ~/.claude/hooks/filter-test-output.sh</code>.</li>
+      <li>Wire it into <code>~/.claude/settings.json</code>:
+      <pre><code>{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "~/.claude/hooks/filter-test-output.sh" }] }
+    ]
+  }
+}</code></pre>
+      </li>
+      <li>In the Exercise 11 project (or any repo with a working test command), run <code>claude --debug</code> and ask: <em>"Run the test suite."</em> <strong class="expect">→ Expect:</strong> the debug log shows <code>modified tool input keys: [command]</code> — the hook rewrote the command before it ran. <code>/hooks</code> lists <code>filter-test-output.sh</code> under <code>PreToolUse</code>.</li>
+      <li>Run the same test command yourself, unfiltered, in your own terminal. <strong class="expect">→ Expect:</strong> for a real project with hundreds of tests, the unfiltered version runs tens of thousands of tokens while the filtered version Claude actually processed is a few hundred — Claude still got an accurate pass/fail signal.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> the single biggest lever in Claude Code's "reduce token usage" guidance — offload filtering to a cheap script instead of paying the model to read-and-ignore noise. Any repeated, noisy command (test suites, build logs, linters) is a candidate.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">19</span><span class="extitle">Match reasoning depth to the task</span></div>
+  <div class="exbody">
+    <p class="exwhy">Reasoning tokens are billed as output. The default reasoning budget can run into the tens of thousands of tokens per request on some models. Lower effort on a genuinely simple task is close to pure savings.</p>
+    <ol class="exsteps">
+      <li>Run <code>/effort</code> and choose <code>low</code>. Ask a trivial one-line question. <strong class="expect">→ Expect:</strong> the reply returns noticeably faster than at the default level.</li>
+      <li>Run <code>/effort</code> again and set it back to <code>high</code>. <strong class="expect">→ Expect:</strong> confirmed — don't leave a team session running at reduced effort by accident for tasks that need it.</li>
+    </ol>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 7: LEVEL 4 — MCP & PLUGINS -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-level4">
+<h2 style="border-top:none;margin-top:0;">7 · Level 4 — MCP Servers &amp; Plugins</h2>
+<div class="tier"><span class="tiernum">4</span><span class="tierlabel">External integrations.</span><span class="tierwhy">The most powerful and most expensive tier — a standing cost on every session from the moment you connect, whether or not that session ever uses it.</span></div>
+<p class="lede">MCP servers connect Claude Code to systems outside your codebase. Plugins bundle skills, hooks, subagents, and MCP servers together into one install. Treat both as "mandatory only."</p>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">20</span><span class="extitle">Audit what's already connected</span></div>
+  <div class="exbody">
+    <p class="exwhy">Before connecting anything new, know what's already there and whether you can justify each one.</p>
+    <ol class="exsteps">
+      <li>Run <code>/mcp</code>. <strong class="expect">→ Expect:</strong> a list of connected servers (possibly zero — that's fine). For each one, you should be able to say, out loud, what task you use it for. If you can't, note it for removal.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">21</span><span class="extitle">Connect, disable, and remove a real server</span></div>
+  <div class="exbody">
+    <p class="exwhy">Practice the full lifecycle once on a real, low-risk server, so "disable what you're not using" is a habit you've actually performed.</p>
+    <ol class="exsteps">
+      <li>Run <code>claude mcp add --transport http notion https://mcp.notion.com/mcp</code> (no API key needed to add; OAuth happens on first use). Run <code>claude mcp list</code>. <strong class="expect">→ Expect:</strong> <code>notion</code> appears with a status.</li>
+      <li>Run <code>/context</code>, note what it reports for tool-related context. Run <code>/mcp</code>, select <code>notion</code>, toggle it off. <strong class="expect">→ Expect:</strong> <code>/mcp</code> now shows it disabled but still listed — configuration intact, cost gone.</li>
+      <li>If you're fully done with it: <code>claude mcp remove notion</code>. <strong class="expect">→ Expect:</strong> <code>claude mcp list</code> no longer shows it at all.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> a connected-but-unused server is pure overhead with zero benefit. Disabling costs one command and is instantly reversible — there's never a reason to leave something connected "just in case."</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">22</span><span class="extitle">Apply the same "mandatory only" filter to plugins</span></div>
+  <div class="exbody">
+    <p class="exwhy">A plugin can bundle several MCP servers, hooks, and skills at once — one install command can silently add a lot of standing cost if you don't check what's inside first.</p>
+    <ol class="exsteps">
+      <li>Run <code>/plugin</code> and browse the marketplace without installing anything yet. Pick one genuinely relevant to your work. <strong class="expect">→ Expect:</strong> you can read what it bundles before deciding.</li>
+      <li>Only proceed to install if you can name a specific, real task you'll use it for. If so, install via the on-screen instructions (typically <code>/plugin install &lt;name&gt;@&lt;marketplace&gt;</code>).</li>
+      <li>Run <code>/mcp</code> and <code>/hooks</code> again. <strong class="expect">→ Expect:</strong> you can name exactly what the plugin added to each list — no silent, unexplained entries.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> plugins are the highest-leverage place for accidental bloat, precisely because one install adds several things at once. Apply the "can I name what this does and why I need it" test before installing, not after noticing context is heavier than expected.</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 8: HABITS & WORKFLOW -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-habits">
+<h2 style="border-top:none;margin-top:0;">8 · Habits &amp; Workflow</h2>
+<p class="lede">Every tool from Tabs 3–7 now exists. This tab is judgment — when and why to reach for which one, in the moment, inside a live session or across a whole feature.</p>
+
+<h3>Part A — Habits: the five documented failure patterns</h3>
+<div class="explain">
+  <table>
+  <tr><th>Failure pattern</th><th>What it looks like</th><th>The fix</th></tr>
+  <tr><td><strong>Kitchen sink session</strong></td><td>One task, then something unrelated, then back to the first. Context fills with irrelevant history.</td><td><code>/clear</code> between unrelated tasks.</td></tr>
+  <tr><td><strong>Correcting over and over</strong></td><td>Wrong, corrected, still wrong, corrected again. Context fills with failed attempts.</td><td>After two failed corrections, <code>/clear</code> and write a sharper prompt.</td></tr>
+  <tr><td><strong>Over-specified CLAUDE.md</strong></td><td>So long that important rules get lost in the noise.</td><td>Ruthlessly prune — see Tab 4, Exercises 11 &amp; 13.</td></tr>
+  <tr><td><strong>Trust-then-verify gap</strong></td><td>Plausible-looking code that silently misses edge cases.</td><td>Give Claude something it can check itself against (Exercise 24 below).</td></tr>
+  <tr><td><strong>Infinite exploration</strong></td><td>"Investigate" with no scope — reads hundreds of files.</td><td>Scope narrowly, or hand it to a subagent — see Tab 5, Exercise 16.</td></tr>
+  </table>
+  <span class="source">Source: Claude Code docs — Best Practices, "Avoid common failure patterns."</span>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">23</span><span class="extitle">Diagnose a real session, then apply the matching fix</span></div>
+  <div class="exbody">
+    <p class="exwhy">Catch yourself live, mid-bleed, with a real diagnostic command — not in the abstract.</p>
+    <ol class="exsteps">
+      <li>In a real repo, deliberately create a kitchen-sink session: ask about three unrelated parts of the codebase back to back, without clearing between them.</li>
+      <li>Run <code>/context</code>. <strong class="expect">→ Expect:</strong> you can identify the single largest category by token count. Write down which one it is.</li>
+      <li>Run <code>/clear</code>, then <code>/context</code> again. <strong class="expect">→ Expect:</strong> the conversation-history category is now at or near zero — not summarized, not hidden, actually gone from what's billed on your next message.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> every message in a stale session re-bills the entire history before it, every time. This is the single highest-leverage habit in the workshop precisely because it's free, instant, and has zero downside when tasks are genuinely unrelated.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">24</span><span class="extitle">Give Claude a way to check its own work</span></div>
+  <div class="exbody">
+    <p class="exwhy">Without a check it can run, "looks done" is the only signal Claude has, and you become the entire verification loop. Give it a pass/fail and the loop closes on its own.</p>
+    <ol class="exsteps">
+      <li>Pick a small function in a real repo. Instead of <em>"implement a function that validates email addresses,"</em> ask exactly: <em>"write a validateEmail function. Example test cases: user@example.com is true, invalid is false, user@.com is false. Run the tests after implementing."</em></li>
+      <li>Read the final message. <strong class="expect">→ Expect:</strong> it shows the actual test output it ran, not just a claim of success. If it only asserts success, ask it directly to show the command and its result.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> reviewing evidence Claude already gathered is cheaper than re-running verification yourself, and it means an unattended session can finish correctly instead of silently producing something wrong that costs another full correction round later.</div>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">25</span><span class="extitle">Course-correct within two tries, not five</span></div>
+  <div class="exbody">
+    <p class="exwhy">Once you've corrected the same issue twice without success, context is polluted with failed approaches, which actively biases what comes next.</p>
+    <ol class="exsteps">
+      <li>In a real session, if you catch yourself correcting the same misunderstanding a third time, stop. Run <code>/clear</code> instead.</li>
+      <li>Write one new prompt that states the task and explicitly names what you learned from the failed attempts. <strong class="expect">→ Expect:</strong> the fresh, informed prompt resolves in fewer total turns than continuing to correct in place would have.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> every failed correction re-bills the entire accumulated history of every previous attempt — a correction loop gets more expensive per attempt, not cheaper, the longer it runs.</div>
+  </div>
+</div>
+
+<h3>Part B — Workflow: getting it right on the first attempt</h3>
+<div class="explain">
+  <p>Governance and habits make each turn cheaper. Workflow makes the <em>whole task</em> cheaper by avoiding rework. Rule of thumb: <em>if you could describe the diff in one sentence, skip the plan.</em></p>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">26</span><span class="extitle">Decide whether this task needs a plan at all</span></div>
+  <div class="exbody">
+    <p class="exwhy">Planning has real overhead — don't pay it for a typo fix, and don't skip it for a multi-file change you're unsure about.</p>
+    <ol class="exsteps">
+      <li>Pick a task you actually need done. Try to describe the resulting change in exactly one sentence. <strong class="expect">→ Expect:</strong> if you succeed, skip to doing it directly — no plan needed. If the sentence needs "and"/"then" more than once, continue to Exercise 27.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">27</span><span class="extitle">Explore, then plan — before any code is written</span></div>
+  <div class="exbody">
+    <p class="exwhy">Plan Mode lets Claude read and answer questions but not edit anything, so it doesn't jump to code that solves the wrong problem.</p>
+    <ol class="exsteps">
+      <li>Press <strong>Shift+Tab</strong> repeatedly until the status bar shows <code>plan mode on</code>.</li>
+      <li>Ask an exploration question first: <em>"Read the relevant part of the codebase for [your feature] and explain how it currently works."</em> Then: <em>"Based on that, create a detailed plan. What files need to change?"</em></li>
+      <li>Run <code>git status</code>. <strong class="expect">→ Expect:</strong> no changes — Plan Mode cannot edit. Read the plan itself; <strong class="expect">→ Expect:</strong> specific files and a specific approach, not vague generalities.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">28</span><span class="extitle">Implement against the plan, then commit</span></div>
+  <div class="exbody">
+    <p class="exwhy">A plan costs a few hundred tokens to produce and review. An implementation built on a wrong assumption costs the wasted work, the diagnosis, and the redo. Rework — not exploration — is the most expensive thing an agent does.</p>
+    <ol class="exsteps">
+      <li>Press <strong>Shift+Tab</strong> to leave Plan Mode (or approve the plan). Ask: <em>"Implement the plan. Write tests, run the test suite, and fix any failures."</em> Then: <em>"Commit with a descriptive message and open a PR."</em></li>
+      <li>Run <code>git log --oneline -1</code>. <strong class="expect">→ Expect:</strong> a commit with a message that actually describes the change. Run your project's real test command yourself, independently. <strong class="expect">→ Expect:</strong> it passes — don't take Claude's report as the only check.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="ex">
+  <div class="exhead"><span class="exnum">29</span><span class="extitle">For a larger feature, let Claude interview you and produce a real spec</span></div>
+  <div class="exbody">
+    <p class="exwhy">A spec is only as good as the questions that produced it. Rather than writing one yourself and hoping you thought of everything, have Claude interview you, then implement from the written result in a fresh, clean session.</p>
+    <ol class="exsteps">
+      <li>Pick a real feature bigger than a one-sentence diff — for example, "export dashboard data as CSV with rate limiting." Type:
+      <pre><code>I want to build a rate-limited CSV export feature. Interview me in detail using the AskUserQuestion tool.
+
+Ask about technical implementation, UI/UX, edge cases, concerns, and tradeoffs. Don't ask obvious questions, dig into the hard parts I might not have considered.
+
+Keep interviewing until we've covered everything, then write a complete spec to SPEC.md.</code></pre>
+      Answer honestly, including "I hadn't thought about that" where true.</li>
+      <li>Open <code>SPEC.md</code>. <strong class="expect">→ Expect:</strong> something with this shape and this level of concreteness, not vague language:
+      <pre><code>## requirements.md
+US-1: Authenticated user exports current dashboard view as CSV
+Given a user is authenticated and viewing a dashboard
+When they click "Export CSV"
+Then a CSV of the visible rows downloads, named &lt;dashboard&gt;-&lt;date&gt;.csv
+And the user is rate-limited to 10 exports/hour/account
+
+## tasks.md
+- [ ] T1: Redis rate-limit middleware [parallel-safe]
+- [ ] T2: Audit-log table migration [parallel-safe]
+- [ ] T3: POST /export endpoint [depends: T1, T2]
+- [ ] T4: Streaming CSV generator [parallel-safe]
+- [ ] T5: Wire endpoint → generator [depends: T3, T4]</code></pre>
+      Notice what a bare "add a CSV export button" prompt would have silently skipped: the rate limit, the streaming cap, the audit log.</li>
+      <li>Run <code>/clear</code>, then ask Claude to implement exactly what's in <code>SPEC.md</code>.</li>
+      <li>Run <code>/context</code> early in this new session. <strong class="expect">→ Expect:</strong> the lengthy interview conversation is not present — only <code>SPEC.md</code> is being read. The implementation session starts clean and focused.</li>
+    </ol>
+    <div class="exd cost"><strong>Cost impact:</strong> every ambiguity the interview resolves up front is one less round of "actually, I meant something different" mid-implementation — and each of those rounds re-bills everything that came before it.</div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 9: CHECKLIST & NEW PROJECT PLAYBOOK -->
+<!-- ============================================================ -->
+<div class="tabpanel" id="tab-checklist">
+<h2 style="border-top:none;margin-top:0;">9 · Checklist &amp; New Project Playbook</h2>
+<p class="lede">Section A recaps every exercise, grouped by the same complexity tiers you climbed. Section B is the linear runbook: if you started a brand-new project tomorrow, do these in this order.</p>
+
+<h3>Section A — Recap Checklist</h3>
+
+<h4>Setup (Exercises 2–8)</h4>
+<ul class="cl">
+<li><input type="checkbox"> Claude Code installed and version confirmed (Ex. 2)</li>
+<li><input type="checkbox"> Model access enabled in Bedrock console + IAM policy attached (Ex. 3–4)</li>
+<li><input type="checkbox"> AWS credentials configured, Claude Code connected to Bedrock (Ex. 5–6)</li>
+<li><input type="checkbox"> Model versions pinned, not left on a bare alias (Ex. 7)</li>
+<li><input type="checkbox"> Comfortable switching tiers with <code>/model</code> mid-session (Ex. 8)</li>
+</ul>
+
+<h4>Built-in toolkit (Exercises 9–10)</h4>
+<ul class="cl">
+<li><input type="checkbox"> Ran every cost-relevant slash command at least once and can read its output at a glance (Ex. 9)</li>
+<li><input type="checkbox"> Personal default model/effort set via <code>/config</code> (Ex. 10)</li>
+</ul>
+
+<h4>Level 1 — Text &amp; config (Exercises 11–13)</h4>
+<ul class="cl">
+<li><input type="checkbox"> A lean <code>CLAUDE.md</code> under 200 lines that changes real behavior (Ex. 11)</li>
+<li><input type="checkbox"> <code>permissions.deny</code> covering secrets/credentials (Ex. 12)</li>
+<li><input type="checkbox"> <code>/doctor</code> run and its trims accepted (Ex. 13)</li>
+</ul>
+
+<h4>Level 2 — Skills &amp; subagents (Exercises 14–16)</h4>
+<ul class="cl">
+<li><input type="checkbox"> At least one occasional procedure moved into a skill (Ex. 14)</li>
+<li><input type="checkbox"> A cheap-tier subagent pinned to a recurring simple task (Ex. 15)</li>
+<li><input type="checkbox"> A read-only research subagent that isolates noisy investigation (Ex. 16)</li>
+</ul>
+
+<h4>Level 3 — Hooks (Exercises 17–19)</h4>
+<ul class="cl">
+<li><input type="checkbox"> An enforcement hook protecting at least one sensitive path (Ex. 17)</li>
+<li><input type="checkbox"> A cost-reduction hook filtering noisy command output (Ex. 18)</li>
+<li><input type="checkbox"> <code>/effort</code> matched to task difficulty, not left at default for everything (Ex. 19)</li>
+</ul>
+
+<h4>Level 4 — MCP &amp; plugins (Exercises 20–22)</h4>
+<ul class="cl">
+<li><input type="checkbox"> Every connected MCP server has a named, justified use (Ex. 20)</li>
+<li><input type="checkbox"> Know the add → disable → remove lifecycle by hand, not just in theory (Ex. 21)</li>
+<li><input type="checkbox"> Every installed plugin passes the "can I name what it does" test (Ex. 22)</li>
+</ul>
+
+<h4>Habits &amp; workflow (Exercises 23–29)</h4>
+<ul class="cl">
+<li><input type="checkbox"> <code>/clear</code> the moment you switch to an unrelated task (Ex. 23)</li>
+<li><input type="checkbox"> Every non-trivial task given a way to verify itself (Ex. 24)</li>
+<li><input type="checkbox"> Course-correct within two tries, not five (Ex. 25)</li>
+<li><input type="checkbox"> One-sentence test applied before deciding to plan (Ex. 26)</li>
+<li><input type="checkbox"> Plan Mode used for any change you couldn't describe in one sentence (Ex. 27–28)</li>
+<li><input type="checkbox"> Interview-driven SPEC.md for any genuinely large feature (Ex. 29)</li>
+</ul>
+
+<hr>
+
+<h3>Section B — New Project Playbook</h3>
+<p style="font-size:.92rem;color:var(--grey);margin-bottom:1em;">Starting a brand-new project tomorrow? Do these in this exact order — each one is the exercise that already taught you how.</p>
+
+<ol class="playbook">
+  <li>Install Claude Code and confirm the version. <span class="exref">(Ex. 2)</span></li>
+  <li>Enable model access in the Bedrock console for your account. <span class="exref">(Ex. 3)</span></li>
+  <li>Attach the IAM policy and verify with <code>list-inference-profiles</code>. <span class="exref">(Ex. 4)</span></li>
+  <li>Get AWS credentials into your terminal. <span class="exref">(Ex. 5)</span></li>
+  <li>Point Claude Code at Bedrock and confirm with <code>/status</code>. <span class="exref">(Ex. 6)</span></li>
+  <li>Pin your model versions before anyone else touches this project. <span class="exref">(Ex. 7)</span></li>
+  <li>Tour the built-in command panel once, cold, in the new repo. <span class="exref">(Ex. 9)</span></li>
+  <li>Run <code>/init</code> to generate a first-pass <code>CLAUDE.md</code> from the real codebase, then trim it with <code>/doctor</code> until it's under 200 lines and every line earns its place. <span class="exref">(builds on Ex. 11 &amp; 13)</span></li>
+  <li>Write <code>permissions.deny</code> rules for every secret/credential path in this specific repo before anyone runs Claude Code against real data. <span class="exref">(Ex. 12)</span></li>
+  <li>Identify one or two occasional procedures this project will need repeatedly (a migration checklist, a release process) and write them as skills, not <code>CLAUDE.md</code> entries. <span class="exref">(Ex. 14)</span></li>
+  <li>Define a cheap-tier subagent for whatever this team's most common low-complexity task will be. <span class="exref">(Ex. 15)</span></li>
+  <li>Write the enforcement hook protecting your secrets paths, and the cost-reduction hook for this stack's test/build command. <span class="exref">(Ex. 17–18)</span></li>
+  <li>Connect only the MCP servers this project genuinely needs on day one — none "just in case." <span class="exref">(Ex. 20–21)</span></li>
+  <li>Commit <code>.claude/settings.json</code> (env, permissions, hooks) and every hook script to git — never commit credentials themselves. Confirm with <code>git show --stat</code>.</li>
+  <li>Prove it: clone the repo into a brand-new, separate directory with zero personal setup, start <code>claude</code>, and confirm the same secrets path is still blocked with no configuration performed in that directory.</li>
+  <li>Brief the team on the habits: <code>/clear</code> between tasks, Plan Mode before multi-file changes, and the one-sentence test for when a spec is worth writing. <span class="exref">(Ex. 23, 26–29)</span></li>
+</ol>
+
+<hr>
+<p><em>Every mechanism in this workshop was verified against Claude Code's own documentation at the time it was built. Re-check the linked source pages periodically — the workshop is only as current as they are.</em></p>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tabnav button').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tabnav button').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

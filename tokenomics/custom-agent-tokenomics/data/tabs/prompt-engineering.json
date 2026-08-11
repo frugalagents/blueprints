@@ -1,0 +1,75 @@
+{
+  "id": "prompt-engineering",
+  "title": "Prompt Engineering — The Free Lever",
+  "tier": 1,
+  "tierLabel": "Text only, zero infrastructure",
+  "status": "stable",
+  "summary": "Before touching architecture, the words in your system prompt and output-format constraints already determine a large fraction of your token spend.",
+  "whyItMatters": "Output tokens are typically billed at a higher rate than input tokens, and a verbose or unconstrained system prompt is paid on every single call. This is the cheapest lever because it requires no new code paths, only better text.",
+  "concepts": [
+    {
+      "heading": "Output-length is a cost knob you control directly",
+      "body": "Unconstrained, a model will often over-explain. Explicit output-format instructions (structured JSON, a word/line cap, 'no preamble') reduce output tokens directly, and output tokens are the more expensive side of the ledger on most model pricing."
+    },
+    {
+      "heading": "System prompt density vs. verbosity",
+      "body": "Every token in the system prompt is paid on every call. Long, narrative system prompts read well to a human reviewer but cost the same each invocation. Dense, structured instructions (short imperative bullets, not prose) typically compress the same guidance into fewer tokens without losing precision."
+    },
+    {
+      "heading": "Few-shot examples are a cost/reliability tradeoff, not a free win",
+      "body": "Each example in a few-shot prompt is paid on every call, forever. They meaningfully improve reliability for ambiguous or format-sensitive tasks, but for well-specified tasks a strong zero-shot instruction is often just as reliable and strictly cheaper. Default to zero-shot; add examples only when zero-shot demonstrably fails."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Quantify the cost of an unconstrained vs. constrained output format",
+      "goal": "See directly how much an explicit output-format instruction saves in output tokens for the same task.",
+      "steps": [
+        "Pick a real task your agent performs (e.g. 'summarize this support ticket and extract the customer's request').",
+        "Build a Strands agent and run the task once with a bare instruction and no format constraint. Record output tokens from response.metrics.accumulated_usage. → Expect: a free-form paragraph response, often 150-400 output tokens.",
+        "Run the identical task again, adding: 'Respond with only a JSON object: {\"issue\": string, \"urgency\": \"low\"|\"medium\"|\"high\"}. No other text.' → Expect: output tokens drop substantially, often by more than half, with equal or better usability for downstream code.",
+        "Compare the two accumulated_usage.get(\"outputTokens\") values directly. → Expect: a concrete before/after number you can multiply by your call volume."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent\nfrom strands.models import BedrockModel\n\nagent = Agent(model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"))\nticket = \"Customer says their order #4471 hasn't arrived after 2 weeks and they want a refund immediately.\"\n\n# Unconstrained\nresp_a = agent(f\"Summarize this support ticket and extract the customer's request: {ticket}\")\nprint(\"Unconstrained output tokens:\", resp_a.metrics.accumulated_usage.get(\"outputTokens\"))\n\n# Constrained -- fresh agent so the second call's usage isn't cumulative with the first\nagent2 = Agent(model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"))\nresp_b = agent2(\n    f\"Ticket: {ticket}\\n\\n\"\n    'Respond with only a JSON object: {\"issue\": string, \"urgency\": \"low\"|\"medium\"|\"high\"}. '\n    \"No other text.\"\n)\nprint(\"Constrained output tokens:\", resp_b.metrics.accumulated_usage.get(\"outputTokens\"))\nprint(\"Constrained output:\", str(resp_b))\n"
+      },
+      "costImpact": "Output-token savings apply per call. At 10,000 calls/day, a drop from ~300 to ~40 output tokens is roughly 2.6M tokens/day saved, with no infrastructure change — just the instruction text."
+    },
+    {
+      "title": "Compress a narrative system prompt into a dense instruction set",
+      "goal": "Rewrite a prose-style system prompt as structured bullets and measure the token delta using native Bedrock token counting, without losing any instruction.",
+      "steps": [
+        "Take (or write) a system prompt in narrative style, e.g. 3-4 sentences of paragraph prose explaining the agent's role and constraints.",
+        "Build an agent with that system prompt and use_native_token_count=True, send one placeholder message, and read input tokens from accumulated_usage. → Expect: a baseline number that includes the system prompt.",
+        "Rewrite the same guidance as short imperative bullets, one instruction per line, removing connective prose. Build a second agent with the dense version and repeat.",
+        "Compare the two input token counts. → Expect: fewer tokens for materially the same instructions, since prose connectives ('In addition, you should also make sure to...') cost tokens without adding constraint."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent\nfrom strands.models import BedrockModel\n\nnarrative = (\n    \"You are a helpful assistant that works for our customer support team. \"\n    \"It is very important that you always remain polite and professional at all times, \"\n    \"and you should try your best to resolve the customer's issue. In addition, you should \"\n    \"also make sure to never make promises about refund timelines, since only a human agent \"\n    \"is authorized to do that, and you should always ask for the order number if the customer \"\n    \"has not already provided one.\"\n)\n\ndense = (\n    \"Role: customer support assistant.\\n\"\n    \"- Be polite and professional.\\n\"\n    \"- Never promise refund timelines (human-only).\\n\"\n    \"- Always request the order number if missing.\"\n)\n\nfor label, system_prompt in [(\"narrative\", narrative), (\"dense\", dense)]:\n    model = BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\", use_native_token_count=True)\n    agent = Agent(model=model, system_prompt=system_prompt)\n    response = agent(\"Hello\")\n    print(label, response.metrics.accumulated_usage.get(\"inputTokens\"))\n"
+      },
+      "costImpact": "System prompt tokens are paid on every call. A saving of even 30-40 tokens per call compounds linearly with volume and, unlike output-format savings, applies even to calls that produce no useful output (retries, errors, tool-only turns)."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Prompt engineering overview",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+      "dateChecked": "2026-08-11",
+      "claim": "General guidance on being explicit and specific in prompts, and on output formatting as a controllable variable."
+    },
+    {
+      "title": "Anthropic — Reduce latency (applies to output-length control)",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/reduce-latency",
+      "dateChecked": "2026-08-11",
+      "claim": "Output length is a primary driver of both latency and cost; constraining format is the direct lever."
+    },
+    {
+      "title": "Strands Agents — Amazon Bedrock model provider (Token Counting section)",
+      "url": "https://strandsagents.com/docs/user-guide/concepts/model-providers/amazon-bedrock/",
+      "dateChecked": "2026-08-11",
+      "claim": "use_native_token_count=True and response.metrics.accumulated_usage as the source of real inputTokens/outputTokens figures used in both exercises."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "id": "model-engineering-routing",
+  "title": "Model Engineering & Routing",
+  "tier": 3,
+  "tierLabel": "Code you write, builds on context signals from Tier 2",
+  "status": "stable",
+  "summary": "The programmatic version of /model: deciding, per task or per step, which model tier handles a request — instead of one model handling everything at the same price.",
+  "whyItMatters": "Model price differences between tiers are often 5-10x. Routing simple, high-confidence steps to a cheap model and reserving expensive models for genuinely hard steps can cut aggregate cost sharply without materially hurting quality.",
+  "concepts": [
+    {
+      "heading": "Static routing by task type",
+      "body": "The simplest form: classify the incoming task (by keyword, regex, or a cheap classifier call) and route to a fixed model per category. E.g. intent classification -> Haiku, complex multi-step reasoning -> Sonnet/Opus. No feedback loop, but simple to reason about and audit."
+    },
+    {
+      "heading": "Cascades: try cheap, escalate on failure",
+      "body": "Run the cheap model first. If its output fails a validation check (schema mismatch, low self-reported confidence, a downstream verifier rejecting it), re-run the same request on a more capable model. Pays the cheap-model cost on every request but the expensive-model cost only on the fraction that need it."
+    },
+    {
+      "heading": "Per-step routing within a single agent loop",
+      "body": "A multi-step agent doesn't need the same model for every step. Planning/decomposition may warrant a stronger model; routine tool-call formatting or extraction from already-retrieved text often does not. This requires the agent's orchestration code to make a model choice at each step rather than fixing one model for the whole run."
+    },
+    {
+      "heading": "Agents-as-Tools: routing as delegation, not just classification",
+      "body": "Strands' Agents-as-Tools pattern wraps a specialized Agent in a @tool function so an orchestrator agent can call it like any other tool. This is model routing in a more general form: instead of a single classify-then-pick-model step, the orchestrator (on a capable model) decides per request which specialist agent (each with its own, possibly cheaper, model) to consult -- and can consult more than one, or none, depending on the request."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Build a two-tier cascade with an explicit escalation condition",
+      "goal": "Route a classification task to a cheap model by default, and escalate to a stronger model only when the cheap model's output fails validation.",
+      "steps": [
+        "Define a strict output schema for the task (e.g. a JSON object with a required enum field) and a Strands agent per model tier.",
+        "Call the cheap-tier agent first. Attempt to parse/validate its output against the schema.",
+        "If validation fails, re-run the identical prompt on the strong-tier agent. → Expect: the vast majority of well-formed inputs resolve on the cheap model; only malformed or ambiguous cases escalate.",
+        "Log which tier handled each request using each agent's own accumulated_usage. → Expect: over a batch of real inputs, an escalation rate well under 50%, ideally under 15-20% for a well-specified task."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "import json\nfrom strands import Agent\nfrom strands.models import BedrockModel\n\nSCHEMA_PROMPT = (\n    'Respond with only JSON: {\"category\": \"billing\"|\"technical\"|\"other\", \"confidence\": \"high\"|\"low\"}'\n)\n\ncheap_agent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-haiku-4-5-20251001-v1:0\"),\n    callback_handler=None,\n)\nstrong_agent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"),\n    callback_handler=None,\n)\n\ndef classify_ticket(text):\n    prompt = f\"Ticket: {text}\\n\\n{SCHEMA_PROMPT}\"\n\n    cheap_response = cheap_agent(prompt)\n    try:\n        result = json.loads(str(cheap_response))\n        if result.get(\"confidence\") == \"high\" and result.get(\"category\") in {\"billing\", \"technical\", \"other\"}:\n            return result[\"category\"], \"haiku\"\n    except (json.JSONDecodeError, KeyError):\n        pass\n\n    strong_response = strong_agent(prompt)\n    result = json.loads(str(strong_response))\n    return result[\"category\"], \"sonnet-escalated\"\n"
+      },
+      "costImpact": "If 80% of requests resolve on the cheap tier and only 20% escalate, and the strong model costs 8x the cheap model per call, blended cost is roughly (0.8 x 1) + (0.2 x 8) = 2.4x the cheap-only cost -- versus 8x if every request had gone straight to the strong model. The escalation rate is the number to watch and tune."
+    },
+    {
+      "title": "Route to a specialist agent with Agents-as-Tools instead of a fixed cascade",
+      "goal": "Let an orchestrator agent decide, per request, which cheaper specialist agent to delegate to -- rather than a single always-classify-then-escalate rule.",
+      "steps": [
+        "Build two specialist agents on the cheap model tier, each with a narrow system prompt and only the tools it needs.",
+        "Wrap each specialist in a @tool function that calls it and returns its response as a string.",
+        "Give an orchestrator agent (on the stronger model tier) only the two specialist tools -- not the underlying work directly.",
+        "Send a request that only needs one specialist. → Expect: the orchestrator calls only the relevant specialist tool; the other specialist's model is never invoked, so its cost is zero for that request."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent, tool\nfrom strands.models import BedrockModel\n\ncheap_model = BedrockModel(model_id=\"us.anthropic.claude-haiku-4-5-20251001-v1:0\")\n\nbilling_agent = Agent(\n    model=cheap_model,\n    system_prompt=\"You answer billing and invoice questions only.\",\n)\ntechnical_agent = Agent(\n    model=cheap_model,\n    system_prompt=\"You answer technical/product usage questions only.\",\n)\n\n@tool\ndef billing_specialist(query: str) -> str:\n    \"\"\"Answer a billing or invoice related question.\"\"\"\n    return str(billing_agent(query))\n\n@tool\ndef technical_specialist(query: str) -> str:\n    \"\"\"Answer a technical or product usage question.\"\"\"\n    return str(technical_agent(query))\n\norchestrator = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"),\n    tools=[billing_specialist, technical_specialist],\n)\n\nresult = orchestrator(\"Why was I charged twice this month?\")\n"
+      },
+      "costImpact": "The strong-tier orchestrator only pays for the tool-call decision, not for doing the underlying work -- the actual answer is generated by a cheap-tier specialist. Unused specialists cost nothing per request, unlike a fixed pipeline that always runs every stage."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Model selection / pricing guidance",
+      "url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+      "dateChecked": "2026-08-11",
+      "claim": "Relative price/capability tiers across model families, the basis for cascade and static-routing cost math."
+    },
+    {
+      "title": "Anthropic — Building effective agents (workflow patterns)",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "dateChecked": "2026-08-11",
+      "claim": "Routing as a named workflow pattern: classifying an input and directing it to a specialized downstream path."
+    },
+    {
+      "title": "Strands Agents 1.0 — Agents-as-Tools",
+      "url": "https://strandsagents.com/blog/strands-agents-1-0/",
+      "dateChecked": "2026-08-11",
+      "claim": "Agents-as-Tools pattern: wrapping a specialized Agent in a @tool function so an orchestrator can delegate to it, including the exact code shape used in this tab's second exercise."
+    },
+    {
+      "title": "Amazon Bedrock — Claude Haiku 4.5 model card",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-haiku-4-5.html",
+      "dateChecked": "2026-08-11",
+      "claim": "Bedrock model ID and cross-region inference profile ID for Claude Haiku 4.5, including the versioned suffix format (-20251001-v1:0)."
+    }
+  ]
+}

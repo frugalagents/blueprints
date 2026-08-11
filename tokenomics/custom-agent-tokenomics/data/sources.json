@@ -1,0 +1,71 @@
+{
+  "tierA_monitoring": {
+    "description": "Fixed source list checked on a schedule. High precision, low recall by design. A hit here means an existing pattern changed or a trusted source explicitly announced something new.",
+    "cadenceCron": "0 9 * * 1",
+    "sources": [
+      {
+        "id": "anthropic-engineering-blog",
+        "title": "Anthropic Engineering Blog",
+        "url": "https://www.anthropic.com/engineering",
+        "checkMethod": "fetch + diff visible post titles/dates against last-seen snapshot"
+      },
+      {
+        "id": "claude-code-changelog",
+        "title": "Claude Code changelog",
+        "url": "https://code.claude.com/docs/en/changelog",
+        "checkMethod": "fetch + diff against last-seen snapshot"
+      },
+      {
+        "id": "claude-code-best-practices",
+        "title": "Claude Code Best Practices",
+        "url": "https://code.claude.com/docs/en/best-practices",
+        "checkMethod": "fetch + diff against last-seen snapshot"
+      },
+      {
+        "id": "mcp-spec-repo",
+        "title": "Model Context Protocol spec repo (releases)",
+        "url": "https://github.com/modelcontextprotocol/modelcontextprotocol/releases",
+        "checkMethod": "fetch + diff latest release tag/notes against last-seen"
+      },
+      {
+        "id": "agentcore-docs",
+        "title": "Amazon Bedrock AgentCore docs",
+        "url": "https://docs.aws.amazon.com/bedrock-agentcore/",
+        "checkMethod": "fetch + diff against last-seen snapshot"
+      },
+      {
+        "id": "langchain-blog",
+        "title": "LangChain blog",
+        "url": "https://blog.langchain.dev/",
+        "checkMethod": "fetch + diff visible post titles/dates against last-seen snapshot"
+      },
+      {
+        "id": "langgraph-docs",
+        "title": "LangGraph docs — concepts",
+        "url": "https://langchain-ai.github.io/langgraph/concepts/why-langgraph/",
+        "checkMethod": "fetch + diff against last-seen snapshot"
+      }
+    ],
+    "notes": "Add practitioner blogs here as you find ones worth trusting. Each addition should include an id, title, url, and checkMethod so the monitoring pipeline stays mechanical rather than needing judgment calls about what changed."
+  },
+  "tierB_discovery": {
+    "description": "Broader, noisier sweep. Purpose is to find named patterns NOT already represented in data/manifest.json's tab list. A finding only becomes a candidate if it clears the corroboration rule in scripts/discovery-pipeline docs (>=2 independent, non-citing sources naming it consistently, and it is not just a renamed existing tab).",
+    "cadenceCron": "0 9 1 * *",
+    "seedQueries": [
+      "\"context engineering\" agent 2026",
+      "\"loop engineering\" LLM agent",
+      "\"graph engineering\" agent orchestration",
+      "agent tool calling cost reduction pattern",
+      "LLM agent memory architecture pattern name",
+      "agentic workflow new pattern name 2026",
+      "prompt caching pattern agent cost"
+    ],
+    "arxivCategories": ["cs.AI", "cs.CL", "cs.MA"],
+    "tripwireOnly": [
+      "https://news.ycombinator.com/",
+      "https://www.reddit.com/r/LocalLLaMA/",
+      "https://www.reddit.com/r/AI_Agents/"
+    ],
+    "tripwireNote": "Aggregator hits are a signal to look closer, never evidence on their own. Do not count a tripwire hit toward the >=2-source corroboration requirement."
+  }
+}

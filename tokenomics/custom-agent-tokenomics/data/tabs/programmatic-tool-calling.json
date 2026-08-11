@@ -1,0 +1,60 @@
+{
+  "id": "programmatic-tool-calling",
+  "title": "Programmatic Tool Calling",
+  "tier": 5,
+  "tierLabel": "Orchestration code, builds directly on Tier 4",
+  "status": "stable",
+  "summary": "Instead of one tool call per model turn, let the model emit code that orchestrates several tool calls in a single shot -- collapsing N round-trips into one.",
+  "whyItMatters": "Each sequential tool-call turn re-pays the full context (system prompt, tool catalog, growing history) on every round-trip. Reducing turn count is a direct multiplier on the fixed per-call costs established in Tabs 1 and 5.",
+  "concepts": [
+    {
+      "heading": "The round-trip tax",
+      "body": "A task needing 5 sequential tool calls in the traditional model normally costs 5 full round-trips: 5x the system prompt, 5x the tool schema tax, 5x the growing conversation history. If those 5 calls don't actually depend on the model reasoning between each one, that's pure overhead."
+    },
+    {
+      "heading": "Code as the orchestration layer",
+      "body": "Give the model a code-execution tool (a sandboxed interpreter) and let it write a short script that calls your other tools/functions directly, loops, branches, and aggregates results -- then returns just the final result to the conversation. The model reasons once, writes orchestration logic once, and only the net result re-enters context."
+    },
+    {
+      "heading": "When this helps and when it doesn't",
+      "body": "This pays off when tool calls are largely mechanical (fetch these 10 records, filter, sum) and the model doesn't need to see each intermediate result to decide the next step. It does NOT help when the model genuinely needs to reason about tool call N's result before deciding what to call next -- that dependency chain still needs real round-trips."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Replace 5 sequential tool-call turns with one code-execution turn",
+      "goal": "Compare round-trip count and total tokens for a mechanically decomposable task done the traditional way vs. via code orchestration.",
+      "steps": [
+        "Define a task requiring several independent lookups plus aggregation (e.g. 'get the total order value for customers 101, 102, 103, 104, 105').",
+        "Build a Strands agent with only a get_order_total(customer_id) @tool registered (no sandbox). Ask it to fetch and sum all 5 totals. → Expect: the model calls get_order_total 5 separate times, one tool round-trip each, then a final turn to sum and answer -- 6 total model turns, tracked via response.metrics accumulated across the invocation.",
+        "Build a second agent with Strands' built-in sandboxed shell tool added instead of the per-lookup tool. Ask the model to compute the same sum by running one Python one-liner in the shell. → Expect: 1-2 model turns total (write the command, return the result); the arithmetic happens inside the sandbox execution in a single call, never as 5 separate tool round-trips.",
+        "Compare each response's accumulated_usage.get(\"inputTokens\") and .get(\"outputTokens\") across both approaches for the identical task. → Expect: the code-orchestration version uses a small fraction of the tokens, roughly proportional to (1 / number_of_calls_collapsed)."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent, tool\nfrom strands.models import BedrockModel\nfrom strands.vended_tools.shell import shell\n\nORDER_TOTALS = {101: 42.50, 102: 17.00, 103: 88.25, 104: 5.10, 105: 63.40}\n\n@tool\ndef get_order_total(customer_id: int) -> float:\n    \"\"\"Return the total order value for a customer id.\"\"\"\n    return ORDER_TOTALS.get(customer_id, 0.0)\n\nmodel = BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\")\n\n# Traditional: one tool round-trip per customer id, plus a final summarizing turn.\ntraditional_agent = Agent(model=model, tools=[get_order_total])\ntraditional_response = traditional_agent(\n    \"Get the order total for customers 101, 102, 103, 104, 105 and tell me the sum.\"\n)\nprint(\"traditional tokens:\", traditional_response.metrics.accumulated_usage)\n\n# Code-execution: the model writes one script that does the loop and sum itself,\n# inside Strands' sandboxed shell tool, in a single round-trip.\ncode_agent = Agent(model=model, tools=[shell])\ncode_response = code_agent(\n    \"Run this Python one-liner in the shell and report only the final number: \"\n    \"python3 -c \\\"print(sum([42.50, 17.00, 88.25, 5.10, 63.40]))\\\"\"\n)\nprint(\"code-execution tokens:\", code_response.metrics.accumulated_usage)\n"
+      },
+      "costImpact": "For an N-step mechanical task, traditional round-trips cost roughly N x (fixed context per call). Code orchestration costs roughly 1-2 x (fixed context per call) plus the sandbox execution cost, which is typically far cheaper than additional model round-trips. The savings scale with N -- bigger fan-out, bigger win."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Code execution tool",
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool",
+      "dateChecked": "2026-08-11",
+      "claim": "A sandboxed code-execution tool lets the model run code, including orchestrating other tool/function calls, within a single turn rather than one round-trip per call."
+    },
+    {
+      "title": "Anthropic — Tool use overview",
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+      "dateChecked": "2026-08-11",
+      "claim": "Baseline mechanics of tool-call round-trips this tab's pattern is optimizing against."
+    },
+    {
+      "title": "Strands Agents — vended_tools.shell.shell API reference",
+      "url": "https://strandsagents.com/docs/api/python/strands.vended_tools.shell.shell/",
+      "dateChecked": "2026-08-11",
+      "claim": "The shell tool used in this exercise: a sandbox-routed tool that executes commands (including one-off Python via python3 -c) inside the agent's configured Sandbox, defaulting to NotASandboxLocalEnvironment when no sandbox is passed."
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "caching-strategies",
+  "title": "Caching Strategies",
+  "tier": 8,
+  "tierLabel": "Structural -- most effective once prompt (Tier 1) and context (Tier 2) shape is stable",
+  "status": "stable",
+  "summary": "Three distinct caching layers apply to a custom agent: prompt caching (structural, prefix-dependent), semantic/FAQ caching (skip the model call entirely for repeat questions), and tool-result caching (skip re-executing deterministic calls).",
+  "whyItMatters": "Caching doesn't reduce what a single novel call costs -- it reduces how often you pay full price at all. Placed after prompt and context design because caching effectiveness depends directly on choices made in those earlier tabs.",
+  "concepts": [
+    {
+      "heading": "Prompt caching depends on prefix stability",
+      "body": "Providers cache a prefix of the input (system prompt, tool definitions, static context) if it's byte-identical across calls and marked as cacheable. This means static content must come first and stay first -- if Tab 2's system prompt or Tab 5's tool catalog changes shape between calls, cache hits drop. Ordering discipline established in earlier tabs is what makes this tab's technique work at all."
+    },
+    {
+      "heading": "Semantic/FAQ caching skips the model call entirely",
+      "body": "For a support or Q&A-style agent, many incoming questions are semantically identical to ones already answered. Embedding the incoming query and checking similarity against a cache of (query embedding, prior answer) pairs can let you return a cached answer with zero model call for a meaningful fraction of traffic -- at the cost of a small embedding-similarity lookup."
+    },
+    {
+      "heading": "Tool-result caching for deterministic calls",
+      "body": "If a tool call is a pure function of its arguments (a database lookup, a calculation, an unchanging reference lookup), cache the result keyed by arguments. This avoids both the downstream tool's execution cost and, more importantly for tokenomics, avoids the model needing another round-trip to receive a result it already has."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Enable prompt caching and measure the cache-hit discount directly",
+      "goal": "Mark the static portion of a request as cacheable, run the same prefix twice, and compare cost/latency reported for the cached vs. uncached call.",
+      "steps": [
+        "Take a system prompt you've kept stable (per Tab 2's guidance) and long enough to exceed the model's minimum cacheable token threshold (4,096 tokens per checkpoint for both Claude Sonnet 5 and Claude Haiku 4.5 on Bedrock, up to 4 checkpoints per request), and mark it with a cache checkpoint using Strands' SystemContentBlock.",
+        "Make a first call. → Expect: response.metrics.accumulated_usage reports a non-zero cacheWriteInputTokens for the cached prefix.",
+        "Make a second call with the identical system prompt but a different user message, within the cache TTL (5 minutes or 1 hour depending on checkpoint config). → Expect: accumulated_usage now reports cacheReadInputTokens instead of cacheWriteInputTokens, billed at a substantial discount versus fresh input tokens.",
+        "Also enable cache_tools=\"default\" on the BedrockModel if the agent has a stable tool list. → Expect: tool schemas get their own cache checkpoint, so tool definitions are also billed at the cache-read discount on the second call."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent\nfrom strands.models import BedrockModel\nfrom strands.types.content import SystemContentBlock\n\nsystem_content = [\n    SystemContentBlock(text=\"You are a support agent. \" + \"...\" * 1600),  # exceed min cacheable tokens\n    SystemContentBlock(cachePoint={\"type\": \"default\"}),\n]\n\nmodel = BedrockModel(\n    model_id=\"us.anthropic.claude-sonnet-5\",\n    cache_tools=\"default\",\n)\n\nagent = Agent(model=model, system_prompt=system_content)\n\nresponse1 = agent(\"What's your refund policy?\")\nprint(\"call 1 cache write:\", response1.metrics.accumulated_usage.get(\"cacheWriteInputTokens\"))\nprint(\"call 1 cache read:\", response1.metrics.accumulated_usage.get(\"cacheReadInputTokens\"))\n\nresponse2 = agent(\"How long do shipments usually take?\")\nprint(\"call 2 cache write:\", response2.metrics.accumulated_usage.get(\"cacheWriteInputTokens\"))\nprint(\"call 2 cache read:\", response2.metrics.accumulated_usage.get(\"cacheReadInputTokens\"))\n"
+      },
+      "costImpact": "Cache reads are billed at a fraction of fresh input token price (exact discount depends on the Bedrock pricing page for the model). For an agent with a large, stable system prompt and tool catalog (the exact content Tabs 2 and 5 optimized), this can cut the dominant fixed per-call cost sharply for any calls that land within the cache TTL of a prior call."
+    },
+    {
+      "title": "Build a simple semantic cache for repeat questions",
+      "goal": "Skip the model call entirely for a question that's a near-duplicate of one already answered.",
+      "steps": [
+        "Maintain a cache of (query, embedding, answer) tuples.",
+        "For each incoming query, embed it and compare cosine similarity against cached entries.",
+        "If similarity exceeds a high threshold (e.g. 0.92), return the cached answer directly, with zero model call. → Expect: near-duplicate phrasings of a previously-asked question ('What's your refund policy?' vs 'Can I get a refund?') both resolve from cache after the first is answered.",
+        "If below threshold, call the model normally and add the new (query, embedding, answer) to the cache. → Expect: genuinely novel questions still get a full, fresh model call."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "import numpy as np\n\nclass SemanticCache:\n    def __init__(self, embed_fn, threshold=0.92):\n        self.embed_fn = embed_fn\n        self.threshold = threshold\n        self.entries = []  # list of (embedding, query, answer)\n\n    def lookup(self, query):\n        query_emb = self.embed_fn(query)\n        for emb, cached_query, answer in self.entries:\n            similarity = np.dot(query_emb, emb) / (np.linalg.norm(query_emb) * np.linalg.norm(emb))\n            if similarity >= self.threshold:\n                return answer\n        return None\n\n    def store(self, query, answer):\n        self.entries.append((self.embed_fn(query), query, answer))\n"
+      },
+      "costImpact": "For a high-repeat-question workload (support FAQ, internal helpdesk), a semantic cache with a well-tuned threshold can absorb a large share of traffic with zero model-call cost per hit -- the exact fraction depends on how repetitive real queries are, so measure hit rate on real traffic before assuming a number."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Prompt caching",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "dateChecked": "2026-08-11",
+      "claim": "Underlying prompt caching mechanics (cache breakpoints, TTL behavior, discounted pricing for cache reads) that Strands' Bedrock caching options build on."
+    },
+    {
+      "title": "Strands Agents — Amazon Bedrock model provider (Caching section)",
+      "url": "https://strandsagents.com/docs/user-guide/concepts/model-providers/amazon-bedrock/",
+      "dateChecked": "2026-08-11",
+      "claim": "SystemContentBlock with cachePoint for system prompt caching, cache_tools=\"default\" for tool caching, and cacheWriteInputTokens/cacheReadInputTokens fields on response.metrics.accumulated_usage. Note: Strands' general docs cite older per-model minimums (e.g. 1,024 tokens) that differ from the current Sonnet 5 / Haiku 4.5 model cards below (4,096) -- always verify the specific model's own card."
+    },
+    {
+      "title": "Amazon Bedrock — Claude Sonnet 5 model card (prompt caching table)",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-5.html",
+      "dateChecked": "2026-08-11",
+      "claim": "Confirms prompt caching is supported for Claude Sonnet 5 on Bedrock, with a minimum of 4,096 tokens per cache checkpoint, up to 4 checkpoints per request, and 5-minute or 1-hour TTL options."
+    }
+  ]
+}

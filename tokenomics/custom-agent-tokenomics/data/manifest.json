@@ -1,0 +1,16 @@
+{
+  "title": "Tokenomics for Custom-Built Agents",
+  "subtitle": "A companion to the Bedrock Claude Code workshop — for when you are the one writing the agent loop, not configuring someone else's.",
+  "tabs": [
+    "foundations",
+    "prompt-engineering",
+    "context-memory-engineering",
+    "model-engineering-routing",
+    "tool-design-progressive-disclosure",
+    "programmatic-tool-calling",
+    "gateway-patterns",
+    "hooks-lifecycle",
+    "caching-strategies",
+    "observability-governance"
+  ]
+}

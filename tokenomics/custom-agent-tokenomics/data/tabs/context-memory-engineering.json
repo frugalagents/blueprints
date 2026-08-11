@@ -1,0 +1,72 @@
+{
+  "id": "context-memory-engineering",
+  "title": "Context & Memory Engineering",
+  "tier": 2,
+  "tierLabel": "Code you write, no new services required",
+  "status": "stable",
+  "summary": "There is no /compact button in your own agent loop. Context grows every turn unless you explicitly design what gets kept, summarized, or dropped.",
+  "whyItMatters": "Every prior turn you keep re-sends its full token cost on every subsequent call. Left unmanaged, a long-running agent's per-call cost grows linearly (or worse) with conversation length, and eventually exceeds the context window entirely.",
+  "concepts": [
+    {
+      "heading": "Sliding windows are the simplest policy, and often good enough",
+      "body": "Keep the system prompt plus the last N turns verbatim, drop everything older. Cheap to implement, no summarization cost, but loses information older than the window — fine for short-horizon tasks, wrong for anything that needs long-term coherence."
+    },
+    {
+      "heading": "Programmatic summarization replaces the human hitting /compact",
+      "body": "When a conversation crosses a token threshold, run a (typically cheaper-model) summarization pass over the older turns and replace them with the summary. This is the direct code equivalent of Claude Code's /compact, except you decide the trigger threshold and the summarization prompt."
+    },
+    {
+      "heading": "Structured memory separates 'what happened' from 'what's true'",
+      "body": "Episodic memory (a log of past turns/events) and semantic memory (durable facts distilled from those events, e.g. user preferences) are different stores with different costs. Retrieving a small set of relevant facts from a semantic store is far cheaper than re-sending an entire episodic history and searching it implicitly via the model's attention."
+    },
+    {
+      "heading": "Retrieval instead of stuffing",
+      "body": "Rather than keeping full history in-context, index it (vector store, keyword index, or even a simple recency+relevance heuristic) and retrieve only what's relevant to the current turn. This trades a retrieval step for a much smaller context payload on every call."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Cap conversation history with Strands' sliding-window conversation manager",
+      "goal": "Bound context growth using Strands' built-in conversation manager instead of hand-rolling a token-budget class.",
+      "steps": [
+        "Attach a SlidingWindowConversationManager to a Strands agent with a fixed window_size and should_truncate_results=True.",
+        "Run a long synthetic conversation (20+ turns) through the agent. → Expect: once the window fills, the manager trims oldest messages automatically -- total input tokens per call plateau instead of growing linearly with turn count.",
+        "Send a tool call that returns a very large result. → Expect: should_truncate_results causes the manager to preserve only the first/last 200 characters of old tool results before evicting them, rather than blowing the budget on one oversized result."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent\nfrom strands.agent.conversation_manager import SlidingWindowConversationManager\nfrom strands.models import BedrockModel\n\nconversation_manager = SlidingWindowConversationManager(\n    window_size=20,             # max messages kept in history\n    should_truncate_results=True,\n    pin_first=1,                 # keep the very first message (e.g. task framing) pinned\n)\n\nagent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-haiku-4-5-20251001-v1:0\"),\n    conversation_manager=conversation_manager,\n)\n\nfor turn in synthetic_turns:  # 20+ turns of a long-running task\n    response = agent(turn)\n    print(response.metrics.accumulated_usage.get(\"inputTokens\"))\n"
+      },
+      "costImpact": "Without a cap, a 50-turn conversation can cost 10-20x more per call by the end than at the start, purely from re-sending growing history. window_size bounds this to a flat cost regardless of session length, and should_truncate_results prevents a single huge tool result from spiking one call."
+    },
+    {
+      "title": "Enable proactive compaction to replicate /compact automatically",
+      "goal": "Replicate /compact: instead of waiting for an overflow error, compress context proactively once it crosses a percentage of the context window, using Strands' built-in proactive_compression option.",
+      "steps": [
+        "Set proactive_compression=True on the same SlidingWindowConversationManager (default threshold: compress at 70% of context window used), or pass a specific ratio.",
+        "Optionally set per_turn=True so management runs before every model call rather than only at the end of a loop -- important for agents that call many tools per turn (e.g. browsing with screenshots).",
+        "Run the same long synthetic conversation. → Expect: input tokens per call show a repeating sawtooth pattern -- climbing, then dropping sharply once the 70% threshold triggers a compression pass -- instead of climbing without bound.",
+        "Compare against reduce_context's reactive path: force a context-window overflow and confirm the manager also recovers by truncating tool results first, only falling back to trimming messages if that's not enough."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent\nfrom strands.agent.conversation_manager import SlidingWindowConversationManager\nfrom strands.models import BedrockModel\n\nconversation_manager = SlidingWindowConversationManager(\n    window_size=40,\n    should_truncate_results=True,\n    proactive_compression=True,   # compress at 70% of context window by default\n    per_turn=True,                 # re-check before every model call, not just at loop end\n)\n\nagent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-haiku-4-5-20251001-v1:0\"),\n    conversation_manager=conversation_manager,\n)\n\nfor turn in synthetic_turns:\n    response = agent(turn)\n    print(response.metrics.accumulated_usage.get(\"inputTokens\"))\n"
+      },
+      "costImpact": "Proactive compression has a one-time cost each time it fires, but converts an unbounded linear growth curve into a repeating sawtooth capped near the 70% context-window threshold -- the same shape you'd see monitoring Claude Code's own /usage across a /compact event, produced automatically instead of by hand-rolled summarization code."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Context engineering for AI agents",
+      "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "dateChecked": "2026-08-11",
+      "claim": "Context is a finite, degrading resource; compaction and structured note-taking/memory are named strategies for managing it across long agent sessions."
+    },
+    {
+      "title": "Strands Agents — SlidingWindowConversationManager API reference",
+      "url": "https://strandsagents.com/docs/api/python/strands.agent.conversation_manager.sliding_window_conversation_manager/",
+      "dateChecked": "2026-08-11",
+      "claim": "window_size, should_truncate_results, per_turn, pin_first, and proactive_compression parameters, including the default 70% compression threshold and the reactive reduce_context truncate-then-trim recovery order."
+    }
+  ]
+}

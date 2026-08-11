@@ -1,0 +1,60 @@
+{
+  "id": "tool-design-progressive-disclosure",
+  "title": "Tool Design Economics & Progressive Disclosure",
+  "tier": 4,
+  "tierLabel": "Design decisions, some code",
+  "status": "stable",
+  "summary": "Every tool schema you register is paid for on every single call, whether the model uses it or not. Progressive disclosure means the model only sees a tool's full definition when it's actually about to use it.",
+  "whyItMatters": "Tab 1's exercise showed the per-call tax of a handful of tools. At real scale (dozens of MCP servers, hundreds of tools) that tax alone can exceed the cost of the actual work being done.",
+  "concepts": [
+    {
+      "heading": "Minimize the tool surface, not just the schema verbosity",
+      "body": "Fewer, more general tools (e.g. one `run_query` tool with parameters) usually beat many narrow tools (`get_user`, `get_order`, `get_invoice`, ...) for token cost, provided the model can still express the same range of actions. Consolidation is the first lever, before optimizing individual schema wording."
+    },
+    {
+      "heading": "Progressive disclosure: show a menu, not a manual",
+      "body": "Instead of sending full input_schema for every tool on every call, send a short list of tool names + one-line descriptions upfront, and only expand a tool's full schema into context when the model signals intent to use it (a two-step call, or a dedicated 'get tool details' meta-tool). This is the same principle behind Claude Code's Skills: full detail loaded only on demand."
+    },
+    {
+      "heading": "Namespacing and grouping reduce cognitive and token load together",
+      "body": "Grouping related tools under a shared prefix (`db.query`, `db.insert`, `slack.post_message`) helps the model pick faster and lets you disclose by group rather than by individual tool -- 'load all db.* tool schemas' is one disclosure decision instead of many."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Convert an always-loaded tool list into a two-step progressive disclosure pattern",
+      "goal": "Measure the token savings from sending short tool summaries by default and only expanding full schemas for tools the model actually intends to use.",
+      "steps": [
+        "Build a Strands agent with your real tools (5-10 of them) registered normally and record its per-call input tokens as the baseline (reuse the native-token-count pattern from Tab 1).",
+        "Build a 'catalog' meta-tool whose description lists all available tool names and one-line summaries, plus a single `call_tool(name, arguments)` dispatch meta-tool that looks up the named function and invokes it directly.",
+        "Register only the two meta-tools with the agent -- never register the real tools' schemas at all. → Expect: fixed per-call token cost proportional to two small meta-tool schemas plus one line per catalog entry, not tool count x full schema size.",
+        "Run a task that needs one of the underlying tools. → Expect: the model calls list_available_tools, then call_tool(name=..., arguments=...) -- the full input_schema of search_orders or issue_refund is never sent to the model at any point, since call_tool's own schema (name: str, arguments: dict) is all that's ever transmitted."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent, tool\nfrom strands.models import BedrockModel\n\n# Real tool implementations -- plain functions, not registered with the agent directly.\ndef search_orders(order_id: str = \"\", status: str = \"\") -> str:\n    \"\"\"Search orders by id, date, or status.\"\"\"\n    return f\"Searched orders: order_id={order_id!r} status={status!r}\"\n\ndef issue_refund(order_id: str, amount: float) -> str:\n    \"\"\"Issue a refund for an order.\"\"\"\n    return f\"Refunded {amount} for order {order_id}\"\n\n# ... rest of your real tool functions, undecorated\n\nALL_TOOLS = {\"search_orders\": search_orders, \"issue_refund\": issue_refund}\n\n@tool\ndef list_available_tools() -> list:\n    \"\"\"Return a catalog of available tool names with one-line summaries.\n    Call call_tool(name, arguments) to invoke one.\"\"\"\n    return [{\"name\": name, \"summary\": fn.__doc__} for name, fn in ALL_TOOLS.items()]\n\n@tool\ndef call_tool(name: str, arguments: dict) -> str:\n    \"\"\"Invoke a named tool from the catalog with the given keyword arguments.\"\"\"\n    if name not in ALL_TOOLS:\n        return f\"Unknown tool: {name}. Call list_available_tools() first.\"\n    return ALL_TOOLS[name](**arguments)\n\n# The agent only ever sees these two small, fixed meta-tool schemas.\nagent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"),\n    tools=[list_available_tools, call_tool],\n)\n"
+      },
+      "costImpact": "For a 50-tool agent where each full schema averages 300 tokens, registering all 50 directly costs ~15,000 tokens/call fixed. The catalog + call_tool dispatch pattern costs roughly 300-500 tokens/call total, regardless of how many underlying tools exist, since only the two meta-tool schemas are ever transmitted -- the real tools' schemas never enter the model's context at all."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Claude Code Skills (progressive disclosure pattern)",
+      "url": "https://code.claude.com/docs/en/skills",
+      "dateChecked": "2026-08-11",
+      "claim": "Skills load only on demand rather than being always present in context -- the source pattern this tab's technique generalizes from Claude Code to custom agent tool design."
+    },
+    {
+      "title": "Anthropic — Building effective agents (tool design section)",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "dateChecked": "2026-08-11",
+      "claim": "Tool design as a first-class engineering concern, including keeping tool surfaces minimal and well-documented."
+    },
+    {
+      "title": "Strands Agents — Agent API reference (tools parameter)",
+      "url": "https://strandsagents.com/docs/api/python/strands.agent.agent/",
+      "dateChecked": "2026-08-11",
+      "claim": "The @tool decorator and the tools constructor parameter accepting a list of registered functions -- the basis for keeping only meta-tools registered directly with the agent."
+    }
+  ]
+}

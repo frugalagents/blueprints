@@ -1,0 +1,64 @@
+{
+  "id": "foundations",
+  "title": "Foundations: Why a Custom Agent's Economics Are Different",
+  "tier": 0,
+  "tierLabel": "No infrastructure — just the mental model",
+  "status": "stable",
+  "summary": "When you build the agent loop yourself, every cost lever that Claude Code's harness handled for you becomes something you must design and own explicitly.",
+  "whyItMatters": "Misunderstanding this is the single biggest source of runaway cost in custom agents: teams port an interactive, human-supervised mental model onto an unattended, high-volume system.",
+  "concepts": [
+    {
+      "heading": "Five things a harness gives you for free",
+      "body": "Claude Code (or any polished agentic CLI) quietly handles: context compaction (/compact), model selection (/model), a human watching for runaway loops, prompt structuring for cache hits, and usage visibility (/usage). Building your own agent means each of these becomes a design decision, not a given."
+    },
+    {
+      "heading": "Volume changes the math",
+      "body": "An interactive developer session is bounded by how long a person sits at a keyboard — tens of turns a day. A production agent can run thousands of unattended invocations. Per-call cost multiplied by volume dominates; a $0.002 inefficiency per call is irrelevant at 50 calls/day and existential at 500,000."
+    },
+    {
+      "heading": "The four things you now own",
+      "body": "1) Context growth — nothing stops it unless you write the stopping logic. 2) Tool schema tax — every registered tool costs input tokens on every single call, whether used or not. 3) Runaway loops — no human is present to notice and hit Escape. 4) Cost visibility — you must instrument it yourself, off raw API responses or provider billing metrics."
+    },
+    {
+      "heading": "Why this workshop uses Strands, not raw API calls",
+      "body": "The exercises below build agents with the Strands Agents SDK (AWS's open-source agent framework) running on Amazon Bedrock, rather than hand-rolled loops around a raw messages.create call. Strands already ships a real agent loop, a conversation manager, a hooks system, and native Bedrock prompt/tool caching -- the exact primitives this workshop is teaching you to reason about. Where Strands has a built-in for a pattern, the exercise uses it directly instead of reinventing it."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Measure the fixed cost of your own tool schemas",
+      "goal": "See, in real tokens, what you are paying on every single call before the model does any work.",
+      "steps": [
+        "Install the SDK: `pip install strands-agents strands-agents-tools`.",
+        "Build a minimal Strands agent with 3-5 tools (reuse your real tools, or the calculator/current_time tools shipped in strands-agents-tools).",
+        "Enable native Bedrock token counting on the model and inspect the accumulated usage after a single call. → Expect: a non-zero input token count that includes your tool schemas even on a trivial request.",
+        "Multiply that per-call fixed cost by your expected daily call volume. → Expect: a number that makes the 'tool tax' concrete rather than abstract."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent, tool\nfrom strands.models import BedrockModel\n\n@tool\ndef search_orders(order_id: str = \"\", status: str = \"\") -> str:\n    \"\"\"Search customer orders by id, date range, or status.\"\"\"\n    return f\"Searched orders with order_id={order_id!r} status={status!r}\"\n\n# add the rest of your real tools here\n\nmodel = BedrockModel(\n    model_id=\"us.anthropic.claude-sonnet-5\",\n    use_native_token_count=True,\n)\n\nagent = Agent(model=model, tools=[search_orders])\n\nresponse = agent(\"placeholder\")\n\ninput_tokens = response.metrics.accumulated_usage.get(\"inputTokens\", 0)\nprint(f\"Fixed per-call tool tax (this call's total input tokens): {input_tokens}\")\n"
+      },
+      "costImpact": "This number is paid on every call regardless of whether any tool is used. At scale it is often the single largest fixed cost in a custom agent, which is why Tab 5 (tool design) and Tab 7 (gateway patterns) exist."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Anthropic — Building effective agents",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "dateChecked": "2026-08-11",
+      "claim": "Distinction between workflows and agents, and the principle of adding complexity only when it demonstrably improves outcomes — the basis for this workshop's tiered, escalating structure."
+    },
+    {
+      "title": "Strands Agents — Amazon Bedrock model provider",
+      "url": "https://strandsagents.com/docs/user-guide/concepts/model-providers/amazon-bedrock/",
+      "dateChecked": "2026-08-11",
+      "claim": "BedrockModel's use_native_token_count option and AgentResult.metrics.accumulated_usage as the source of real per-call token figures."
+    },
+    {
+      "title": "Amazon Bedrock — Claude Sonnet 5 model card",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-5.html",
+      "dateChecked": "2026-08-11",
+      "claim": "Bedrock model ID (anthropic.claude-sonnet-5) and cross-region inference profile IDs (us./eu./au./global.anthropic.claude-sonnet-5)."
+    }
+  ]
+}

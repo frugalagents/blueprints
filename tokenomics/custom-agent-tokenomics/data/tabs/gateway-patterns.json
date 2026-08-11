@@ -1,0 +1,60 @@
+{
+  "id": "gateway-patterns",
+  "title": "Gateway Patterns for Tool Loading",
+  "tier": 6,
+  "tierLabel": "Infrastructure -- a service you stand up",
+  "status": "stable",
+  "summary": "Progressive disclosure (Tab 5) solved this for one agent with a fixed tool list. At scale -- dozens of MCP servers, hundreds of tools across a fleet of agents -- static loading is itself the bottleneck, and you need a gateway that resolves and loads tool definitions on demand.",
+  "whyItMatters": "Connecting an agent to many MCP servers directly means loading every server's full tool catalog on every call, even though a given task might use tools from only one or two of them. A gateway centralizes discovery so agents load only what they need, when they need it.",
+  "concepts": [
+    {
+      "heading": "The gateway sits between the agent and many tool sources",
+      "body": "Rather than an agent connecting directly to N MCP servers and receiving all N catalogs, it connects to one gateway. The gateway indexes every downstream server's tools and exposes a search/discovery interface -- the agent asks 'what tools handle X' and gets back only relevant results, not everything."
+    },
+    {
+      "heading": "Tool search as a first-class capability, not an afterthought",
+      "body": "A gateway's core value is a search tool over tool metadata: given a natural-language description of what's needed, return the matching tool(s) and only then load their full schema into context. This is the fleet-scale version of the single-agent progressive disclosure in Tab 5."
+    },
+    {
+      "heading": "Centralized auth, policy, and rate limiting",
+      "body": "A gateway is also the natural place to enforce which agents can reach which downstream tools, apply rate limits per tool/server, and centralize credential management -- so individual agents don't each need their own connection and auth logic to every MCP server, which would multiply both complexity and standing connection overhead."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Stand up a minimal tool-search gateway over two mock MCP-style tool sources",
+      "goal": "Demonstrate the discovery-then-load pattern end-to-end: an agent asks a gateway for relevant tools by description, gets back a short list, and only then requests full schemas for the ones it needs.",
+      "steps": [
+        "Define two mock 'downstream servers,' each with 3-4 tools and a one-line description per tool (simulating two MCP servers with disjoint catalogs).",
+        "Build a gateway search function that takes a free-text query and returns the top-matching tool names + descriptions across both servers (simple keyword match is enough to demonstrate the pattern; a real gateway would use embeddings).",
+        "Give the agent only the gateway's `search_tools(query)` and `get_tool_schema(name)` meta-tools -- not the full catalogs of either downstream server.",
+        "Run a task that only needs one server's tools. → Expect: search_tools returns matches from the relevant server only; get_tool_schema is called only for the 1-2 tools actually used; the other server's tool definitions never enter context at all."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from strands import Agent, tool\nfrom strands.models import BedrockModel\n\nDOWNSTREAM_SERVERS = {\n    \"crm\": {\n        \"get_contact\": \"Look up a CRM contact by email or id.\",\n        \"update_contact\": \"Update fields on a CRM contact.\",\n        \"list_deals\": \"List open deals for a contact.\",\n    },\n    \"billing\": {\n        \"get_invoice\": \"Fetch an invoice by id.\",\n        \"issue_refund\": \"Issue a refund against an invoice.\",\n        \"list_invoices\": \"List invoices for a customer.\",\n    },\n}\n\n@tool\ndef search_tools(query: str) -> list:\n    \"\"\"Search across all downstream servers for tools matching a free-text query.\n    Call get_tool_schema(server, name) on a match before invoking it.\"\"\"\n    query_terms = query.lower().split()\n    matches = []\n    for server, tools in DOWNSTREAM_SERVERS.items():\n        for name, desc in tools.items():\n            if any(term in desc.lower() or term in name for term in query_terms):\n                matches.append({\"server\": server, \"name\": name, \"description\": desc})\n    return matches\n\n@tool\ndef get_tool_schema(server: str, name: str) -> str:\n    \"\"\"Return the description for a specific tool on a specific downstream server.\"\"\"\n    return DOWNSTREAM_SERVERS.get(server, {}).get(name, \"Unknown tool\")\n\n# The agent only ever sees these two gateway meta-tools -- never the 6 real\n# tool schemas across both downstream servers.\nagent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"),\n    tools=[search_tools, get_tool_schema],\n)\n\nresponse = agent(\"I need to refund a customer's invoice, what tool should I use?\")\n# -> search_tools(\"refund a customer's invoice\") returns only billing.issue_refund\n#    and billing.get_invoice; the crm.* tools never surface for this request.\n"
+      },
+      "costImpact": "Without a gateway, connecting to both servers directly means loading 6+ full tool schemas (both servers) on every call regardless of task. With gateway-mediated search, only the 1-2 relevant schemas for the matched server are loaded -- the unused server's entire catalog costs zero tokens for that task."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Amazon Bedrock AgentCore — Gateway",
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html",
+      "dateChecked": "2026-08-11",
+      "claim": "AgentCore Gateway pattern: centralizing tool discovery and access across multiple backend targets for agents, with search over available tools."
+    },
+    {
+      "title": "Anthropic — MCP tool search / deferred tool loading pattern",
+      "url": "https://code.claude.com/docs/en/mcp",
+      "dateChecked": "2026-08-11",
+      "claim": "Claude Code's own MCP tool-search deferred-loading mechanism is the single-client instance of the same discovery-then-load principle a gateway applies at fleet scale."
+    },
+    {
+      "title": "Strands Agents — Agent API reference (tools parameter)",
+      "url": "https://strandsagents.com/docs/api/python/strands.agent.agent/",
+      "dateChecked": "2026-08-11",
+      "claim": "The @tool decorator and Agent(tools=[...]) constructor parameter used to register only the two gateway meta-tools with the agent."
+    }
+  ]
+}

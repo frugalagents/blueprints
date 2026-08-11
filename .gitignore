@@ -68,7 +68,13 @@ credentials.json
 secrets.json
 *secret*
 *password*
-*token*
+*.token
+token.json
+token.txt
+*_token.json
+*_token.txt
+access-token*
+refresh-token*
 
 # Configuration files with sensitive data
 **/.config/*.json

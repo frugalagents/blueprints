@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en"><head><style id="qw-theme">:root {
+  --color-bg: #faf9fc;
+  --color-text: #131920;
+  --color-navbar-bg: #f9f9fb;
+  --color-bg-chat-view: #fcfcfd;
+  --color-bg-secondary: #fff;
+  --color-bg-tertiary: #f9fafb;
+  --color-bg-hover: #f3f4f6;
+  --color-surface: #f9fafb;
+  --color-surface-hover: #f3f4f6;
+  --color-surface-active: #e5e7eb;
+  --color-border: #0000001f;
+  --color-border-light: #0000000f;
+  --color-border-strong: #d1d5db;
+  --color-primary: #4200db;
+  --color-primary-dark: #35009e;
+  --color-primary-light: #8575ff;
+  --color-primary-bg: #e8e6ff;
+  --color-primary-hover-border: #35009e;
+  --color-nav-icon-active: #4200db;
+  --color-nav-hover-border: #4200db;
+  --color-primary-alpha-3: color-mix(in srgb, #4200db 3%, transparent);
+  --color-primary-alpha-5: color-mix(in srgb, #4200db 5%, transparent);
+  --color-primary-alpha-8: color-mix(in srgb, #4200db 8%, transparent);
+  --color-primary-alpha-12: color-mix(in srgb, #4200db 12%, transparent);
+  --color-primary-alpha-15: color-mix(in srgb, #4200db 15%, transparent);
+  --color-primary-alpha-20: color-mix(in srgb, #4200db 20%, transparent);
+  --color-primary-alpha-25: color-mix(in srgb, #4200db 25%, transparent);
+  --color-primary-alpha-30: color-mix(in srgb, #4200db 30%, transparent);
+  --color-primary-alpha-40: color-mix(in srgb, #4200db 40%, transparent);
+  --color-primary-alpha-50: color-mix(in srgb, #4200db 50%, transparent);
+  --color-primary-alpha-60: color-mix(in srgb, #4200db 60%, transparent);
+  --color-primary-subtle: color-mix(in srgb, #4200db 12%, transparent);
+  --color-primary-border: color-mix(in srgb, #4200db 30%, transparent);
+  --color-focus-ring: color-mix(in srgb, #4200db 50%, transparent);
+  --color-sidebar-hover: color-mix(in srgb, #4200db 12%, transparent);
+  --block-hover-outline: 1px dashed color-mix(in srgb, #4200db 50%, transparent);
+  --block-selected-outline: 1px solid #8575ff;
+  --block-selection-outline-offset: 2px;
+  --block-selected-halo: 0 0 8px color-mix(in srgb, #4200db 40%, transparent);
+  --color-accent: #4200db;
+  --color-accent-foreground: #4200db;
+  --color-accent-dark: #35009e;
+  --color-accent-light: #e8e6ff;
+  --color-accent-inverse: #fff;
+  --color-link: #4200db;
+  --color-primary-gradient-end: #e8e6ff;
+  --color-primary-bg-solid: #e8e6ff;
+  --color-user-bubble: #f3f3f7;
+  --color-user-bubble-text: #131920;
+  --color-text-secondary: #5e5e5e;
+  --color-text-tertiary: #656871;
+  --color-text-muted: #9ca3af;
+  --color-text-on-primary: #fff;
+  --color-success: #00802f;
+  --color-success-dark: #00471e;
+  --color-success-light: #d9ffd6;
+  --color-success-hover: #005c26;
+  --color-success-bg: #e6f5eb;
+  --color-success-border: #b3d9bf;
+  --color-success-foreground: #00802f;
+  --color-success-dark-foreground: #00471e;
+  --color-success-text: #00471e;
+  --color-error: #db0000;
+  --color-error-dark: #700000;
+  --color-error-light: #ffe0e0;
+  --color-error-hover: #ffe0e0;
+  --color-error-bg: #fceaea;
+  --color-error-border: #f2cccc;
+  --color-error-active-border: #db0000;
+  --color-error-foreground: #db0000;
+  --color-error-dark-foreground: #700000;
+  --color-error-inverse: #fff;
+  --color-error-text: #700000;
+  --color-warning: #f2b100;
+  --color-warning-dark: #573a00;
+  --color-warning-light: #fffbbd;
+  --color-warning-hover: #db9200;
+  --color-warning-bg: #fef7e6;
+  --color-warning-border: #f9dfa3;
+  --color-warning-foreground: #f2b100;
+  --color-warning-dark-foreground: #573a00;
+  --color-warning-inverse: #573a00;
+  --color-surface-warning: #fffbbd;
+  --color-text-warning: #573a00;
+  --color-info: #006ce0;
+  --color-info-dark: #002a66;
+  --color-info-light: #d1f1ff;
+  --color-info-hover: #003b8f;
+  --color-info-bg: #ebf3fc;
+  --color-info-border: #b3d1f0;
+  --color-info-foreground: #006ce0;
+  --color-info-dark-foreground: #002a66;
+  --color-info-inverse: #fff;
+  --color-overlay: #00000080;
+  --color-shadow: #00000014;
+  --color-hover: #0000000d;
+  --color-tooltip-bg: #000000d9;
+  --color-tooltip-text: #fff;
+  --color-voice-purple: #8575ff;
+  --color-voice-purple-dark: #4200db;
+  --color-voice-purple-light: #8575ff;
+  --color-voice-red: #db0000;
+  --color-voice-red-dark: #700000;
+  --color-voice-amber: #f2b100;
+  --color-voice-purple-glow: #4200db66;
+  --color-voice-red-glow: #db000066;
+  --font-sans: "Amazon Ember", "Helvetica Neue", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", "Monaco", "Menlo", "Consolas", monospace;
+  --text-2xs: .5625rem;
+  --text-xs: .625rem;
+  --text-sm: .6875rem;
+  --text-base: .75rem;
+  --text-md: .8125rem;
+  --text-lg: .875rem;
+  --text-xl: 1rem;
+  --text-2xl: 1.125rem;
+  --text-3xl: 1.25rem;
+  --text-4xl: 1.5rem;
+  --text-5xl: 2rem;
+  --spacing-1: calc(.25rem * 1);
+  --spacing-1-5: calc(.25rem * 1.5);
+  --spacing-2: calc(.25rem * 2);
+  --spacing-3: calc(.25rem * 3);
+  --spacing-4: calc(.25rem * 4);
+  --spacing-5: calc(.25rem * 5);
+  --spacing-6: calc(.25rem * 6);
+  --spacing-7: calc(.25rem * 7);
+  --spacing-8: calc(.25rem * 8);
+  --spacing-9: calc(.25rem * 9);
+  --spacing-10: calc(.25rem * 10);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-card: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 8px;
+  --shadow-sm: 0 1px 2px #0000000d;
+  --shadow-md: 0 4px 12px #00000014;
+  --color-success-bg-solid: #d9ffd6;
+  --color-error-bg-solid: #ffe0e0;
+  --color-error-border-solid: #ffe0e0;
+  --color-warning-bg-solid: #fffbbd;
+  --color-warning-text: #573a00;
+  --color-info-bg-solid: #d1f1ff;
+  --color-info-bg-solid-alt: #d1f1ff;
+  --color-info-text: #002a66;
+  --color-info-text-alt: #002a66;
+  --color-emerald: #10b981;
+  --color-teal: #4ecdc4;
+  --color-code-bg: #f3f3f7;
+  --color-code-header-bg: #f1f3f5;
+  --color-code-text: #24292e;
+  --color-code-border: #e1e4e8;
+  --color-code-muted: #6a737d;
+  --color-inline-code-bg: #f3f3f7;
+  --color-inline-code-text: #24292e;
+  --color-inline-code-border: #e1e4e8;
+  --color-scrollbar-thumb: #d1d5db;
+  --color-scrollbar-track: transparent;
+  --color-graph-node-text: #333;
+  --color-graph-node-text-dim: #7f8c8d;
+  --color-graph-edge-default: #95a5a6;
+  --color-graph-edge-cross: #e67e22;
+  --color-graph-edge-text: #666;
+  --color-graph-edge-stroke: #fff;
+  --color-graph-highlight-bg: #ff6b6b;
+  --color-graph-highlight-border: #e74c3c;
+  --color-graph-search-bg: gold;
+  --color-graph-search-border: orange;
+  --color-graph-focus-border: #c0392b;
+  --color-graph-external-border: #95a5a6;
+  --color-graph-cat-file: #3498db;
+  --color-graph-cat-folder: #7f8c8d;
+  --color-graph-cat-file-aggregate: #2980b9;
+  --color-graph-cat-class: #9b59b6;
+  --color-graph-cat-function: #2ecc71;
+  --color-graph-cat-method: #1abc9c;
+  --color-graph-cat-variable: #f39c12;
+  --color-graph-cat-import: #d35400;
+  --color-graph-cat-module: #5b6abf;
+  --color-graph-cat-concept: #e74c3c;
+  --color-graph-cat-person: #ff6b6b;
+  --color-graph-cat-org: #4ecdc4;
+  --color-graph-cat-organization: #4ecdc4;
+  --color-graph-cat-product: #a29bfe;
+  --color-graph-cat-metric: #fd79a8;
+  --color-graph-cat-location: #34495e;
+  --color-graph-cat-date: #e056a0;
+  --color-graph-cat-code: #3498db;
+  --color-graph-cat-doc: #7f8c8d;
+  --color-graph-cat-url: #00b894;
+  --color-graph-cat-email: #6c5ce7;
+  --color-graph-cat-unknown: #bdc3c7;
+  --color-graph-rel-contains: #bdc3c7;
+  --color-graph-rel-extends: #9b59b6;
+  --color-graph-rel-implements: #3498db;
+  --color-graph-rel-imports: #e67e22;
+  --color-graph-rel-uses: #2ecc71;
+  --color-graph-rel-calls: #27ae60;
+  --color-graph-rel-references: #f39c12;
+  --color-graph-rel-related-to: #95a5a6;
+  --color-graph-rel-works-on: #e74c3c;
+  --color-graph-rel-owns: #1abc9c;
+  --color-graph-rel-depends-on: #e67e22;
+  --color-graph-rel-parent-of: #bdc3c7;
+  --qs-content: #fff;
+  --qs-main: #fff;
+  --qs-primary-foreground: #131920;
+  --qs-secondary-foreground: #656871;
+  --qs-tertiary-foreground: #9ca3af;
+  --qs-placeholder-foreground: #8c8c94;
+  --qs-divider: #dedee3;
+  --qs-default-border: #8c8c94;
+  --qs-neutral-soft: #b4b4bb;
+  --qs-neutral-gray-50: #f9fafb;
+  --qs-tertiary-background: #f9fafb;
+  --qs-action-hover: #f3f3f7;
+  --qs-primary-default: #4200db;
+  --qs-primary-dark: #35009e;
+  --qs-primary-light: #e8e6ff;
+  --qs-success-default: #00802f;
+  --qs-error-default: #db0000;
+  --qs-font-sans: "Amazon Ember", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+  --safe-top: 0px;
+  --safe-bottom: 0px;
+  --safe-left: 0px;
+  --safe-right: 0px;
+  --qs-font-family: "Amazon Ember", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+  --qs-font-base-letter-spacing: .15px;
+  --qs-shadow-sm: 0 0 2px 0 #00000029, 0 0 4px 0 #00000029;
+  --qs-shadow-md: 0 0 2px 0 #00000029, 0 2px 8px 1px #00000029;
+  --qs-shadow-lg: 0 4px 16px 4px #00000029, 0 2px 6px 1px #00000029;
+  --qs-shadow-xl: 0 4px 8px 2px #00000029, 0 6px 20px 4px #00000029;
+  --qs-width-modal-sm: 384px;
+  --qs-width-modal-md: 600px;
+  --qs-width-modal-lg: 1136px;
+  --qs-grid-gap: 16px;
+  --qs-grid-gap-xl: 24px;
+  --qs-primary-medium: #8575ff;
+  --qs-primary-inverse: #fff;
+  --qs-neutral-lightest: #f9f9fb;
+  --qs-neutral-light: #f3f3f7;
+  --qs-neutral-default: #dedee3;
+  --qs-neutral-medium: #8c8c94;
+  --qs-neutral-deep: #656871;
+  --qs-neutral-dark: #333843;
+  --qs-neutral-strong: #131920;
+  --qs-neutral-white: #fff;
+  --qs-neutral-black: #000;
+  --qs-success-medium: #005c26;
+  --qs-success-dark: #00471e;
+  --qs-success-light: #d9ffd6;
+  --qs-success-inverse: #fff;
+  --qs-info-default: #006ce0;
+  --qs-info-medium: #003b8f;
+  --qs-info-dark: #002a66;
+  --qs-info-light: #d1f1ff;
+  --qs-info-inverse: #fff;
+  --qs-warning-default: #f2b100;
+  --qs-warning-medium: #db9200;
+  --qs-warning-dark: #573a00;
+  --qs-warning-light: #fffbbd;
+  --qs-warning-inverse: #573a00;
+  --qs-warning-experimental: #f2b100;
+  --qs-warning-experimental-light: #fffbbd;
+  --qs-warning-experimental-light-foreground: #fffbbd;
+  --qs-error-medium: #900;
+  --qs-error-dark: #700000;
+  --qs-error-light: #ffe0e0;
+  --qs-error-inverse: #fff;
+  --qs-connection-default: #db3300;
+  --qs-connection-soft: #ff997a;
+  --qs-connection-light: #ffe0d6;
+  --qs-connection-dark: #661800;
+  --qs-automation-default: #b3008f;
+  --qs-automation-medium: #d600ba;
+  --qs-automation-soft: #ff94f1;
+  --qs-automation-light: #ffe0fb;
+  --qs-automation-dark: #660052;
+  --qs-insight-default: #a000b8;
+  --qs-insight-soft: #f299ff;
+  --qs-insight-light: #fce6ff;
+  --qs-insight-dark: #590066;
+  --qs-visualization-default: #7300e5;
+  --qs-visualization-soft: #d4a8ff;
+  --qs-visualization-light: #f2e5ff;
+  --qs-visualization-dark: #45008a;
+  --qs-spice: #ff9800;
+  --qs-coachmark: #006ce0;
+  --qs-brand: #fff;
+  --qs-brand-foreground: #131920;
+  --qs-brand-navbar: #131920;
+  --qs-brand-navbar-foreground: #fff;
+  --qs-brand-navbar-light: #dedee3;
+  --qs-brand-navbar-dark: #000;
+  --qs-application-navbar: #4200db;
+  --qs-application-navbar-foreground: #fff;
+  --qs-application-navbar-light: #e8e6ff;
+  --qs-application-navbar-dark: #35009e;
+  --qs-dimension: #4200db;
+  --qs-dimension-foreground: #fff;
+  --qs-dimension-experimental: #4200db;
+  --qs-dimension-experimental-foreground: #4200db;
+  --qs-measure: #00802f;
+  --qs-measure-foreground: #fff;
+  --qs-measure-experimental: #f2b100;
+  --qs-measure-experimental-foreground: #f2b100;
+  --qs-content-inverse: #333843;
+  --qs-content-inverse-active: #131920;
+  --qs-secondary: #dedee3;
+  --qs-disabled: #8c8c94;
+  --qs-divider-light: #f3f3f7;
+  --qs-hover-border: #333843;
+  --qs-active-border: #4200db;
+  --qs-disabled-border: #dedee3;
+  --qs-error-border: #ffe0e0;
+  --qs-error-active-border: #db0000;
+  --qs-disabled-foreground: #b4b4bb;
+  --qs-primary-inverse-foreground: #fff;
+  --qs-error-foreground: #db0000;
+  --qs-contrast-foreground: #131920;
+  --qs-main-foreground: #131920;
+  --qs-main-secondary-foreground: #656871;
+  --qs-action-disabled: #f3f3f7;
+  --qs-action-active: #e8e6ff;
+  --qs-default-badge: #dedee3;
+  --qs-tag-default: #dedee3;
+  --qs-tag-soft-border: #b4b4bb;
+  --qs-focus-offset: 1px;
+  --qs-toggle-tile-sm: calc(.25rem * 8);
+  --qs-toggle-tile-md: calc(.25rem * 12);
+  --qs-toggle-tile-lg: calc(.25rem * 15);
+  --qs-shadow-pin-right: inset 4px 0 4px -4px #00000029;
+  --qs-shadow-pin-left: inset -4px 0 4px -4px #00000029;
+  --react-pdf-text-layer: 1;
+  --highlight-bg-color: #b400aa;
+  --highlight-selected-bg-color: #006400;
+  --react-pdf-annotation-layer: 1;
+  --annotation-unfocused-field-background: url("data:image/svg+xml;charset=UTF-8,<svg width='1px' height='1px' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' style='fill:rgba(0, 54, 255, 0.13);'/></svg>");
+  --input-focus-border-color: Highlight;
+  --input-focus-outline: 1px solid Canvas;
+  --input-unfocused-border-color: transparent;
+  --input-disabled-border-color: transparent;
+  --input-hover-border-color: black;
+  --link-outline: none;
+  color-scheme: light;
+}
+body { background: var(--color-bg); color: var(--color-text); }
+a { color: var(--color-link, var(--color-primary)); }</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Smart Developer's Token Playbook</title>
+<style>
+  :root {
+    --navy:#0B1F3A; --teal:#1C7293; --amber:#F5A623; --ink:#1A2433;
+    --grey:#6B7A8D; --line:#E2E8F0; --bg:#ffffff; --code-bg:#0f172a;
+  }
+  * { box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink); line-height:1.65; max-width:860px; margin:0 auto;
+    padding:56px 28px 96px; background:var(--bg); -webkit-font-smoothing:antialiased;
+  }
+  h1 { font-family:Georgia,"Times New Roman",serif; font-size:2.3rem; line-height:1.15;
+       color:var(--navy); margin:0 0 .3em; letter-spacing:-.01em; }
+  h2 { font-family:Georgia,serif; font-size:1.5rem; color:var(--navy);
+       margin:2.4em 0 .6em; padding-top:1.2em; border-top:2px solid var(--line); }
+  h3 { font-size:1.15rem; color:var(--teal); margin:1.8em 0 .5em; font-weight:700; }
+  p { margin:.7em 0; }
+  em { color:var(--grey); }
+  strong { color:var(--ink); }
+  a { color:var(--teal); }
+  blockquote {
+    margin:1.4em 0; padding:1em 1.3em; background:#f8fafc;
+    border-left:4px solid var(--amber); border-radius:6px; font-size:1.05rem;
+  }
+  blockquote strong { color:var(--navy); }
+  code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.86em;
+         background:#eef2f7; color:#b23; padding:.12em .4em; border-radius:4px; }
+  pre { background:var(--code-bg); color:#e2e8f0; padding:18px 20px; border-radius:10px;
+        overflow-x:auto; font-size:.82rem; line-height:1.5; margin:1.2em 0;
+        box-shadow:0 2px 10px rgba(11,31,58,.12); }
+  pre code { background:none; color:inherit; padding:0; font-size:inherit; }
+  table { border-collapse:collapse; width:100%; margin:1.4em 0; font-size:.94rem; }
+  th { background:var(--navy); color:#fff; text-align:left; padding:10px 12px; font-weight:600; }
+  td { border-bottom:1px solid var(--line); padding:9px 12px; vertical-align:top; }
+  tr:nth-child(even) td { background:#f8fafc; }
+  svg { display:block; margin:1.6em auto; max-width:100%; height:auto;
+        border-radius:10px; box-shadow:0 2px 12px rgba(11,31,58,.10); }
+  hr { border:none; border-top:1px solid var(--line); margin:2em 0; }
+  ul,ol { padding-left:1.4em; }
+  li { margin:.3em 0; }
+  input[type=checkbox] { margin-right:.5em; }
+  @media print {
+    body { padding:0 12px; max-width:none; font-size:11pt; }
+    h2 { page-break-after:avoid; }
+    pre, svg, table { page-break-inside:avoid; }
+    a { color:var(--ink); text-decoration:none; }
+  }
+</style>
+</head>
+<body>
+<h1 id="the-smart-developers-token-playbook">The Smart Developer's Token Playbook</h1>
+<p><em>How to get more out of a coding agent by shaping the system around it — not by remembering to be careful</em></p>
+<hr>
+<p>There's a pattern every heavy coding-agent user knows. A session starts sharp. The agent is fast, the edits are surgical, the context is tight. Then, twenty or thirty minutes in, it starts to drift. It re-reads files it already has. It reasons in circles. A single test run quietly costs 5,000 tokens. By the time you notice, you've burned through your daily budget on work that should have cost a tenth as much.</p>
+<p>The instinct is to blame discipline — <em>I should have </em><code>/clear</code><em>'d sooner, I should have written a tighter prompt.</em> But that's the wrong lesson. <strong>A developer doesn't get more effective by remembering to be careful. They get more effective by shaping the system so carefulness is the default.</strong></p>
+<p>That's what this playbook is about. Not prompt tricks. The harness.</p>
+<p>The organizing idea is simple and it holds up across every coding agent on the market:</p>
+<blockquote>
+<p><strong>Governance catches ~60% of waste automatically. Trained habits refine the last ~40%. A disciplined workflow keeps both from being wasted on the wrong work. And most of it can itself be automated — so the developer inherits the playbook on </strong><code>git clone</code><strong>.</strong></p>
+</blockquote>
+<p>We'll use Claude Code as the worked example because its configuration surface is the most explicit, but the framework maps cleanly onto any agentic coding tool — Kiro, Copilot, Cursor, Gemini CLI. The names of the config files change; the tiers don't.</p>
+<p>Here's the framework we'll build:</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="300" fill="#0B1F3A" rx="10"></rect>
+  <text x="410" y="34" text-anchor="middle" fill="#F5A623" font-size="17" font-weight="bold">The Smart Developer's Token Playbook</text>
+  <text x="410" y="56" text-anchor="middle" fill="#9FB0C3" font-size="12">Three tiers of leverage — from set-once to trained judgment</text>
+  <rect x="40" y="80" width="240" height="180" rx="8" fill="#12294D" stroke="#4A9EFF" stroke-width="1.5"></rect>
+  <text x="160" y="108" text-anchor="middle" fill="#4A9EFF" font-size="13" font-weight="bold">TIER 1 · GOVERNANCE</text>
+  <text x="160" y="128" text-anchor="middle" fill="#C7D3E0" font-size="11">Set once · enforced for all</text>
+  <text x="160" y="152" text-anchor="middle" fill="#E8EEF4" font-size="11">CLAUDE.md policy</text>
+  <text x="160" y="172" text-anchor="middle" fill="#E8EEF4" font-size="11">Model routing rules</text>
+  <text x="160" y="192" text-anchor="middle" fill="#E8EEF4" font-size="11">Token budgets + caps</text>
+  <text x="160" y="212" text-anchor="middle" fill="#E8EEF4" font-size="11">Enforcement hooks</text>
+  <text x="160" y="240" text-anchor="middle" fill="#4AE0A0" font-size="22" font-weight="bold">~60%</text>
+  <rect x="300" y="80" width="240" height="180" rx="8" fill="#12294D" stroke="#C084E0" stroke-width="1.5"></rect>
+  <text x="420" y="108" text-anchor="middle" fill="#C084E0" font-size="13" font-weight="bold">TIER 2 · HABITS</text>
+  <text x="420" y="128" text-anchor="middle" fill="#C7D3E0" font-size="11">Daily · trained judgment</text>
+  <text x="420" y="152" text-anchor="middle" fill="#E8EEF4" font-size="11">Session hygiene</text>
+  <text x="420" y="172" text-anchor="middle" fill="#E8EEF4" font-size="11">Slash commands</text>
+  <text x="420" y="192" text-anchor="middle" fill="#E8EEF4" font-size="11">Plan Mode first</text>
+  <text x="420" y="212" text-anchor="middle" fill="#E8EEF4" font-size="11">MCP discipline</text>
+  <text x="420" y="240" text-anchor="middle" fill="#C084E0" font-size="22" font-weight="bold">~40%</text>
+  <rect x="560" y="80" width="220" height="180" rx="8" fill="#12294D" stroke="#F5A623" stroke-width="1.5"></rect>
+  <text x="670" y="108" text-anchor="middle" fill="#F5A623" font-size="13" font-weight="bold">TIER 3 · WORKFLOW</text>
+  <text x="670" y="128" text-anchor="middle" fill="#C7D3E0" font-size="11">The multiplier</text>
+  <text x="670" y="152" text-anchor="middle" fill="#E8EEF4" font-size="11">Spec-driven dev</text>
+  <text x="670" y="172" text-anchor="middle" fill="#E8EEF4" font-size="11">Discovery → spec</text>
+  <text x="670" y="192" text-anchor="middle" fill="#E8EEF4" font-size="11">→ plan → tasks</text>
+  <text x="670" y="212" text-anchor="middle" fill="#E8EEF4" font-size="11">→ code</text>
+  <text x="670" y="240" text-anchor="middle" fill="#F5A623" font-size="15" font-weight="bold">3–10× first-pass</text>
+</svg></p>
+<hr>
+<h2 id="part-1-understand-the-machine">Part 1 — Understand the Machine</h2>
+<p>You can't optimize what you don't understand. Before any hook or budget, a smart developer needs an accurate mental model of what actually consumes tokens — and where the levers live.</p>
+<h3 id="the-harness-is-the-product">The harness is the product</h3>
+<p>When you use a coding agent, you're not talking to a model. You're talking to a <strong>harness</strong> that wraps the model: it assembles the system prompt, injects tool schemas, manages the context window, decides what files to read, and shuttles every tool result back into the conversation. The model is stateless. The harness is where all the token economics happen.</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="260" fill="#F4F6F9" rx="10"></rect>
+  <text x="410" y="34" text-anchor="middle" fill="#0B1F3A" font-size="16" font-weight="bold">Every Token Passes Through the Harness</text>
+  <rect x="40" y="70" width="150" height="120" rx="8" fill="#1C7293"></rect>
+  <text x="115" y="120" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">YOU</text>
+  <text x="115" y="142" text-anchor="middle" fill="#D6E6EE" font-size="11">prompts, files,</text>
+  <text x="115" y="158" text-anchor="middle" fill="#D6E6EE" font-size="11">approvals</text>
+  <rect x="270" y="55" width="280" height="150" rx="8" fill="#0B1F3A" stroke="#F5A623" stroke-width="2"></rect>
+  <text x="410" y="82" text-anchor="middle" fill="#F5A623" font-size="14" font-weight="bold">THE HARNESS</text>
+  <text x="410" y="106" text-anchor="middle" fill="#E8EEF4" font-size="11">System prompt · tool schemas</text>
+  <text x="410" y="126" text-anchor="middle" fill="#E8EEF4" font-size="11">Context manager · file reads</text>
+  <text x="410" y="146" text-anchor="middle" fill="#E8EEF4" font-size="11">Policies · hooks · routing</text>
+  <text x="410" y="176" text-anchor="middle" fill="#9FB0C3" font-size="10.5" font-style="italic">every token is assembled here</text>
+  <rect x="630" y="70" width="150" height="120" rx="8" fill="#12294D"></rect>
+  <text x="705" y="120" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">MODEL</text>
+  <text x="705" y="142" text-anchor="middle" fill="#C7D3E0" font-size="11">stateless</text>
+  <text x="705" y="158" text-anchor="middle" fill="#C7D3E0" font-size="11">inference</text>
+  <path d="M190 130 L268 130" stroke="#6B7A8D" stroke-width="2" marker-end="url(#ah)"></path>
+  <path d="M552 130 L628 130" stroke="#6B7A8D" stroke-width="2" marker-end="url(#ah)"></path>
+  <path d="M628 165 Q590 220 410 218 Q230 220 192 160" fill="none" stroke="#C0392B" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"></path>
+  <text x="410" y="238" text-anchor="middle" fill="#C0392B" font-size="10.5">tool results loop back into context — this is where bloat compounds</text>
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#6B7A8D"></path></marker>
+  </defs>
+</svg></p>
+<h3 id="the-configuration-hierarchy">The configuration hierarchy</h3>
+<p>Claude Code — like most mature agents — resolves configuration in a <strong>cascade</strong>. Understanding this cascade is what lets you decide <em>what to set where</em>: broad policy at the top, personal ergonomics in the middle, project truth at the bottom.</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="340" fill="#0B1F3A" rx="10"></rect>
+  <text x="410" y="34" text-anchor="middle" fill="#F5A623" font-size="16" font-weight="bold">Configuration Cascade — What to Set Where</text>
+  <rect x="120" y="60" width="580" height="60" rx="6" fill="#1E3A5F" stroke="#4A9EFF" stroke-width="1.5"></rect>
+  <text x="140" y="85" fill="#4A9EFF" font-size="13" font-weight="bold">ENTERPRISE / MANAGED</text>
+  <text x="140" y="105" fill="#C7D3E0" font-size="11">Non-negotiable policy — allowed models, deny rules, security. Set by platform team.</text>
+  <rect x="160" y="130" width="500" height="60" rx="6" fill="#1E3A3F" stroke="#4AE0A0" stroke-width="1.5"></rect>
+  <text x="180" y="155" fill="#4AE0A0" font-size="13" font-weight="bold">USER (~/.claude/)</text>
+  <text x="180" y="175" fill="#C7D3E0" font-size="11">Personal ergonomics — your slash commands, preferred model, editor prefs.</text>
+  <rect x="200" y="200" width="420" height="60" rx="6" fill="#3A1E3F" stroke="#C084E0" stroke-width="1.5"></rect>
+  <text x="220" y="225" fill="#C084E0" font-size="13" font-weight="bold">PROJECT (.claude/)</text>
+  <text x="220" y="245" fill="#C7D3E0" font-size="11">Repo truth — CLAUDE.md, project hooks, skills, MCP servers. Committed to git.</text>
+  <rect x="240" y="270" width="340" height="52" rx="6" fill="#2A2A1E" stroke="#F5A623" stroke-width="1.5"></rect>
+  <text x="260" y="293" fill="#F5A623" font-size="13" font-weight="bold">LOCAL / SESSION</text>
+  <text x="260" y="311" fill="#C7D3E0" font-size="11">Ephemeral overrides — this session only.</text>
+  <text x="770" y="150" fill="#9FB0C3" font-size="11" transform="rotate(90 770 150)">more specific wins ↓</text>
+</svg></p>
+<p>The configurable surface at each level is the same handful of primitives:</p>
+<table>
+<thead>
+<tr>
+<th>Primitive</th>
+<th>What it does</th>
+<th>Token relevance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CLAUDE.md</strong></td>
+<td>Persistent instructions injected every turn</td>
+<td>High — every wasted line is billed on <em>every</em> request</td>
+</tr>
+<tr>
+<td><strong>MCP servers</strong></td>
+<td>External tool providers</td>
+<td>High — each server's schemas inflate the system prompt continuously</td>
+</tr>
+<tr>
+<td><strong>Skills / commands</strong></td>
+<td>Reusable, invocable procedures</td>
+<td>Medium — replace verbose re-prompting</td>
+</tr>
+<tr>
+<td><strong>Hooks</strong></td>
+<td>Shell scripts that fire on lifecycle events</td>
+<td>Enforcement — the automation backbone (Part 6)</td>
+</tr>
+<tr>
+<td><strong>Plugins</strong></td>
+<td>Bundled packs of the above</td>
+<td>Distribution — ship the whole playbook at once</td>
+</tr>
+</tbody>
+</table>
+<p>Hold this model in your head. Everything below is just applying leverage at the right point in this cascade — starting at the top, where a single decision covers everyone.</p>
+<hr>
+<h2 id="part-2-tier-1-governance-the-automatic-60">Part 2 — Tier 1: Governance (the automatic 60%)</h2>
+<p>Governance is what you set <strong>once</strong> so no developer has to remember anything. It's enforced centrally, lives in version control, and re-converges every time someone clones the repo. If a rule only works when a tired engineer remembers it at 5pm on a Friday, it isn't governance — it's a wish. This tier does the majority of the work precisely because it removes human memory from the loop.</p>
+<p>The mental model: four controls, stacked from "cheapest to set" to "highest ongoing leverage."</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="250" fill="#0B1F3A" rx="10"></rect>
+  <text x="410" y="32" text-anchor="middle" fill="#F5A623" font-size="16" font-weight="bold">The Governance Stack — Set Once, Enforced for Everyone</text>
+  <rect x="60" y="58" width="700" height="38" rx="6" fill="#1E3A5F" stroke="#4A9EFF" stroke-width="1.3"></rect>
+  <text x="80" y="82" fill="#4A9EFF" font-size="12" font-weight="bold">CLAUDE.md</text>
+  <text x="250" y="82" fill="#C7D3E0" font-size="11">Lean standing context — billed on every turn, so every line must earn its place</text>
+  <rect x="60" y="104" width="700" height="38" rx="6" fill="#1E3A3F" stroke="#4AE0A0" stroke-width="1.3"></rect>
+  <text x="80" y="128" fill="#4AE0A0" font-size="12" font-weight="bold">Routing policy</text>
+  <text x="250" y="128" fill="#C7D3E0" font-size="11">Cheapest capable model per task class — not a per-developer choice</text>
+  <rect x="60" y="150" width="700" height="38" rx="6" fill="#3A2E1E" stroke="#F5A623" stroke-width="1.3"></rect>
+  <text x="80" y="174" fill="#F5A623" font-size="12" font-weight="bold">Budgets + caps</text>
+  <text x="250" y="174" fill="#C7D3E0" font-size="11">Hard ceilings + alerts at 50/80/100% — invisible cost becomes bounded</text>
+  <rect x="60" y="196" width="700" height="38" rx="6" fill="#3A1E3F" stroke="#C084E0" stroke-width="1.3"></rect>
+  <text x="80" y="220" fill="#C084E0" font-size="12" font-weight="bold">Hooks</text>
+  <text x="250" y="220" fill="#C7D3E0" font-size="11">Deterministic enforcement — "please remember to" becomes "the system won't let you not"</text>
+</svg></p>
+<h3 id="21-claudemd-discipline-and-the-42k-token-trap">2.1 CLAUDE.md discipline — and the 42K-token trap</h3>
+<p>CLAUDE.md is the highest-leverage file in the system because it's injected into <strong>every single turn</strong> — and for the same reason it's the most common source of silent waste. The failure mode is well-documented: one engineer's CLAUDE.md grew to <strong>42,000 tokens</strong> because every painful debugging session added "just one more rule." At Claude Sonnet input pricing (~~$3/M tokens), a 42K-token file that rides along on a 200-turn day silently burns <strong>~~$25/developer/day in context tax alone</strong> — before a single useful token is generated. Multiply by a 50-person team and the bloated instruction file alone is a five-figure annual line item.</p>
+<p>The discipline is three rules:</p>
+<ul>
+<li><strong>Budget it.</strong> Treat CLAUDE.md like carry-on with a hard weight limit — 1–2K tokens, not 40K. If it doesn't change agent behavior, it's a comment, not context.</li>
+<li><strong>Import, don't inline.</strong> Reference detail with <code>@path/to/detail.md</code>; those files load only when the task actually touches them. This is the single biggest win — it converts always-on tokens into on-demand tokens.</li>
+<li><strong>Layer it.</strong> CLAUDE.md resolves hierarchically — a lean root file for repo-wide truth, plus per-directory <code>CLAUDE.md</code> files that load only when the agent works in that subtree. A monorepo's <code>services/payments/CLAUDE.md</code> shouldn't tax work happening in <code>web/</code>.</li>
+</ul>
+<pre><code class="language-markdown"># CLAUDE.md — keep this file under ~1,500 tokens
+
+## Project
+Payments service. Python 3.12, FastAPI, Postgres. Tests: `pytest -q`.
+
+## Response style
+- Be terse. No preamble, no "Here's what I'll do" — just do it.
+- Show diffs, not whole files, unless asked.
+- Ask before installing dependencies.
+
+## Conventions (details imported on demand)
+- Code style: @docs/style.md
+- DB migration workflow: @docs/migrations.md
+- Security rules: @docs/security.md
+
+## Guardrails
+- Never write to `main` directly. Never touch `infra/` or `.env`.
+- Prefer running `rg`/`grep` over reading whole files into context.
+
+</code></pre>
+<p><strong>The audit habit:</strong> run a token count on CLAUDE.md in CI and fail the build if it crosses a ceiling (say 2K). The file that never gets audited is the file that hits 42K.</p>
+<h3 id="22-model-routing-as-policy">2.2 Model routing as policy</h3>
+<p>Most production traffic never needed a frontier model. Linting, formatting, renaming, commit messages, simple edits — these are fast-model work. The economics are stark: a frontier reasoning model can cost <strong>15–30× per token</strong> what a fast model costs, yet studies of real coding-agent traffic find <strong>~70% of turns</strong> are low-reasoning. Paying Opus prices for a rename is the purest form of the token tax.</p>
+<p>Make the tier a <strong>policy</strong>, not a per-developer choice:</p>
+<pre><code class="language-json">// .claude/settings.json — routing policy fragment
+{
+  "model": {
+    "default": "sonnet",
+    "routing": [
+      { "match": ["lint", "format", "rename", "commit message", "typo"],
+        "model": "haiku" },
+      { "match": ["architecture", "debug", "design", "security review"],
+        "model": "opus" }
+    ]
+  }
+}
+
+</code></pre>
+<p>The principle is vendor-neutral: a <strong>three-tier stack</strong> (fast / balanced / power), cheapest capable model as default, explicit escalation for hard work. Teams that tune this report <strong>40–85% cost reduction with no visible quality drop</strong> — because the frontier model was never the thing making most turns good.</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 240" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="240" fill="#F4F6F9" rx="10"></rect>
+  <text x="410" y="32" text-anchor="middle" fill="#0B1F3A" font-size="16" font-weight="bold">Three-Tier Routing — Cheapest Capable Model Wins</text>
+  <rect x="50" y="70" width="220" height="130" rx="8" fill="#fff" stroke="#4AE0A0" stroke-width="2"></rect>
+  <rect x="50" y="70" width="220" height="34" rx="8" fill="#2E7D5B"></rect>
+  <text x="160" y="93" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">FAST · Haiku-class</text>
+  <text x="160" y="128" text-anchor="middle" fill="#44515F" font-size="11">Lint · format · rename</text>
+  <text x="160" y="148" text-anchor="middle" fill="#44515F" font-size="11">Commit messages · typos</text>
+  <text x="160" y="180" text-anchor="middle" fill="#2E7D5B" font-size="12" font-weight="bold">~70% of turns</text>
+  <rect x="300" y="70" width="220" height="130" rx="8" fill="#fff" stroke="#2A6E8A" stroke-width="2"></rect>
+  <rect x="300" y="70" width="220" height="34" rx="8" fill="#2A6E8A"></rect>
+  <text x="410" y="93" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">BALANCED · Sonnet</text>
+  <text x="410" y="128" text-anchor="middle" fill="#44515F" font-size="11">Feature work · refactors</text>
+  <text x="410" y="148" text-anchor="middle" fill="#44515F" font-size="11">Most development</text>
+  <text x="410" y="180" text-anchor="middle" fill="#2A6E8A" font-size="12" font-weight="bold">default tier</text>
+  <rect x="550" y="70" width="220" height="130" rx="8" fill="#fff" stroke="#8A5A12" stroke-width="2"></rect>
+  <rect x="550" y="70" width="220" height="34" rx="8" fill="#8A5A12"></rect>
+  <text x="660" y="93" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">POWER · Opus-class</text>
+  <text x="660" y="128" text-anchor="middle" fill="#44515F" font-size="11">Architecture · hard debug</text>
+  <text x="660" y="148" text-anchor="middle" fill="#44515F" font-size="11">Security review · design</text>
+  <text x="660" y="180" text-anchor="middle" fill="#8A5A12" font-size="12" font-weight="bold">escalate only</text>
+</svg></p>
+<h3 id="23-budgets-caps-and-alerts">2.3 Budgets, caps, and alerts</h3>
+<p>Token budgets turn an invisible, unbounded cost into a bounded, observable one. This matters more than it sounds: AI spend can swing <strong>300% month-over-month</strong> on a single feature launch, and the horror stories are real — one enterprise rolled coding agents to ~5,000 engineers and <strong>burned its entire annual AI budget by April</strong> at $500–2,000/engineer/month. Budgets are the circuit breaker.</p>
+<pre><code class="language-json">// .claude/settings.json — budget fragment
+{
+  "budget": {
+    "perSessionTokens": 400000,
+    "perUserDailyTokens": 3000000,
+    "alertThresholds": [0.5, 0.8, 1.0],
+    "onExceed": "block"
+  }
+}
+
+</code></pre>
+<p>Set hard ceilings, alert at 50/80/100%, and decide the <code>onExceed</code> behavior deliberately — <code>block</code> for cost-sensitive orgs, <code>warn</code> where velocity matters more. The point isn't to ration; it's to make overruns <strong>visible before the invoice</strong>, not after.</p>
+<h3 id="24-the-context-baseline-claudeignore-env-vars">2.4 The context baseline — <code>.claudeignore</code> + env vars</h3>
+<p>Two set-and-forget controls quietly lower the floor for everyone:</p>
+<ul>
+<li><code>.claudeignore</code> — exclude build dirs, lockfiles, vendored code, and generated artifacts from indexing. The agent can't waste tokens reading <code>node_modules/</code> if it never sees it.</li>
+<li><strong>Autocompact + thinking budget env vars</strong> — compact the context automatically before it's overflowing (not at the last second), and cap extended-thinking spend per turn:</li>
+</ul>
+<pre><code class="language-jsonc">"env": {
+  "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",  // compact at 70% full, not the default
+  "MAX_THINKING_TOKENS": "8000"             // cap reasoning spend per turn
+}
+
+</code></pre>
+<pre><code class="language-gitignore"># .claudeignore
+node_modules/
+dist/
+build/
+*.lock
+*.min.js
+vendor/
+__pycache__/
+
+</code></pre>
+<h3 id="25-hooks-enforcement-that-fires-itself">2.5 Hooks — enforcement that fires itself</h3>
+<p>This is the heart of Tier 1. Hooks are shell scripts the agent runs automatically at lifecycle events. They convert "please remember to…" into "the system won't let you not." Full working code is in Part 6 — here's the mental model:</p>
+<ul>
+<li><strong>PreToolUse</strong> — inspect and <em>block</em> an action before it runs (protect branches, reject dangerous shell commands).</li>
+<li><strong>PostToolUse</strong> — react after an action (auto-lint, count tokens, reject oversized diffs that signal a hallucinated rewrite).</li>
+<li><strong>Notification</strong> — fire an external alert (Slack webhook on cost threshold).</li>
+</ul>
+<p>The power of hooks is that they're <strong>deterministic</strong> — they don't depend on the model choosing to behave, or a developer choosing to remember. Write once, fires on every action, for every developer, forever.</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 220" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="220" fill="#0B1F3A" rx="10"></rect>
+  <text x="410" y="32" text-anchor="middle" fill="#F5A623" font-size="16" font-weight="bold">Hook Lifecycle — Enforcement Without Memory</text>
+  <rect x="40" y="70" width="180" height="90" rx="8" fill="#12294D" stroke="#4A9EFF" stroke-width="1.5"></rect>
+  <text x="130" y="98" text-anchor="middle" fill="#4A9EFF" font-size="12" font-weight="bold">PreToolUse</text>
+  <text x="130" y="120" text-anchor="middle" fill="#C7D3E0" font-size="10">block writes to main</text>
+  <text x="130" y="137" text-anchor="middle" fill="#C7D3E0" font-size="10">reject rm -rf, curl|bash</text>
+  <rect x="320" y="70" width="180" height="90" rx="8" fill="#12294D" stroke="#4AE0A0" stroke-width="1.5"></rect>
+  <text x="410" y="98" text-anchor="middle" fill="#4AE0A0" font-size="12" font-weight="bold">PostToolUse</text>
+  <text x="410" y="120" text-anchor="middle" fill="#C7D3E0" font-size="10">auto-lint · token count</text>
+  <text x="410" y="137" text-anchor="middle" fill="#C7D3E0" font-size="10">reject &gt;500-line diffs</text>
+  <rect x="600" y="70" width="180" height="90" rx="8" fill="#12294D" stroke="#F5A623" stroke-width="1.5"></rect>
+  <text x="690" y="98" text-anchor="middle" fill="#F5A623" font-size="12" font-weight="bold">Notification</text>
+  <text x="690" y="120" text-anchor="middle" fill="#C7D3E0" font-size="10">Slack alert on</text>
+  <text x="690" y="137" text-anchor="middle" fill="#C7D3E0" font-size="10">cost threshold</text>
+  <path d="M220 115 L318 115" stroke="#6B7A8D" stroke-width="2" marker-end="url(#a2)"></path>
+  <path d="M500 115 L598 115" stroke="#6B7A8D" stroke-width="2" marker-end="url(#a2)"></path>
+  <text x="410" y="195" text-anchor="middle" fill="#9FB0C3" font-size="11">Write once. Fires on every action, for every developer, forever.</text>
+  <defs><marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#6B7A8D"></path></marker></defs>
+</svg></p>
+<p>Governance has now done the automatic 60%. What it can't do is exercise judgment inside a live session — that's where trained habits take over.</p>
+<hr>
+<h2 id="part-3-tier-2-smart-developer-habits-the-daily-40">Part 3 — Tier 2: Smart-Developer Habits (the daily 40%)</h2>
+<p>Governance sets the floor. Habits are what a developer does in-session to refine the last stretch — the part that genuinely needs judgment about <em>this</em> task, <em>right now</em>. Here's the pattern every heavy user recognizes: a session starts sharp and <strong>dies 20–30 minutes in</strong>. The agent begins re-reading files it already has, reasoning in circles, and a single <code>cargo test</code> or <code>pytest</code> run quietly costs ~5,000 tokens. Habits are what keep a session sharp past that wall.</p>
+<p>The good news: adopting the full habit stack cuts typical session token usage by <strong>60–80%</strong> in practitioners' own measurements — and most of it is muscle memory, not effort.</p>
+<h3 id="31-session-hygiene-the-highest-roi-habit">3.1 Session hygiene — the highest-ROI habit</h3>
+<p>Stale context is the #1 source of session bleed, because <strong>everything in context is re-billed on every subsequent turn.</strong> Carrying your morning's bug fix into your afternoon's feature means paying for those tokens hundreds of times.</p>
+<ul>
+<li><code>/clear</code><strong> between unrelated tasks.</strong> The cheapest habit and the biggest win. New task = clean context.</li>
+<li><strong>Proactive </strong><code>/compact</code><strong> at breakpoints.</strong> Don't wait for auto-compact to fire mid-thought at the worst moment. Compact deliberately — after a milestone, before a new subtask.</li>
+<li><code>/done</code><strong> to close.</strong> Explicitly end a session so idle follow-ups don't silently accumulate context you're still paying to carry.</li>
+</ul>
+<h3 id="32-the-standard-slash-command-pack">3.2 The standard slash-command pack</h3>
+<p>Slash commands turn a paragraph of instruction into a keystroke — and, crucially, into a <em>team standard</em> everyone shares. Ship these committed to <code>.claude/commands/</code> (Part 6 auto-installs them):</p>
+<pre><code class="language-markdown"># .claude/commands/cheap.md
+Switch to the fast/small model for the next several turns.
+Use for lint, format, rename, and other low-reasoning tasks.
+
+</code></pre>
+<pre><code class="language-markdown"># .claude/commands/scope.md
+Drop all context except the files relevant to the current task:
+$ARGUMENTS
+Re-anchor on those files only. Summarize what you're keeping.
+
+</code></pre>
+<pre><code class="language-markdown"># .claude/commands/review.md
+Spawn a subagent on the cheap model to review the current diff.
+Report only Critical and Major issues. Do not self-review on the power model.
+
+</code></pre>
+<p>Round it out with <code>/budget</code> (remaining tokens), <code>/compact</code>, and <code>/done</code>. The win is consistency: when <code>/scope</code> means the same thing for everyone, context discipline stops being a personal quirk and becomes a shared reflex.</p>
+<h3 id="33-in-session-tactics">3.3 In-session tactics</h3>
+<ul>
+<li><strong>Plan Mode first.</strong> On any non-trivial task, make the agent produce a plan <em>before</em> it touches code. A plan is a few hundred tokens; a wrong implementation you have to unwind is tens of thousands. This is the in-session cousin of the spec-driven workflow in Part 4.</li>
+<li><code>rg</code><strong>/</strong><code>grep</code><strong> over whole-file reads.</strong> Searching for the relevant 20 lines beats pulling 2,000 into context. Put this in CLAUDE.md so it's the default, not a choice.</li>
+<li><strong>Tighter prompts.</strong> State the outcome and the constraints; skip the backstory. Verbose prompts cost tokens on the way in <em>and</em> bias the model toward verbose output on the way out.</li>
+<li><strong>Answer in the terminal, not the context.</strong> Prefer <code>git log</code>, <code>ls</code>, <code>cat file | head</code> run as commands over asking the agent to "load and summarize" — bash output is transient; loaded files are sticky.</li>
+</ul>
+<h3 id="34-subagent-discipline">3.4 Subagent discipline</h3>
+<p>Subagents are a double-edged habit: they isolate work (good — a reviewer subagent doesn't pollute your main context) but can multiply cost (bad — an agent spawning agents spawning agents). The rules:</p>
+<ul>
+<li><strong>Force subagents to the cheap tier</strong> unless the sub-task genuinely needs power (e.g. <code>/review</code> runs on Haiku-class, not Opus).</li>
+<li><strong>Cap depth</strong> — no recursive spawning. One level of delegation, not a tree.</li>
+<li><strong>Use them to protect the main thread</strong> — offload a noisy search or a diff review to a subagent so the main session's context stays clean.</li>
+</ul>
+<h3 id="35-mcp-discipline">3.5 MCP discipline</h3>
+<p>MCP servers are powerful and quietly expensive: <strong>every connected server's tool schemas are injected into context on every turn.</strong> Five servers × ten tools each can dominate your system prompt before you type a word — a fixed tax on every single request of the session.</p>
+<ul>
+<li><strong>Connect only what this project needs.</strong> An unused MCP server is pure overhead.</li>
+<li><strong>Convert hot MCP tools into local slash commands.</strong> You keep the capability and shed the per-turn schema cost — one of the highest-leverage moves for MCP-heavy setups.</li>
+<li><strong>Cache schemas; don't re-fetch each session.</strong></li>
+</ul>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 210" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="210" fill="#F4F6F9" rx="10"></rect>
+  <text x="410" y="30" text-anchor="middle" fill="#0B1F3A" font-size="15" font-weight="bold">Where Session Tokens Bleed — and the Habit That Stops It</text>
+  <text x="150" y="70" fill="#44515F" font-size="11">Stale context (no /clear)</text>
+  <rect x="300" y="58" width="380" height="18" rx="4" fill="#C0392B"></rect>
+  <text x="690" y="71" fill="#C0392B" font-size="10">/clear, /compact</text>
+  <text x="150" y="100" fill="#44515F" font-size="11">Whole-file reads</text>
+  <rect x="300" y="88" width="300" height="18" rx="4" fill="#E67E22"></rect>
+  <text x="610" y="101" fill="#E67E22" font-size="10">rg/grep, /scope</text>
+  <text x="150" y="130" fill="#44515F" font-size="11">MCP schema bloat</text>
+  <rect x="300" y="118" width="250" height="18" rx="4" fill="#E67E22"></rect>
+  <text x="560" y="131" fill="#E67E22" font-size="10">prune servers</text>
+  <text x="150" y="160" fill="#44515F" font-size="11">Verbose prompts/output</text>
+  <rect x="300" y="148" width="150" height="18" rx="4" fill="#F5A623"></rect>
+  <text x="460" y="161" fill="#B5651D" font-size="10">terse CLAUDE.md</text>
+  <text x="410" y="195" text-anchor="middle" fill="#2E7D5B" font-size="11" font-weight="bold">Each bleed has a matching habit — that's the whole of Tier 2</text>
+</svg></p>
+<p>Governance and habits make each <em>turn</em> cheaper. But the biggest waste isn't an expensive turn — it's building the wrong thing and redoing it. That's what workflow fixes.</p>
+<hr>
+<h2 id="part-4-tier-3-workflow-the-multiplier">Part 4 — Tier 3: Workflow (the multiplier)</h2>
+<p>The first two tiers make each <em>turn</em> cheaper. Workflow makes the whole <em>task</em> cheaper — by getting it right the first time. The highest-leverage move here has a name and, as of 2026, a real toolchain: <strong>spec-driven development (SDD)</strong>.</p>
+<p>The shift is from <em>vibe coding</em> — prompt, generate, iterate by feel — to an explicit chain: <strong>discovery → spec → plan → tasks → code</strong>, where a versioned spec is the source of truth the agent derives code from. Karpathy, who coined "vibe coding," now calls the professional version <em>agentic engineering</em>: "you are not writing the code 99% of the time, you are orchestrating agents who do, and acting as oversight."</p>
+<h3 id="41-why-workflow-is-a-token-lever-not-just-a-quality-one">4.1 Why workflow is a token lever, not just a quality one</h3>
+<p><strong>Rework is the most expensive thing an agent does.</strong> A vague prompt produces almost-right code, which triggers rounds of re-reading, re-reasoning, and re-editing — each billed. A spec front-loads the thinking (cheap) so implementation lands in one pass and skips the expensive middle.</p>
+<p>The signal is concrete: independent MIT/Microsoft/GitHub research documents up to <strong>56% less programming time</strong> with structured AI workflows; early adopters report <strong>3–10× higher first-pass success</strong> on non-trivial tasks. A real worked example (below) went from "want CSV export" to merged in ~90 minutes — vs ~90 min of generation <em>plus</em> 45 min of unwinding without a spec. <strong>The spec isn't faster on the first pass; it's faster on the rework pass.</strong></p>
+<h3 id="42-when-a-workflow-actually-makes-sense">4.2 When a workflow actually makes sense</h3>
+<p>This is the part most guides skip. A spec has real upfront cost — don't pay it when the task doesn't need it. The rule of thumb:</p>
+<blockquote>
+<p><strong>If you'd write a PR description longer than three paragraphs, write a spec. If it's a Tuesday-afternoon prototype, don't.</strong></p>
+</blockquote>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="320" fill="#F4F6F9" rx="10"></rect>
+  <text x="410" y="32" text-anchor="middle" fill="#0B1F3A" font-size="16" font-weight="bold">The Decision Matrix — Which Mode Does This Task Need?</text>
+  <rect x="40" y="58" width="360" height="240" rx="8" fill="#fff" stroke="#E67E22" stroke-width="2"></rect>
+  <rect x="40" y="58" width="360" height="40" rx="8" fill="#E67E22"></rect>
+  <text x="220" y="84" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">VIBE CODING — discovery speed</text>
+  <text x="60" y="128" fill="#44515F" font-size="12">• Weekend prototype / hackathon demo</text>
+  <text x="60" y="156" fill="#44515F" font-size="12">• Exploring an unfamiliar API or library</text>
+  <text x="60" y="184" fill="#44515F" font-size="12">• Validating an idea before committing</text>
+  <text x="60" y="212" fill="#44515F" font-size="12">• Throwaway scripts, one-file changes</text>
+  <text x="60" y="240" fill="#44515F" font-size="12">• Simple bug fixes</text>
+  <text x="60" y="278" fill="#B5651D" font-size="11.5" font-style="italic">Your role: driver chasing the vibe</text>
+  <rect x="420" y="58" width="360" height="240" rx="8" fill="#fff" stroke="#2A6E8A" stroke-width="2"></rect>
+  <rect x="420" y="58" width="360" height="40" rx="8" fill="#2A6E8A"></rect>
+  <text x="600" y="84" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">SPEC-DRIVEN — production durability</text>
+  <text x="440" y="128" fill="#44515F" font-size="12">• Production feature on a shared codebase</text>
+  <text x="440" y="156" fill="#44515F" font-size="12">• Anything touching auth, payments, PII</text>
+  <text x="440" y="184" fill="#44515F" font-size="12">• Refactoring a critical system</text>
+  <text x="440" y="212" fill="#44515F" font-size="12">• Multi-developer / multi-sprint feature</text>
+  <text x="440" y="240" fill="#44515F" font-size="12">• Regulated / compliance-bound software</text>
+  <text x="440" y="278" fill="#1C5A73" font-size="11.5" font-style="italic">Your role: architect and reviewer</text>
+</svg></p>
+<p>The two aren't rivals — they're different tools for different moments. The trap isn't vibe coding; it's letting a Tuesday-afternoon prototype quietly become a production feature without anyone stopping to write down what it's supposed to do.</p>
+<h3 id="43-the-practical-setup-spec-kit-claude-code">4.3 The practical setup — Spec Kit + Claude Code</h3>
+<p>You don't need a dedicated tool to start — a markdown spec the agent reads before implementing <em>is</em> SDD in its simplest form. But the most-deployed toolchain is <strong>GitHub Spec Kit</strong>, which installs a pipeline of slash commands into your agent. Install it and you get nine commands; the core flow uses a subset, in order:</p>
+<pre><code class="language-bash"># One-time: scaffold Spec Kit into the repo (registers slash commands)
+specify init            # or install the Claude Code Spec Kit plugin
+
+# Per feature — run these in order inside Claude Code:
+/constitution   # (once per project) establish enduring principles
+/specify        # brief → requirements.md  (user stories + acceptance criteria)
+/clarify        # force-resolve ambiguities the spec missed  ← most-skipped, highest-value
+/plan           # requirements → design.md  (architecture, schema, contracts)
+/tasks          # design → tasks.md  (ordered, dependency-aware, parallel markers)
+/implement      # walk the task list, one diff at a time
+
+</code></pre>
+<p>Each phase emits a markdown artifact the next consumes — <code>requirements.md → design.md → tasks.md</code> — all committed to git next to your code. The discipline: <strong>every line of code traces to a task, every task to a design decision, every decision to a requirement.</strong></p>
+<p><strong>Spec vs CLAUDE.md — don't confuse them:</strong> CLAUDE.md describes <em>how your codebase works</em> (standing conventions every change conforms to). A spec describes <em>what one specific change does</em>. In the source author's phrase: <strong>CLAUDE.md is the constitution; specs are the bills.</strong></p>
+<h3 id="44-skills-as-workflow-building-blocks">4.4 Skills as workflow building blocks</h3>
+<p>Yes — skills are a first-class part of the workflow, at two levels:</p>
+<ol>
+<li><strong>The workflow steps themselves are skills.</strong> <code>/specify</code>, <code>/clarify</code>, <code>/plan</code>, <code>/tasks</code>, <code>/implement</code> are packaged, invocable procedures — Spec Kit ships them as a command/skill pack. The workflow <em>is</em> a chain of skills.</li>
+<li><strong>Tasks invoke domain skills.</strong> Once <code>/tasks</code> emits T1–T7, each task can call a reusable team skill — a <code>db-migration</code> skill, an <code>api-endpoint</code> skill, a <code>test-writer</code> skill. The spec decides <em>what</em>; skills encode the <em>how</em> your team does it consistently.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Primitive</th>
+<th>Role in the workflow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Spec</strong></td>
+<td>What to build — the contract</td>
+</tr>
+<tr>
+<td><strong>Skills</strong></td>
+<td>Reusable <em>how</em> — invoked by workflow steps and by generated tasks</td>
+</tr>
+<tr>
+<td><strong>Hooks</strong></td>
+<td>Enforcement wrapped around every step (Part 6)</td>
+</tr>
+<tr>
+<td><strong>CLAUDE.md</strong></td>
+<td>Standing conventions the spec and skills conform to</td>
+</tr>
+</tbody>
+</table>
+<p>Skills are the connective tissue: a workflow is a chain of skills, and the tasks it generates fire more skills. Chaining specialized skills into a pipeline (e.g. <code>prd → scaffold → build → review</code>) is how a one-off workflow becomes a repeatable, org-shared asset.</p>
+<h3 id="45-a-worked-example-rate-limited-csv-export">4.5 A worked example — rate-limited CSV export</h3>
+<p>Concrete beats abstract. <code>/specify Export dashboard data as CSV with rate limiting</code> produces <strong>requirements.md</strong>:</p>
+<pre><code class="language-markdown">US-1: Authenticated user exports current dashboard view as CSV
+  Given a user is authenticated and viewing a dashboard
+  When they click "Export CSV"
+  Then a CSV of the visible rows downloads, named &lt;dashboard&gt;-&lt;date&gt;.csv
+  And the user is rate-limited to 10 exports/hour/account
+US-2: Large dataset export streams progressively ...
+
+</code></pre>
+<p><code>/plan</code> turns that into <strong>design.md</strong>:</p>
+<pre><code class="language-markdown">## Architecture
+- Endpoint: POST /api/dashboards/:id/export (server-only)
+- Auth: required, scoped to dashboard owner
+- Rate limit: Redis-backed, 10/hour/account, 429 + Retry-After
+- CSV: streamed via Node readable stream; 100MB cap → 413
+- Audit: log user_id, dashboard_id, timestamp, row_count
+
+</code></pre>
+<p><code>/tasks</code> decomposes into a dependency-ordered list:</p>
+<pre><code class="language-markdown">- [ ] T1: Redis rate-limit middleware            [parallel-safe]
+- [ ] T2: Audit-log table migration              [parallel-safe]
+- [ ] T3: POST /export endpoint                  [depends: T1, T2]
+- [ ] T4: Streaming CSV generator                [parallel-safe]
+- [ ] T5: Wire endpoint → generator              [depends: T3, T4]
+- [ ] T6: Export CSV button in UI                [depends: T5]
+- [ ] T7: 429 / 413 error handling in UI         [depends: T6]
+
+</code></pre>
+<p><code>/implement</code> then produces the code one task at a time. Notice the rate limit, streaming, and audit log — the exact things a bare "add a CSV export button" prompt silently omits and you'd discover in production.</p>
+<h3 id="46-toolchain-pick-your-weight">4.6 Toolchain — pick your weight</h3>
+<p>Spec Kit isn't the only option; they're not interchangeable:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Shape</th>
+<th>Pick it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitHub Spec Kit</strong></td>
+<td>CLI, agent-agnostic, markdown-first</td>
+<td>Default starting point; <code>taskstoissues</code> pushes tasks to GitHub Issues</td>
+</tr>
+<tr>
+<td><strong>Kiro</strong></td>
+<td>AWS agentic IDE, same requirements/design/tasks phases</td>
+<td>You're in AWS-heavy territory and want an opinionated IDE</td>
+</tr>
+<tr>
+<td><strong>OpenSpec</strong></td>
+<td>Lightest — <code>propose / apply / archive</code>, pure git markdown</td>
+<td>You want minimal touch, no IDE or cloud dependency</td>
+</tr>
+<tr>
+<td><strong>Tessl</strong></td>
+<td>Spec-as-typed-data the tool reasons over</td>
+<td>You want maximum spec-as-data leverage and accept lock-in</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Wiring it back to the playbook:</strong> specs live in git beside <code>.claude/</code>, a good spec is the ultimate <code>/scope</code> (context stays tight from turn one), and the bootstrap installer in Part 6 can scaffold the spec commands so a cloned repo is workflow-ready on day one.</p>
+<p>That's the full framework. The rest is execution: the checklists to adopt it, the code to automate it, and the sequence to roll it out.</p>
+<hr>
+<h2 id="part-5-the-playbook-the-checklists">Part 5 — The Playbook (the checklists)</h2>
+<p>Everything above, distilled into three checklists a team can adopt tomorrow.</p>
+<p><strong>One-time setup (baseline reduction — do once per repo)</strong></p>
+<ul>
+<li>[ ] Lean CLAUDE.md (&lt;1,500 tokens), detail behind <code>@imports</code></li>
+<li>[ ] <code>.claudeignore</code> excluding build dirs, lockfiles, vendored code</li>
+<li>[ ] Model routing policy (fast default, explicit escalation)</li>
+<li>[ ] Budgets + alert thresholds (50/80/100%)</li>
+<li>[ ] Hook suite installed (PreToolUse, PostToolUse, Notification)</li>
+<li>[ ] Standard slash-command pack committed to <code>.claude/commands/</code></li>
+<li>[ ] Autocompact + thinking-token env baseline set</li>
+</ul>
+<p><strong>Daily habits (per session)</strong></p>
+<ul>
+<li>[ ] <code>/clear</code> when switching tasks</li>
+<li>[ ] Plan Mode before non-trivial work</li>
+<li>[ ] <code>/cheap</code> for low-reasoning turns</li>
+<li>[ ] Proactive <code>/compact</code> at breakpoints</li>
+<li>[ ] <code>rg</code>/<code>grep</code> over whole-file reads</li>
+<li>[ ] <code>/budget</code> check-in on long sessions</li>
+<li>[ ] <code>/done</code> to close</li>
+</ul>
+<p><strong>New-project kickoff</strong></p>
+<ul>
+<li>[ ] Run the bootstrap installer (Part 6)</li>
+<li>[ ] Generate CLAUDE.md from a repo scan</li>
+<li>[ ] Write the first spec before any code</li>
+<li>[ ] Confirm routing + budgets inherited from org policy</li>
+</ul>
+<p><strong>Team rollout (see Part 7)</strong></p>
+<ul>
+<li>[ ] Pilot on one high-traffic repo; baseline spend first</li>
+<li>[ ] Prove the drop, publish the number, roll config org-wide</li>
+<li>[ ] Train habits + stand up a cost dashboard</li>
+<li>[ ] Spec-driven for production work; self-configuring repos</li>
+</ul>
+<p>Combined, teams consistently report <strong>60–80% token reduction</strong> from adopting the full stack — most of it structural, not willpower.</p>
+<hr>
+<h2 id="part-6-automate-the-playbook-the-self-configuring-repo">Part 6 — Automate the Playbook: The Self-Configuring Repo</h2>
+<p>Here's the thesis that ties it together: <strong>the developer should not have to remember any of this.</strong> The playbook ships as installable artifacts. On <code>git clone</code>, the repo configures itself. What follows is full, working code — not sketches.</p>
+<h3 id="61-the-bootstrap-installer">6.1 The bootstrap installer</h3>
+<p>One idempotent script writes the entire <code>.claude/</code> configuration. Run it locally or in CI so every repo re-converges to policy.</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# setup-claude-code.sh — bootstrap a repo with the token playbook.
+# Idempotent: safe to run repeatedly. Usage: bash setup-claude-code.sh
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel 2&gt;/dev/null || pwd)"
+CLAUDE_DIR="$ROOT/.claude"
+HOOK_DIR="$CLAUDE_DIR/hooks"
+CMD_DIR="$CLAUDE_DIR/commands"
+
+mkdir -p "$HOOK_DIR" "$CMD_DIR"
+
+echo "→ Writing settings.json (routing, budgets, hooks)…"
+cat &gt; "$CLAUDE_DIR/settings.json" &lt;&lt;'JSON'
+{
+  "model": {
+    "default": "sonnet",
+    "routing": [
+      { "match": ["lint","format","rename","commit message","typo"], "model": "haiku" },
+      { "match": ["architecture","debug","design","security review"], "model": "opus" }
+    ]
+  },
+  "budget": {
+    "perSessionTokens": 400000,
+    "perUserDailyTokens": 3000000,
+    "alertThresholds": [0.5, 0.8, 1.0],
+    "onExceed": "block"
+  },
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+    "MAX_THINKING_TOKENS": "8000"
+  },
+  "hooks": {
+    "PreToolUse":  [{ "matcher": "Bash|Write|Edit", "hooks": [{ "type": "command", "command": ".claude/hooks/pre_tool_use.sh" }] }],
+    "PostToolUse": [{ "matcher": "Write|Edit",       "hooks": [{ "type": "command", "command": ".claude/hooks/post_tool_use.sh" }] }],
+    "Notification":[{ "matcher": "*",                "hooks": [{ "type": "command", "command": ".claude/hooks/notify.sh" }] }]
+  }
+}
+JSON
+
+echo "→ Writing hook scripts…"
+# (hooks written in 6.2 below)
+bash "$ROOT/.claude/_write_hooks.sh" 2&gt;/dev/null || true
+
+echo "→ Writing standard command pack…"
+cat &gt; "$CMD_DIR/cheap.md"  &lt;&lt;'MD'
+Switch to the fast/small model for the next several turns (lint, format, rename).
+MD
+cat &gt; "$CMD_DIR/scope.md"  &lt;&lt;'MD'
+Drop all context except files relevant to: $ARGUMENTS
+Re-anchor on those only; summarize what you kept.
+MD
+cat &gt; "$CMD_DIR/review.md" &lt;&lt;'MD'
+Spawn a subagent on the cheap model to review the current diff.
+Report only Critical and Major issues.
+MD
+
+echo "→ Installing git pre-commit convergence check…"
+HOOK="$ROOT/.git/hooks/pre-commit"
+cat &gt; "$HOOK" &lt;&lt;'SH'
+#!/usr/bin/env bash
+# Re-assert policy on every commit.
+[ -f .claude/settings.json ] || { echo "Missing .claude/settings.json — run setup-claude-code.sh"; exit 1; }
+SH
+chmod +x "$HOOK"
+
+echo "✓ Playbook installed. Commit .claude/ to share it with the team."
+
+</code></pre>
+<h3 id="62-hooks-the-full-enforcement-suite">6.2 Hooks — the full enforcement suite</h3>
+<p><strong>PreToolUse</strong> — block dangerous actions before they run. The agent passes the pending tool call as JSON on stdin; exit code <code>2</code> blocks it.</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# .claude/hooks/pre_tool_use.sh — veto risky actions. Exit 2 = block.
+set -euo pipefail
+payload="$(cat)"                      # JSON describing the pending tool call
+tool="$(jq -r '.tool_name' &lt;&lt;&lt;"$payload")"
+cmd="$(jq -r '.tool_input.command // empty' &lt;&lt;&lt;"$payload")"
+path="$(jq -r '.tool_input.file_path // empty' &lt;&lt;&lt;"$payload")"
+
+# 1) Protect sensitive paths from writes/edits
+case "$path" in
+  *".env"*|*"/infra/"*|*"secrets"*)
+    echo "BLOCKED: writes to $path are not allowed by policy." &gt;&amp;2; exit 2;;
+esac
+
+# 2) Reject dangerous shell commands
+if [[ -n "$cmd" ]]; then
+  if grep -Eq '(rm -rf /| rm -rf \*|curl [^|]*\| *(ba)?sh|:\(\)\{)' &lt;&lt;&lt;"$cmd"; then
+    echo "BLOCKED: dangerous shell pattern in: $cmd" &gt;&amp;2; exit 2
+  fi
+fi
+
+# 3) Never let the agent commit straight to main
+if grep -Eq 'git (commit|push).*(origin/)?main' &lt;&lt;&lt;"$cmd"; then
+  echo "BLOCKED: direct commits/pushes to main are forbidden. Use a branch." &gt;&amp;2; exit 2
+fi
+exit 0
+
+</code></pre>
+<p><strong>PostToolUse</strong> — react after a file write: auto-lint, count tokens against budget, reject hallucinated mega-diffs.</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# .claude/hooks/post_tool_use.sh — lint, budget-count, reject huge diffs.
+set -euo pipefail
+payload="$(cat)"
+path="$(jq -r '.tool_input.file_path // empty' &lt;&lt;&lt;"$payload")"
+
+# 1) Reject oversized single-file diffs (sign of a hallucinated rewrite)
+if [[ -n "$path" &amp;&amp; -f "$path" ]]; then
+  added="$(git diff --numstat -- "$path" 2&gt;/dev/null | awk '{print $1}')"
+  if [[ -n "${added:-}" &amp;&amp; "$added" -gt 500 ]]; then
+    echo "WARNING: $path changed $added lines (&gt;500). Review before continuing." &gt;&amp;2
+  fi
+  # 2) Auto-lint on write (language-detected)
+  case "$path" in
+    *.py) ruff check --fix "$path" &gt;/dev/null 2&gt;&amp;1 || true ;;
+    *.js|*.ts) npx --no-install eslint --fix "$path" &gt;/dev/null 2&gt;&amp;1 || true ;;
+  esac
+fi
+
+# 3) Cumulative token ledger (simple append-and-sum)
+tokens="$(jq -r '.usage.total_tokens // 0' &lt;&lt;&lt;"$payload")"
+ledger=".claude/.token_ledger"; echo "$tokens" &gt;&gt; "$ledger"
+sum="$(awk '{s+=$1} END{print s}' "$ledger")"
+cap=400000
+if (( sum &gt; cap )); then
+  echo "BUDGET EXCEEDED: session used $sum tokens (cap $cap). Consider /clear." &gt;&amp;2
+fi
+exit 0
+
+</code></pre>
+<p><strong>Notification</strong> — push a Slack alert when spend crosses a threshold.</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# .claude/hooks/notify.sh — alert on cost threshold. Needs $SLACK_WEBHOOK_URL.
+set -euo pipefail
+msg="$(jq -r '.message // "Claude Code notification"' &lt;&lt;&lt;"$(cat)")"
+[[ -z "${SLACK_WEBHOOK_URL:-}" ]] &amp;&amp; exit 0
+curl -s -X POST -H 'Content-type: application/json' \
+  --data "{\"text\":\":robot_face: $msg\"}" "$SLACK_WEBHOOK_URL" &gt;/dev/null || true
+exit 0
+
+</code></pre>
+<h3 id="63-claudemd-generator-a-meta-agent-not-a-template">6.3 CLAUDE.md generator — a meta-agent, not a template</h3>
+<p>Don't hand-write CLAUDE.md and don't ship a generic template. Generate a <em>lean</em> one from a repo scan, and regenerate it when dependencies change. This is a slash command you run once per project:</p>
+<pre><code class="language-markdown"># .claude/commands/gen-claude-md.md
+You are generating a LEAN CLAUDE.md for this repository.
+
+Steps:
+1. Detect the stack: read package.json / pyproject.toml / go.mod / Cargo.toml.
+2. Find the test command, lint command, and build command.
+3. Infer directory conventions from the top two levels of the tree.
+4. Detect the primary language's idioms.
+
+Output rules (HARD CONSTRAINTS):
+- Total file MUST be under 1,500 tokens. Count and report the estimate.
+- Put detail behind @imports (@docs/style.md etc.), never inline.
+- Include: Project one-liner, Response style (terse), Commands, Guardrails.
+- Do NOT restate anything the agent can trivially infer from the tree.
+
+Write the result to ./CLAUDE.md and print the token estimate.
+
+</code></pre>
+<p>Wire regeneration into CI so the file never drifts or bloats:</p>
+<pre><code class="language-yaml"># .github/workflows/claude-md.yml
+name: Regenerate CLAUDE.md
+on:
+  push:
+    paths: ["package.json","pyproject.toml","go.mod","Cargo.toml"]
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate lean CLAUDE.md
+        run: claude -p "/gen-claude-md" --dangerously-skip-permissions
+      - name: Commit if changed
+        run: |
+          git config user.name  "claude-bot"
+          git config user.email "bot@example.com"
+          git add CLAUDE.md
+          git diff --cached --quiet || git commit -m "chore: regenerate lean CLAUDE.md"
+          git push
+
+</code></pre>
+<h3 id="64-skill-command-scaffolding-from-repeated-patterns">6.4 Skill / command scaffolding from repeated patterns</h3>
+<p>When you notice the same multi-line instruction typed twice, scaffold it into a command. This generator does it for you:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+# .claude/scaffold_command.sh NAME "one-line description"
+# Creates a new slash command from a template.
+set -euo pipefail
+name="${1:?usage: scaffold_command.sh NAME \"description\"}"; desc="${2:-}"
+f=".claude/commands/${name}.md"
+[[ -e "$f" ]] &amp;&amp; { echo "exists: $f"; exit 0; }
+cat &gt; "$f" &lt;&lt;MD
+# /$name
+$desc
+
+Instructions:
+- (fill in the exact prompt this command should run)
+- Use \$ARGUMENTS for any parameters passed after the command.
+MD
+echo "created $f"
+
+</code></pre>
+<p>To shed MCP context cost, convert a hot MCP tool into a local command that calls the underlying API directly — you keep the capability without paying the per-turn schema tax on every session.</p>
+<h3 id="65-routing-budgets-as-declarative-config">6.5 Routing + budgets as declarative config</h3>
+<p>These already live in <code>settings.json</code> (6.1), which means they're <strong>version-controlled and reviewable</strong>. Two env vars are worth calling out explicitly as the "set-and-forget" baseline:</p>
+<pre><code class="language-jsonc">"env": {
+  // Compact the context automatically at 70% full, not the default.
+  "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+  // Cap extended-thinking token spend per turn.
+  "MAX_THINKING_TOKENS": "8000"
+}
+
+</code></pre>
+<h3 id="66-the-automation-ledger">6.6 The automation ledger</h3>
+<p>The honest accounting — what each playbook item costs in developer memory, and the artifact that eliminates it:</p>
+<table>
+<thead>
+<tr>
+<th>Playbook item</th>
+<th>Automating artifact</th>
+<th>Where it lives</th>
+<th>Memory eliminated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Protect branches / secrets</td>
+<td><code>pre_tool_use.sh</code></td>
+<td><code>.claude/hooks/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Auto-lint on write</td>
+<td><code>post_tool_use.sh</code></td>
+<td><code>.claude/hooks/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Token budget enforcement</td>
+<td><code>post_tool_use.sh</code> + <code>settings.json</code></td>
+<td><code>.claude/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Reject mega-diffs</td>
+<td><code>post_tool_use.sh</code></td>
+<td><code>.claude/hooks/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Model routing</td>
+<td><code>settings.json</code> routing block</td>
+<td><code>.claude/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Cost alerts</td>
+<td><code>notify.sh</code></td>
+<td><code>.claude/hooks/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Lean CLAUDE.md</td>
+<td><code>/gen-claude-md</code> + CI</td>
+<td>repo root + CI</td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Slash-command pack</td>
+<td><code>setup-claude-code.sh</code></td>
+<td><code>.claude/commands/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td>Autocompact baseline</td>
+<td><code>settings.json</code> env</td>
+<td><code>.claude/</code></td>
+<td>✅ Full</td>
+</tr>
+<tr>
+<td><code>/clear</code> between tasks</td>
+<td>—</td>
+<td>(human)</td>
+<td>⚠️ Judgment</td>
+</tr>
+<tr>
+<td>Spec authoring</td>
+<td>—</td>
+<td>(human)</td>
+<td>⚠️ Judgment</td>
+</tr>
+<tr>
+<td>Reviewing proposals</td>
+<td>—</td>
+<td>(human)</td>
+<td>⚠️ Judgment</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-honest-boundary">The honest boundary</h3>
+<p>Automation covers roughly <strong>65%</strong> of the playbook — all of governance and most of generation. The remaining <strong>~35% is trained judgment</strong>: writing a good spec, knowing when to re-scope mid-task, and reviewing what the agent proposes. That split is the point, not a shortcoming. Automate the mechanical, so a developer's attention goes to the parts that actually need a human.</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 240" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="240" fill="#0B1F3A" rx="10"></rect>
+  <text x="410" y="34" text-anchor="middle" fill="#F5A623" font-size="16" font-weight="bold">The Self-Configuring Repo — What Ships vs. What Stays Human</text>
+  <rect x="60" y="70" width="330" height="130" rx="8" fill="#12294D" stroke="#4AE0A0" stroke-width="1.5"></rect>
+  <text x="225" y="98" text-anchor="middle" fill="#4AE0A0" font-size="13" font-weight="bold">SHIPS AS ARTIFACTS (~65%)</text>
+  <text x="225" y="124" text-anchor="middle" fill="#C7D3E0" font-size="11">Hooks · routing · budgets · alerts</text>
+  <text x="225" y="146" text-anchor="middle" fill="#C7D3E0" font-size="11">CLAUDE.md generator · command pack</text>
+  <text x="225" y="168" text-anchor="middle" fill="#C7D3E0" font-size="11">Autocompact baseline</text>
+  <text x="225" y="190" text-anchor="middle" fill="#9FB0C3" font-size="10.5" font-style="italic">inherited on git clone</text>
+  <rect x="430" y="70" width="330" height="130" rx="8" fill="#12294D" stroke="#F5A623" stroke-width="1.5"></rect>
+  <text x="595" y="98" text-anchor="middle" fill="#F5A623" font-size="13" font-weight="bold">STAYS HUMAN (~35%)</text>
+  <text x="595" y="124" text-anchor="middle" fill="#C7D3E0" font-size="11">Spec authoring</text>
+  <text x="595" y="146" text-anchor="middle" fill="#C7D3E0" font-size="11">Mid-task re-scoping judgment</text>
+  <text x="595" y="168" text-anchor="middle" fill="#C7D3E0" font-size="11">Reviewing proposals</text>
+  <text x="595" y="190" text-anchor="middle" fill="#9FB0C3" font-size="10.5" font-style="italic">where attention belongs</text>
+</svg></p>
+<hr>
+<h2 id="part-7-rolling-it-out-to-a-team">Part 7 — Rolling It Out to a Team</h2>
+<p>A playbook that lives in one engineer's head isn't a playbook — it's a hobby. Rollout is what turns it into an organizational default. The sequencing principle mirrors the framework itself: <strong>land the automatic wins first, build the habits second, and only then push the workflow discipline that needs the most buy-in.</strong> Trying to sell spec-driven development to a skeptical team on day one fails; showing them a 40% bill drop from a config change they didn't have to think about earns the credibility to go further.</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 250" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="820" height="250" fill="#0B1F3A" rx="10"></rect>
+  <text x="410" y="32" text-anchor="middle" fill="#F5A623" font-size="16" font-weight="bold">Rollout Sequence — Land Wins Before Asking for Behavior Change</text>
+  <line x1="70" y1="80" x2="750" y2="80" stroke="#2A6E8A" stroke-width="3"></line>
+  <circle cx="130" cy="80" r="9" fill="#4AE0A0"></circle>
+  <circle cx="320" cy="80" r="9" fill="#4A9EFF"></circle>
+  <circle cx="510" cy="80" r="9" fill="#C084E0"></circle>
+  <circle cx="700" cy="80" r="9" fill="#F5A623"></circle>
+  <text x="130" y="120" text-anchor="middle" fill="#4AE0A0" font-size="12" font-weight="bold">WEEK 1–2</text>
+  <text x="130" y="140" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Pilot repo</text>
+  <text x="130" y="156" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Install governance</text>
+  <text x="130" y="172" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Baseline the spend</text>
+  <text x="320" y="120" text-anchor="middle" fill="#4A9EFF" font-size="12" font-weight="bold">WEEK 3–4</text>
+  <text x="320" y="140" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Prove the drop</text>
+  <text x="320" y="156" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Publish the numbers</text>
+  <text x="320" y="172" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Roll config org-wide</text>
+  <text x="510" y="120" text-anchor="middle" fill="#C084E0" font-size="12" font-weight="bold">MONTH 2</text>
+  <text x="510" y="140" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Train the habits</text>
+  <text x="510" y="156" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Ship command pack</text>
+  <text x="510" y="172" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Dashboards live</text>
+  <text x="700" y="120" text-anchor="middle" fill="#F5A623" font-size="12" font-weight="bold">MONTH 3+</text>
+  <text x="700" y="140" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Spec-driven for</text>
+  <text x="700" y="156" text-anchor="middle" fill="#C7D3E0" font-size="10.5">production work</text>
+  <text x="700" y="172" text-anchor="middle" fill="#C7D3E0" font-size="10.5">Self-configuring repos</text>
+  <text x="410" y="220" text-anchor="middle" fill="#9FB0C3" font-size="11" font-style="italic">Each phase earns the credibility to attempt the next.</text>
+</svg></p>
+<h3 id="71-phase-1-pilot-baseline-week-12">7.1 Phase 1 — Pilot &amp; baseline (Week 1–2)</h3>
+<p>Pick <strong>one high-traffic repo and one willing team.</strong> Don't boil the ocean.</p>
+<ul>
+<li>Run the bootstrap installer (Part 6) on the pilot repo.</li>
+<li><strong>Measure first.</strong> Capture the current spend-per-developer and tokens-per-session <em>before</em> changing anything — you can't prove a win you didn't baseline.</li>
+<li>Turn on governance only: routing, budgets, <code>.claudeignore</code>, lean CLAUDE.md. No habit asks yet.</li>
+</ul>
+<h3 id="72-phase-2-prove-it-then-propagate-week-34">7.2 Phase 2 — Prove it, then propagate (Week 3–4)</h3>
+<ul>
+<li>Compare spend against the baseline. A tuned routing + caching + CLAUDE.md-diet config typically lands a <strong>40–60% drop</strong> with zero developer behavior change.</li>
+<li><strong>Publish the number.</strong> One Slack post — "same output, 47% lower bill" — does more for adoption than any mandate.</li>
+<li>Roll the governance config to every repo via the installer in CI. This is a platform change, not a per-team negotiation.</li>
+</ul>
+<h3 id="73-phase-3-train-the-habits-month-2">7.3 Phase 3 — Train the habits (Month 2)</h3>
+<p>Now that the floor is raised automatically, introduce the Tier 2 habits — the part that needs humans:</p>
+<ul>
+<li>Ship the standard slash-command pack to every repo.</li>
+<li>Run one 30-minute brown-bag: <code>/clear</code>, Plan Mode, <code>/cheap</code>, <code>/scope</code>. Show, don't tell.</li>
+<li>Stand up a <strong>shared cost dashboard</strong> (per-team, per-repo attribution) so the savings stay visible and teams see their own trend.</li>
+</ul>
+<h3 id="74-phase-4-workflow-discipline-where-it-pays-month-3">7.4 Phase 4 — Workflow discipline where it pays (Month 3+)</h3>
+<ul>
+<li>Introduce spec-driven development for <strong>production, shared-codebase, and compliance work</strong> — not everywhere (respect the Part 4 decision matrix).</li>
+<li>Scaffold the spec commands into repos so they're one keystroke away.</li>
+<li>Move toward <strong>self-configuring repos</strong>: new projects inherit the whole playbook on <code>git clone</code>, and the CLAUDE.md generator keeps context lean automatically.</li>
+</ul>
+<h3 id="75-make-it-stick">7.5 Make it stick</h3>
+<ul>
+<li><strong>A named owner.</strong> Someone owns the <code>.claude/</code> config and the dashboard, or it rots.</li>
+<li><strong>Onboard through the repo, not a wiki.</strong> The playbook is code that ships with the project; a new hire inherits it by cloning, not by reading docs.</li>
+<li><strong>Review quarterly.</strong> Model prices, tiers, and tooling shift fast (they did four times in 2026 alone) — revisit the routing policy and caching config each quarter.</li>
+</ul>
+<hr>
+<h2 id="the-takeaway">The takeaway</h2>
+<p>A smart developer isn't the one who remembers to be frugal. It's the one who <strong>builds a system where frugality is automatic</strong> — governance that enforces itself, habits that become muscle memory, a workflow that gets it right the first time, and a repo that configures itself on clone.</p>
+<p>The token bill stops being a mystery and becomes a design parameter — and rolling it out is just sequencing: land the automatic wins, build the habits, then earn the workflow discipline. That's the whole game.</p>
+<blockquote>
+<p><strong>Governance catches 60%. Habits refine 40%. Automation ships 65% of it as code. The developer's job is the judgment that's left.</strong></p>
+</blockquote>
+
+
+</body></html>

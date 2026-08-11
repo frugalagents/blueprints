@@ -1,0 +1,60 @@
+{
+  "id": "hooks-lifecycle",
+  "title": "Hooks & Lifecycle Interception",
+  "tier": 7,
+  "tierLabel": "Guardrail code -- the programmatic equivalent of a human watching the session",
+  "status": "stable",
+  "summary": "Claude Code's hooks let you intercept tool calls with a shell script. A custom agent needs the same interception points -- pre-call and post-call hooks -- built directly into its own loop, since no human is present to notice a problem and stop it.",
+  "whyItMatters": "The single biggest unattended-agent cost risk is a loop that keeps calling tools (and paying for tokens) without making progress. Lifecycle hooks are where you enforce budgets, block dangerous or wasteful calls, and log for later cost attribution -- all things a human supervising Claude Code does implicitly.",
+  "concepts": [
+    {
+      "heading": "Pre-call hooks: validate and block before spending tokens on execution",
+      "body": "Before a tool call actually executes, a pre-call hook can reject it (wrong arguments, disallowed target, budget already exceeded) and feed a reason back to the model -- the same role as Claude Code's PreToolUse hook returning exit code 2, but implemented as a function call in your own orchestration code rather than a subprocess."
+    },
+    {
+      "heading": "Post-call hooks: shrink what re-enters context, log what happened",
+      "body": "After a tool executes, a post-call hook can truncate or summarize a huge result before it's added to conversation history (mirroring Claude Code's filter-test-output pattern), and unconditionally log token counts, latency, and cost per call for later analysis -- this is what feeds Tab 10's observability."
+    },
+    {
+      "heading": "Circuit breakers replace the human hitting Escape",
+      "body": "A hard cap on consecutive tool calls without new information, a maximum total token spend per task, or a maximum wall-clock time per task are the code equivalent of a person noticing a session has gone in circles. Without an explicit circuit breaker, a buggy agent loop can run (and bill) indefinitely."
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Implement a token-budget hook and a repeat-call circuit breaker with Strands HookProvider",
+      "goal": "Build two guardrails using Strands' real hook events instead of a hand-rolled pre-call wrapper: reject tool calls once a token budget is exhausted, and halt after too many identical consecutive calls.",
+      "steps": [
+        "Implement a HookProvider that registers on BeforeInvocationEvent (to reset the repeat-call counter each turn) and BeforeToolCallEvent (to block tool execution before it happens).",
+        "After each agent(...) call in your orchestration loop, read response.metrics.accumulated_usage and feed the running total into the guardrail object.",
+        "In the BeforeToolCallEvent callback, check that running total against a fixed budget; if over, set event.cancel_tool to a message explaining why. → Expect: the model receives that message as the tool's result and is forced toward a conclusion, rather than the loop silently continuing to spend.",
+        "In the same callback, track consecutive calls to the same tool with identical arguments; if a threshold is exceeded, also set event.cancel_tool. → Expect: a deliberately-triggered retry loop (a tool that always errors, which the model keeps retrying identically) stops after the threshold instead of running unbounded, matching the pattern in Strands' own 'Limit Tool Counts' cookbook recipe."
+      ],
+      "code": {
+        "lang": "python",
+        "content": "from threading import Lock\nfrom strands import Agent\nfrom strands.hooks import HookProvider, HookRegistry, BeforeInvocationEvent, BeforeToolCallEvent\nfrom strands.models import BedrockModel\n\nclass AgentGuardrails(HookProvider):\n    \"\"\"Enforces a token budget and a repeat-call circuit breaker across a session.\"\"\"\n\n    def __init__(self, max_tokens: int = 50_000, max_repeat_calls: int = 5):\n        self.max_tokens = max_tokens\n        self.max_repeat_calls = max_repeat_calls\n        self.tokens_spent = 0\n        self.last_signature = None\n        self.repeat_count = 0\n        self._lock = Lock()\n\n    def register_hooks(self, registry: HookRegistry) -> None:\n        registry.add_callback(BeforeInvocationEvent, self._reset_repeat_counter)\n        registry.add_callback(BeforeToolCallEvent, self._guard_tool_call)\n\n    def record_usage(self, accumulated_usage: dict) -> None:\n        \"\"\"Call this with response.metrics.accumulated_usage after each agent(...) call.\"\"\"\n        with self._lock:\n            self.tokens_spent = accumulated_usage.get(\"inputTokens\", 0) + accumulated_usage.get(\"outputTokens\", 0)\n\n    def _reset_repeat_counter(self, event: BeforeInvocationEvent) -> None:\n        with self._lock:\n            self.repeat_count = 0\n            self.last_signature = None\n\n    def _guard_tool_call(self, event: BeforeToolCallEvent) -> None:\n        tool_name = event.tool_use[\"name\"]\n\n        if self.tokens_spent >= self.max_tokens:\n            event.cancel_tool = (\n                f\"Budget exceeded: {self.tokens_spent} tokens spent, limit {self.max_tokens}. \"\n                f\"Conclude with your best answer now.\"\n            )\n            return\n\n        signature = (tool_name, tuple(sorted(event.tool_use[\"input\"].items())))\n        with self._lock:\n            if signature == self.last_signature:\n                self.repeat_count += 1\n            else:\n                self.repeat_count = 0\n                self.last_signature = signature\n\n        if self.repeat_count >= self.max_repeat_calls:\n            event.cancel_tool = (\n                f\"Circuit breaker: '{tool_name}' called with identical arguments \"\n                f\"{self.max_repeat_calls} times in a row. Stop retrying this tool.\"\n            )\n\nguardrails = AgentGuardrails(max_tokens=50_000, max_repeat_calls=5)\n\nagent = Agent(\n    model=BedrockModel(model_id=\"us.anthropic.claude-sonnet-5\"),\n    hooks=[guardrails],\n)\n\nfor user_turn in conversation_turns:\n    response = agent(user_turn)\n    guardrails.record_usage(response.metrics.accumulated_usage)\n"
+      },
+      "costImpact": "A single stuck agent instance without a circuit breaker can run for hours, paying for every retried call. At even a modest 2,000 tokens/call and one call every few seconds, an unbounded loop left overnight can outspend an entire day's normal, healthy task volume. Implementing the repeat-call check via real hook events (rather than wrapping every tool call by hand) means the guardrail applies uniformly to every tool the agent has, including ones added later."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Claude Code — Hooks reference",
+      "url": "https://code.claude.com/docs/en/hooks",
+      "dateChecked": "2026-08-11",
+      "claim": "PreToolUse/PostToolUse lifecycle events, exit-code-2 blocking semantics, and JSON stdin schema -- the reference implementation this tab's guardrail pattern generalizes to custom agent code."
+    },
+    {
+      "title": "Strands Agents — Hooks concept guide",
+      "url": "https://strandsagents.com/docs/user-guide/concepts/agents/hooks/",
+      "dateChecked": "2026-08-11",
+      "claim": "BeforeToolCallEvent.cancel_tool, BeforeInvocationEvent, and the HookProvider/register_hooks pattern, including the documented 'Limit Tool Counts' cookbook recipe this exercise adapts into a token-budget-aware guardrail."
+    },
+    {
+      "title": "Strands Agents — Hook events API reference (strands.hooks.events)",
+      "url": "https://strandsagents.com/docs/api/python/strands.hooks.events/",
+      "dateChecked": "2026-08-11",
+      "claim": "Confirms BeforeToolCallEvent's documented attributes (selected_tool, tool_use, invocation_state, cancel_tool) and AfterModelCallEvent's documented attributes (invocation_state, stop_response, exception, retry) -- AfterModelCallEvent does not expose a usage field, which is why this exercise reads token usage from response.metrics.accumulated_usage between agent calls instead."
+    }
+  ]
+}
