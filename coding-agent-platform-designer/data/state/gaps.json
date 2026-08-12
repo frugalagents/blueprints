@@ -1,0 +1,12 @@
+[
+  {
+    "query": "What are our options for sandboxing agent-generated, unreviewed code besides microVM isolation (e.g. container, local, remote execution tiers) and which fits best?",
+    "matchedComponent": "microvm",
+    "timestamp": "2026-08-12T20:02:38.404196+00:00"
+  },
+  {
+    "query": "What model should we route coding tasks to, and how do we control token spend?",
+    "matchedComponent": null,
+    "timestamp": "2026-08-12T20:03:41.163880+00:00"
+  }
+]

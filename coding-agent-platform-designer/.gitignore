@@ -1,0 +1,10 @@
+# User-specific conversation output — may contain sensitive org details
+# (compliance posture, autonomy choices). Not the project's own content.
+designs/
+
+# Note: data/state/*.json (monitoring-state.json, watchlist.json, gaps.json)
+# is intentionally NOT gitignored — tracked, same as the sibling
+# custom-agent-tokenomics project treats its equivalent state files.
+
+__pycache__/
+*.pyc

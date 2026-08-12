@@ -1,0 +1,161 @@
+# Layer 2 control logic — see ARCHITECTURE.md §3. Structured YAML, deliberately
+# NOT an OKF file: this is deterministic control logic the runtime evaluates,
+# not knowledge content to RAG over.
+#
+# Scope: Phase 2 of IMPLEMENTATION_PLAN.md — only the 5-component thin slice
+# (identity, microvm, mcpgw, rollback, evals). Extend to all 32 in Phase 4.
+#
+# Resolution rule (how the runtime turns this + a user's 5 axis answers into
+# one ordered, filtered component list):
+#   1. For each component, look up its entry for each axis value the user gave.
+#      A component may not have an entry for every axis — absence means that
+#      axis doesn't move this component's relevance.
+#   2. relevance = "required" if ANY matched axis says required, else
+#      "optional" if all matched axes say optional, else "optional" if the
+#      component has no matched entries at all (nothing argues for surfacing it).
+#   3. priority = the MINIMUM (most urgent) priority value across matched axes.
+#      Lower number = earlier in the conversation.
+#   4. Sort by (relevance desc, priority asc). Required components before
+#      optional ones; within each, lowest priority number first.
+
+axes:
+  org_size: [solo-team, multi-team, org-wide]
+  compliance: [none, soc2, regulated]
+  existing_stack: [greenfield, has-sso-scm, has-competing-tool]
+  autonomy: [advisory-only, gated-writes, full-auto-sandbox]
+  data_sensitivity: [public, internal, regulated-data]
+
+components:
+  identity:
+    org_size:
+      solo-team: { relevance: optional, priority: 3 }
+      multi-team: { relevance: required, priority: 2 }
+      org-wide: { relevance: required, priority: 1 }
+    compliance:
+      none: { relevance: optional, priority: 3 }
+      soc2: { relevance: required, priority: 2 }
+      regulated: { relevance: required, priority: 1 }
+    existing_stack:
+      greenfield: { relevance: optional, priority: 2 }
+      has-sso-scm: { relevance: required, priority: 1 }
+      has-competing-tool: { relevance: required, priority: 2 }
+    autonomy:
+      advisory-only: { relevance: optional, priority: 3 }
+      gated-writes: { relevance: required, priority: 2 }
+      full-auto-sandbox: { relevance: required, priority: 1 }
+    data_sensitivity:
+      public: { relevance: optional, priority: 3 }
+      internal: { relevance: required, priority: 2 }
+      regulated-data: { relevance: required, priority: 1 }
+
+  microvm:
+    org_size:
+      solo-team: { relevance: optional, priority: 3 }
+      multi-team: { relevance: optional, priority: 2 }
+      org-wide: { relevance: required, priority: 2 }
+    compliance:
+      none: { relevance: optional, priority: 3 }
+      soc2: { relevance: optional, priority: 2 }
+      regulated: { relevance: required, priority: 1 }
+    existing_stack:
+      greenfield: { relevance: optional, priority: 2 }
+      has-sso-scm: { relevance: optional, priority: 2 }
+      has-competing-tool: { relevance: optional, priority: 3 }
+    autonomy:
+      advisory-only: { relevance: optional, priority: 3 }
+      gated-writes: { relevance: optional, priority: 2 }
+      full-auto-sandbox: { relevance: required, priority: 1 }
+    data_sensitivity:
+      public: { relevance: optional, priority: 3 }
+      internal: { relevance: optional, priority: 2 }
+      regulated-data: { relevance: required, priority: 1 }
+
+  mcpgw:
+    org_size:
+      solo-team: { relevance: optional, priority: 3 }
+      multi-team: { relevance: required, priority: 2 }
+      org-wide: { relevance: required, priority: 1 }
+    compliance:
+      none: { relevance: optional, priority: 3 }
+      soc2: { relevance: required, priority: 2 }
+      regulated: { relevance: required, priority: 1 }
+    existing_stack:
+      greenfield: { relevance: optional, priority: 2 }
+      has-sso-scm: { relevance: required, priority: 1 }
+      has-competing-tool: { relevance: required, priority: 1 }
+    autonomy:
+      advisory-only: { relevance: optional, priority: 3 }
+      gated-writes: { relevance: required, priority: 2 }
+      full-auto-sandbox: { relevance: required, priority: 1 }
+    data_sensitivity:
+      public: { relevance: optional, priority: 3 }
+      internal: { relevance: required, priority: 2 }
+      regulated-data: { relevance: required, priority: 1 }
+
+  rollback:
+    org_size:
+      solo-team: { relevance: optional, priority: 3 }
+      multi-team: { relevance: optional, priority: 2 }
+      org-wide: { relevance: required, priority: 2 }
+    compliance:
+      none: { relevance: optional, priority: 3 }
+      soc2: { relevance: optional, priority: 2 }
+      regulated: { relevance: required, priority: 2 }
+    existing_stack:
+      greenfield: { relevance: optional, priority: 2 }
+      has-sso-scm: { relevance: optional, priority: 2 }
+      has-competing-tool: { relevance: optional, priority: 2 }
+    autonomy:
+      advisory-only: { relevance: optional, priority: 3 }
+      gated-writes: { relevance: required, priority: 2 }
+      full-auto-sandbox: { relevance: required, priority: 1 }
+    data_sensitivity:
+      public: { relevance: optional, priority: 3 }
+      internal: { relevance: optional, priority: 2 }
+      regulated-data: { relevance: required, priority: 2 }
+
+  evals:
+    org_size:
+      solo-team: { relevance: optional, priority: 3 }
+      multi-team: { relevance: optional, priority: 2 }
+      org-wide: { relevance: required, priority: 2 }
+    compliance:
+      none: { relevance: optional, priority: 3 }
+      soc2: { relevance: optional, priority: 2 }
+      regulated: { relevance: required, priority: 2 }
+    existing_stack:
+      greenfield: { relevance: optional, priority: 3 }
+      has-sso-scm: { relevance: optional, priority: 2 }
+      has-competing-tool: { relevance: optional, priority: 2 }
+    autonomy:
+      advisory-only: { relevance: optional, priority: 3 }
+      gated-writes: { relevance: optional, priority: 2 }
+      full-auto-sandbox: { relevance: required, priority: 1 }
+    data_sensitivity:
+      public: { relevance: optional, priority: 3 }
+      internal: { relevance: optional, priority: 2 }
+      regulated-data: { relevance: optional, priority: 2 }
+
+# ARCHITECTURE.md §3.4 — cross-component consistency checks. Evaluated against
+# the running decisions log after every pick, not just at the end. Options
+# below use short slugs; map 1:1 to the prose options in each component's
+# `## Decisions` section — keep these in sync if a component's options change.
+conflicts:
+  - id: full-auto-no-safety-net
+    if: { component: rollback, option: direct-commits-to-working-branch }
+    and: { component: evals, option: advisory-only-non-blocking }
+    warn: >
+      Direct-to-branch commits (no isolation by construction) combined with
+      advisory-only evals (nothing blocks a release) means a bad agent edit
+      can land with no automated or human check catching it first. At least
+      one of these needs to be the stricter option.
+
+  - id: broad-access-no-containment
+    if: { component: identity, option: agent-acts-as-developer }
+    and: { component: rollback, option: direct-commits-to-working-branch }
+    warn: >
+      The agent inherits the developer's full access AND commits directly to
+      the working branch with no isolation — a bad or malicious edit has both
+      broad reach and no containment. identity.md's own least-privilege
+      principle argues for at least one of: a scoped service identity, or
+      branch/PR isolation on the rollback side.

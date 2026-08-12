@@ -1,0 +1,23 @@
+{
+  "_comment": "Phase 3 minimal fallback allowlist. Full Tier A/B/C config (monitoring cadence, discovery seeds, case-study reviewAfterMonths) is a Phase 5 deliverable per IMPLEMENTATION_PLAN.md — this file will grow substantially there. For now: just enough real, verified URLs to prove the fallback mechanism end-to-end.",
+  "fallback": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.md",
+      "domain": "docs.aws.amazon.com",
+      "fallbackEligible": true,
+      "note": "verified live during Phase 1 authoring of knowledge/gateway/mcpgw.md"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/identity.md",
+      "domain": "docs.aws.amazon.com",
+      "fallbackEligible": true,
+      "note": "verified live during Phase 1 authoring of knowledge/access/identity.md"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+      "domain": "docs.aws.amazon.com",
+      "fallbackEligible": true,
+      "note": "verified live during Phase 1 authoring of knowledge/exec/microvm.md"
+    }
+  ]
+}
