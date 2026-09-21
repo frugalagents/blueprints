@@ -1,0 +1,24 @@
+# Node / frontend
+node_modules/
+dist/
+
+# Python
+work/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Build artifacts
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Runtime logs
+.run/
+
+# Secrets / local env
+.env
+.env.*
+!.env.example

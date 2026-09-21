@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "sizing-assessment": {
+      "targetKind": "new-ui",
+      "projectId": "dd311f3f-b485-4129-b190-684e5ec57af6",
+      "activeDraftId": "e4b289ce-07ec-4449-b6db-3ed45b057268",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "c9cd7243943d61f3b5f3ce0e4298a58f4d8c0f3c2ff9fecaf8288fc6d5275d82"
+      },
+      "components": [],
+      "drafts": {
+        "e4b289ce-07ec-4449-b6db-3ed45b057268": {
+          "title": "Sizing Assessment Workspace",
+          "visualDirection": "technical minimalist evidence-first assessment workspace",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-09-19T21:14:29.891Z"
+    }
+  }
+}
