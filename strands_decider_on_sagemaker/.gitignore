@@ -1,0 +1,37 @@
+# ---- Model weights & artifacts (pull from HF Hub / S3, not git) ----
+model/
+build/
+
+# ---- Python virtual environments / tooling ----
+.venv/
+.tools/
+venv/
+env/
+
+# ---- Python caches & build output ----
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ---- Large binary artifacts ----
+*.tar.gz
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.onnx
+
+# ---- Logs ----
+*.log
+
+# ---- OS / editor cruft ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

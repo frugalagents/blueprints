@@ -1,0 +1,58 @@
+{
+  "route_billing": {
+    "state": "Help! My payouts have been failing for 3 days!",
+    "questions": {
+      "team": {
+        "type": "choice",
+        "instructions": "Which team should handle this?",
+        "criteria": {
+          "billing": "Payments, payouts, invoices, refunds",
+          "sales": "New purchases, pricing, upgrades",
+          "retail": "In-store orders and returns"
+        }
+      }
+    }
+  },
+  "satisfied_yes_no": {
+    "state": "Customer: Thanks so much, that fixed it! You folks are great.",
+    "questions": {
+      "satisfied": {
+        "type": "noul",
+        "instructions": "Is the customer satisfied with the resolution?"
+      }
+    }
+  },
+  "frustration_score": {
+    "state": "Customer: This is the THIRD time I'm asking. Fix it right now or I'm cancelling!!",
+    "questions": {
+      "frustration": {
+        "type": "score",
+        "instructions": "How frustrated is the customer?",
+        "criteria": ["Calm", "Mildly annoyed", "Frustrated", "Furious"]
+      }
+    }
+  },
+  "multi_question": {
+    "state": "Customer: My card was charged twice for the annual plan and nobody has replied to my emails in a week. I want a refund today.",
+    "questions": {
+      "team": {
+        "type": "choice",
+        "instructions": "Which team should handle this?",
+        "criteria": {
+          "billing": "Payments, charges, refunds",
+          "sales": "New purchases and pricing",
+          "support": "Technical troubleshooting"
+        }
+      },
+      "wants_refund": {
+        "type": "noul",
+        "instructions": "Is the customer asking for a refund?"
+      },
+      "urgency": {
+        "type": "score",
+        "instructions": "How urgent is this request?",
+        "criteria": ["Low", "Medium", "High", "Critical"]
+      }
+    }
+  }
+}
