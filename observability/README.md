@@ -16,21 +16,17 @@ The same trace context crosses both HTTP handoffs. Each agent has a separate run
 The UI compares native records, source OTel and Collector-processed OTel.
 No Phoenix, AgentCore Observability or CloudWatch backend is required.
 
-## Start outside Codex (this Mac)
-
-Double-click **Start Observability.command** in Finder. It opens Terminal, starts
-all services and opens Connected in your default browser after the Collector is
-ready. Keep that Terminal window open; press **Ctrl+C** there to stop the demo.
-Codex is not required. Your own AWS SDK credentials must still be valid.
-
-Or run from any Terminal directory:
+## Start (any macOS/Linux machine)
 
 ```sh
-"/path/to/blueprints/observability/Start Observability.command"
+python3 start.py
 ```
 
-On another machine, complete the one-time setup below first. If ports are busy,
-stop the previous demo before launching another copy.
+On first run this installs the isolated environments and the Collector (needs
+Python 3.14 on PATH), then starts all services and opens Connected in your
+browser once the Collector is ready. Press **Ctrl+C** to stop. Your own AWS SDK
+credentials must still be valid. On macOS you can also double-click
+**Start Observability.command**. If ports are busy, stop the previous demo first.
 
 ## Prerequisites
 
