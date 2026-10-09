@@ -1,0 +1,6 @@
+langchain==1.4.4
+langchain-core==1.6.9
+langchain-aws==1.8.1
+openinference-instrumentation-langchain==0.1.79
+opentelemetry-sdk==1.45.1
+opentelemetry-exporter-otlp-proto-http==1.45.1

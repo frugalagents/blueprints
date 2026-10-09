@@ -1,0 +1,65 @@
+extensions:
+  health_check:
+    endpoint: 127.0.0.1:13133
+  file_storage:
+    directory: ${env:PIPELINE_QUEUE_DIR}
+    create_directory: true
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 127.0.0.1:4318
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 128
+    spike_limit_mib: 32
+  transform/semantics:
+    error_mode: propagate
+    trace_statements:
+      - context: span
+        statements:
+          - set(attributes["app.pipeline.version"], "collector-v1")
+          - set(attributes["app.data.policy"], "collector-content-policy-v1")
+          - set(attributes["llm.system"], "anthropic") where attributes["openinference.span.kind"] == "LLM" and IsMatch(attributes["llm.model_name"], "^bedrock/converse/.*claude")
+          - set(attributes["gen_ai.provider.name"], "anthropic") where attributes["openinference.span.kind"] == "LLM" and IsMatch(attributes["llm.model_name"], "^bedrock/converse/.*claude")
+          - set(attributes["cloud.provider"], "aws") where attributes["openinference.span.kind"] == "LLM" and IsMatch(attributes["llm.model_name"], "^bedrock/converse/.*claude")
+          - set(attributes["cloud.region"], "us-east-1") where attributes["openinference.span.kind"] == "LLM" and IsMatch(attributes["llm.model_name"], "^bedrock/converse/.*claude")
+          - set(attributes["app.model.serving_platform"], "amazon-bedrock") where attributes["openinference.span.kind"] == "LLM" and IsMatch(attributes["llm.model_name"], "^bedrock/converse/.*claude")
+          - set(attributes["gen_ai.usage.input_tokens"], attributes["llm.token_count.prompt"]) where attributes["llm.token_count.prompt"] != nil
+          - set(attributes["gen_ai.usage.output_tokens"], attributes["llm.token_count.completion"]) where attributes["llm.token_count.completion"] != nil
+          - delete_matching_keys(attributes, "^(input\\.value|output\\.value|llm\\.(input_messages|output_messages)\\..*|gen_ai\\.tool\\.call\\.(arguments|result)|tool\\.parameters|gen_ai\\.tool\\.json_schema|gen_ai\\.(system_instructions|input\\.messages|output\\.messages))$")
+      - context: spanevent
+        statements:
+          - delete_matching_keys(attributes, "^gen_ai\\.(system_instructions|input\\.messages|output\\.messages)$")
+  batch:
+    timeout: 250ms
+    send_batch_size: 32
+exporters:
+  otlphttp/store:
+    endpoint: ${env:PIPELINE_APP_URL}/internal/otlp
+    compression: none
+    headers:
+      X-Collector-Token: ${env:PIPELINE_INGEST_TOKEN}
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_interval: 5s
+      max_elapsed_time: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 1
+      queue_size: 1000
+      storage: file_storage
+service:
+  extensions: [health_check, file_storage]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, transform/semantics, batch]
+      exporters: [otlphttp/store]
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      level: none

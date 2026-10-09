@@ -1,0 +1,28 @@
+{
+  "sources": [
+    {
+      "otel_glob": "data/captures/connected/flow-*/spans.json"
+    },
+    {
+      "otel_glob": "data/captures/connected/flow-*/agent-b/otel.json",
+      "native_file": "native.json",
+      "native_records_key": "spans",
+      "native_id_key": "id",
+      "otel_native_id_attribute": "app.source.native.span_id"
+    },
+    {
+      "otel_glob": "data/captures/agent3/c-*/otel.json",
+      "native_file": "native.json",
+      "native_records_key": "records",
+      "native_id_key": "event_key",
+      "otel_native_id_attribute": "app.source.native.span_id"
+    },
+    {
+      "otel_glob": "data/captures/agent3-langchain/lc-*/otel.json",
+      "native_file": "native.json",
+      "native_records_key": "records",
+      "native_id_key": "id",
+      "otel_native_id_attribute": "app.source.native.span_id"
+    }
+  ]
+}
