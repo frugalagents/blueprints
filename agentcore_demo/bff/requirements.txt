@@ -1,0 +1,10 @@
+# Advisor Copilot — FastAPI backend-for-UI dependencies.
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+sse-starlette>=2.1,<3
+pydantic>=2.7,<3
+boto3>=1.35,<2
+# httpx is used by the Phase-5 RuntimeChatBackend seam (POST to the deployed
+# AgentCore Runtime /invocations). Pinned now to keep the seam real; the
+# Phase-3 LocalChatBackend does not need it. Matches the venv (0.28.1).
+httpx>=0.28,<1

@@ -1,0 +1,17 @@
+[
+  {"ticker": "NVDA", "last": 184.2, "change_pct": -2.1, "pe": 48.3, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "AGG", "last": 97.8, "change_pct": 0.3, "pe": null, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "MSFT", "last": 421.6, "change_pct": 0.8, "pe": 34.1, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "AAPL", "last": 231.4, "change_pct": -0.5, "pe": 29.7, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "AMZN", "last": 188.9, "change_pct": 1.2, "pe": 41.5, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "TSLA", "last": 243.7, "change_pct": -3.4, "pe": 62.8, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "GOOGL", "last": 167.3, "change_pct": 0.6, "pe": 24.9, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "META", "last": 598.1, "change_pct": 1.9, "pe": 27.3, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "AMD", "last": 158.4, "change_pct": -1.7, "pe": 44.2, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "JPM", "last": 221.8, "change_pct": 0.4, "pe": 12.6, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "XOM", "last": 118.5, "change_pct": -0.9, "pe": 14.2, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "JNJ", "last": 162.9, "change_pct": 0.2, "pe": 15.8, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "PG", "last": 169.4, "change_pct": 0.1, "pe": 26.4, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "KO", "last": 71.2, "change_pct": -0.3, "pe": 25.1, "as_of": "2026-10-10T15:00:00Z"},
+  {"ticker": "SPY", "last": 587.3, "change_pct": 0.5, "pe": 23.6, "as_of": "2026-10-10T15:00:00Z"}
+]

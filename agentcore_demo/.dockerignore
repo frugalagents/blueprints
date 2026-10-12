@@ -1,0 +1,23 @@
+# Keep the AgentCore Runtime build context (repo root) lean and secret-free.
+# NEVER ship the gitignored .env (ids/arns) or local virtualenvs into the image.
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+
+# Node / UI build artifacts — the runtime container only needs the Python agent.
+node_modules/
+ui/node_modules/
+ui/dist/
+dist/
+
+# Infra outputs + build scratch (gitignored; not needed in the image).
+infra/outputs.json
+infra/build/
+
+# Specs/docs are not needed at runtime.

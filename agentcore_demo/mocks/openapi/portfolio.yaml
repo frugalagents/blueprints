@@ -1,0 +1,91 @@
+openapi: 3.1.0
+info:
+  title: Advisor Copilot - Portfolio API (mock)
+  description: >-
+    Synthetic client portfolio data for the Advisor Copilot POC. AgentCore
+    Gateway converts this schema into an MCP tool; operation descriptions become
+    the tool descriptions the agent reads when selecting tools.
+  version: "1.0.0"
+paths:
+  /clients/{client_id}:
+    get:
+      operationId: getClientPortfolio
+      summary: Get a client's portfolio
+      description: >-
+        Return the full portfolio for one client by client_id, including holdings
+        (ticker, shares, cost basis, sector), risk profile, assigned advisor, and
+        any concentration flags such as an oversized single-name equity position.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: Synthetic client identifier, e.g. C-1001 for Jane Doe.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The client's portfolio record.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientPortfolio"
+        "404":
+          description: No client exists for the supplied client_id.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Position:
+      type: object
+      description: A single holding in a client's portfolio.
+      required: [ticker, shares, cost_basis, sector]
+      properties:
+        ticker:
+          type: string
+          description: Equity or fund ticker symbol.
+        shares:
+          type: number
+          description: Number of shares held.
+        cost_basis:
+          type: number
+          description: Average cost basis per share.
+        sector:
+          type: string
+          description: GICS-style sector label.
+    ClientPortfolio:
+      type: object
+      description: A client's portfolio and risk context.
+      required: [client_id, name, risk_profile, advisor_id, positions, concentration_flags]
+      properties:
+        client_id:
+          type: string
+          description: Synthetic client identifier.
+        name:
+          type: string
+          description: Client display name (synthetic).
+        risk_profile:
+          type: string
+          description: Risk tolerance label, e.g. conservative, moderate, aggressive.
+        advisor_id:
+          type: string
+          description: Identifier of the assigned financial advisor.
+        positions:
+          type: array
+          description: The client's holdings.
+          items:
+            $ref: "#/components/schemas/Position"
+        concentration_flags:
+          type: array
+          description: Human-readable concentration warnings for this client.
+          items:
+            type: string
+    Error:
+      type: object
+      description: Error payload returned for client or server errors.
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.

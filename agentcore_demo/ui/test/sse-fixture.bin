@@ -1,0 +1,23 @@
+event: token
+data: {"text": "Here"}
+
+event: token
+data: {"text": " are"}
+
+: ping - 2026-10-11T00:00:00Z
+
+event: token
+data: {"text": " three talking points"}
+
+event: tool_start
+data: {"toolUseId": "t1", "name": "get_portfolio"}
+
+event: tool_stop
+data: {"toolUseId": "t1", "name": "get_portfolio", "status": "success", "result": {"ok": true}}
+
+event: token
+data: {"text": " citing R-5567."}
+
+event: done
+data: {"stop_reason": "end_turn", "message": ""}
+

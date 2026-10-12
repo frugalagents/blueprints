@@ -1,0 +1,31 @@
+# Amplify Hosting build spec for the Advisor Copilot SPA (cloud, direct mode).
+#
+# This file contains PLACEHOLDERS / env references ONLY — no real resource ids or
+# account id. infra/13_amplify.py injects the concrete values as Amplify branch
+# build-time environment variables (read from the gitignored infra/outputs.json):
+#   VITE_DATA_MODE=direct and the VITE_COGNITO_* / VITE_RUNTIME_* / VITE_REGISTRY_ID /
+#   VITE_*_LOG_GROUP / VITE_OTEL_SERVICE_NAME / VITE_POLICY_* / VITE_GUARDRAIL_* ids.
+# Those env vars flow into `vite build` so the direct DataClient resolves ids at
+# build time (never from tracked source).
+#
+# NOTE: infra/13_amplify.py deploys a pre-built artifact (manual zip deploy) using
+# the SAME env vars, so this spec documents the equivalent Amplify-managed build
+# for a Git-connected branch and keeps the SPA rewrite contract in one place.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd ui
+        - npm ci
+    build:
+      commands:
+        # VITE_DATA_MODE and every VITE_* id are supplied as branch env vars.
+        - npm run build
+  artifacts:
+    baseDirectory: ui/dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - ui/node_modules/**/*

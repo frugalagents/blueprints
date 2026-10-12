@@ -1,0 +1,108 @@
+openapi: 3.1.0
+info:
+  title: Advisor Copilot - Research Notes API (mock)
+  description: >-
+    Synthetic internal research notes for the Advisor Copilot POC. AgentCore
+    Gateway converts this schema into an MCP tool; operation descriptions become
+    the tool descriptions the agent reads when selecting tools.
+  version: "1.0.0"
+paths:
+  /research:
+    get:
+      operationId: listResearchByTicker
+      summary: List research notes for a ticker
+      description: >-
+        Return all internal research notes for one ticker, newest first. Each note
+        carries a rating (e.g. Overweight, Hold, Underweight), a price target, the
+        publishing analyst, a summary, and whether a compliance disclaimer is
+        required when the note is quoted to a client.
+      parameters:
+        - name: ticker
+          in: query
+          required: true
+          description: Ticker symbol to list research for, e.g. NVDA.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: An array of research notes for the ticker (may be empty).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ResearchNote"
+  /research/{note_id}:
+    get:
+      operationId: getResearchNote
+      summary: Get a single research note
+      description: >-
+        Return one internal research note by its note_id, including rating, price
+        target, analyst, summary, and the disclaimer-required flag.
+      parameters:
+        - name: note_id
+          in: path
+          required: true
+          description: Research note identifier, e.g. R-5567.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The requested research note.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResearchNote"
+        "404":
+          description: No research note exists for the supplied note_id.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    ResearchNote:
+      type: object
+      description: A synthetic internal research note.
+      required:
+        - note_id
+        - ticker
+        - analyst
+        - rating
+        - price_target
+        - published
+        - summary
+        - disclaimer_required
+      properties:
+        note_id:
+          type: string
+          description: Research note identifier.
+        ticker:
+          type: string
+          description: Ticker the note covers.
+        analyst:
+          type: string
+          description: Authoring analyst or desk.
+        rating:
+          type: string
+          description: Investment rating, e.g. Overweight, Hold, Underweight.
+        price_target:
+          type: number
+          description: Published price target.
+        published:
+          type: string
+          description: Publication date (ISO 8601 date).
+        summary:
+          type: string
+          description: Short narrative summary of the note's thesis.
+        disclaimer_required:
+          type: boolean
+          description: Whether a compliance disclaimer must accompany any quotation.
+    Error:
+      type: object
+      description: Error payload returned for client or server errors.
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.

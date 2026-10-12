@@ -142,6 +142,12 @@ See [SECURITY_CHECK.md](./SECURITY_CHECK.md) for the security audit report.
 - Create developer onboarding documentation
 - Q&A over codebases via Claude Desktop
 
+### agentcore_demo
+- Advisor Copilot on Amazon Bedrock AgentCore: Strands agent on Runtime with Gateway tools, Memory, Guardrails, Registry, Observability and Evaluations
+- FastAPI backend-for-UI and React + Vite UI (local BFF mode or Cognito + Amplify direct mode)
+- Idempotent boto3 infra scripts; all resource IDs live in a gitignored `.env` / `infra/outputs.json`
+- Fully synthetic data. See [agentcore_demo](./agentcore_demo/)
+
 ---
 
 ## 🛠️ Architecture Patterns

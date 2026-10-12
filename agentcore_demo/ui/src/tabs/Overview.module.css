@@ -1,0 +1,89 @@
+.lede {
+  font-size: var(--fs-md);
+  color: var(--slate-700);
+  line-height: 1.55;
+  max-width: 80ch;
+}
+.pillRow {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-top: var(--sp-3);
+}
+
+.sectionTitle {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--navy);
+  margin: var(--sp-6) 0 var(--sp-3);
+}
+
+.archNote {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--slate-600);
+  line-height: 1.55;
+}
+
+/* capability card grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: var(--sp-4);
+}
+.capCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  text-align: left;
+}
+.capHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.capLetter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: var(--white);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+.capName {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--navy);
+}
+.capRole {
+  font-size: var(--fs-xs);
+  color: var(--slate-500);
+  margin-left: auto;
+  font-family: var(--font-mono);
+}
+.capDesc {
+  font-size: var(--fs-sm);
+  color: var(--slate-600);
+  line-height: 1.5;
+  flex: 1 1 auto;
+}
+.capFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.capLink {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--gold);
+}
+.footnote {
+  margin-top: var(--sp-6);
+  font-size: var(--fs-xs);
+  color: var(--slate-400);
+}

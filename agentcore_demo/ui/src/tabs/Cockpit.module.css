@@ -1,0 +1,274 @@
+/* --------------------------- guided stepper strip ------------------------ */
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  border-top: 3px solid var(--slate-200);
+}
+.stepActive {
+  border-top-color: var(--gold);
+  box-shadow: var(--shadow-md);
+}
+.stepDone {
+  border-top-color: var(--success);
+}
+.stepHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.stepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+.stepDone .stepNum {
+  background: var(--success);
+}
+.stepTitle {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--navy);
+}
+.stepCaption {
+  font-size: var(--fs-xs);
+  color: var(--slate-600);
+  line-height: 1.45;
+  flex: 1 1 auto;
+}
+.stepperBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-3);
+}
+.stepperLabel {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--navy);
+}
+
+/* --------------------------- two-column cockpit --------------------------- */
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--sp-5);
+  align-items: start;
+}
+@media (max-width: 1024px) {
+  .cols {
+    grid-template-columns: 1fr;
+  }
+  .stepper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* chat column */
+.chatControls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  flex-wrap: wrap;
+}
+.sessionInput {
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--slate-300);
+  min-width: 150px;
+}
+.sessionLabel {
+  font-size: var(--fs-sm);
+  color: var(--slate-600);
+}
+.prompt {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--slate-300);
+  resize: vertical;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--white);
+}
+.sendRow {
+  display: flex;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0;
+}
+.answer {
+  white-space: pre-wrap;
+  background: var(--slate-50);
+  border: var(--border);
+  border-left: 3px solid var(--navy);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-4);
+  margin-top: var(--sp-3);
+  line-height: 1.6;
+  font-size: var(--fs-base);
+}
+.refusal {
+  border-left-color: var(--danger);
+  background: var(--danger-bg);
+}
+.errorMsg {
+  color: var(--danger);
+  font-size: var(--fs-sm);
+  margin-top: var(--sp-2);
+}
+.toolChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0;
+}
+
+/* ------------------------------- live rail -------------------------------- */
+.rail {
+  position: sticky;
+  top: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.railTitle {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.02em;
+}
+.railHint {
+  font-size: var(--fs-xs);
+  color: var(--slate-500);
+  margin-bottom: var(--sp-2);
+}
+.railEntry {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 9px var(--sp-3);
+  border: var(--border);
+  border-left: 3px solid var(--slate-200);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.railEntryActive {
+  border-left-color: var(--gold);
+  background: var(--gold-soft);
+}
+.railEntryDone {
+  border-left-color: var(--success);
+}
+.railEntryError,
+.railEntryIntervened,
+.railEntryDenied {
+  border-left-color: var(--danger);
+  background: var(--danger-bg);
+}
+/* Policy (CAP-H) accent — distinct indigo left-border so an ALLOWED Policy
+   entry reads differently from the Guardrail's green "screened" entry. */
+.railEntryPolicy {
+  border-left-color: var(--cap-policy);
+}
+.railDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--slate-300);
+  flex: 0 0 auto;
+}
+.railEntryActive .railDot {
+  background: var(--gold);
+  animation: pulse 1.1s ease-in-out infinite;
+}
+.railEntryDone .railDot {
+  background: var(--success);
+}
+.railEntryError .railDot,
+.railEntryIntervened .railDot,
+.railEntryDenied .railDot {
+  background: var(--danger);
+}
+.railEntryPolicy .railDot {
+  background: var(--cap-policy);
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.railMain {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.railLabel {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.railSub {
+  font-size: var(--fs-xs);
+  color: var(--slate-500);
+  margin-top: 2px;
+}
+.railRaw {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--slate-500);
+}
+.railLatency {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--slate-600);
+  flex: 0 0 auto;
+}
+.inferredTag {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--slate-500);
+  background: var(--slate-100);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-pill);
+  padding: 1px 6px;
+}
+.railDeep {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 600;
+}
+.railNested {
+  margin-left: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}

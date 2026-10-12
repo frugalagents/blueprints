@@ -1,0 +1,100 @@
+[
+  {
+    "client_id": "C-1001",
+    "name": "Jane Doe",
+    "risk_profile": "moderate",
+    "advisor_id": "FA-77",
+    "positions": [
+      {"ticker": "NVDA", "shares": 4200, "cost_basis": 310.5, "sector": "Technology"},
+      {"ticker": "AGG", "shares": 1500, "cost_basis": 98.2, "sector": "Fixed Income"},
+      {"ticker": "MSFT", "shares": 600, "cost_basis": 288.4, "sector": "Technology"},
+      {"ticker": "JNJ", "shares": 400, "cost_basis": 158.9, "sector": "Health Care"}
+    ],
+    "concentration_flags": ["NVDA 38% of equity sleeve"]
+  },
+  {
+    "client_id": "C-1002",
+    "name": "Robert Chen",
+    "risk_profile": "aggressive",
+    "advisor_id": "FA-88",
+    "positions": [
+      {"ticker": "AAPL", "shares": 1200, "cost_basis": 142.3, "sector": "Technology"},
+      {"ticker": "AMZN", "shares": 350, "cost_basis": 128.7, "sector": "Consumer Discretionary"},
+      {"ticker": "TSLA", "shares": 500, "cost_basis": 201.5, "sector": "Consumer Discretionary"}
+    ],
+    "concentration_flags": []
+  },
+  {
+    "client_id": "C-1003",
+    "name": "Maria Alvarez",
+    "risk_profile": "conservative",
+    "advisor_id": "FA-82",
+    "positions": [
+      {"ticker": "AGG", "shares": 3200, "cost_basis": 101.4, "sector": "Fixed Income"},
+      {"ticker": "JPM", "shares": 700, "cost_basis": 134.6, "sector": "Financials"},
+      {"ticker": "PG", "shares": 450, "cost_basis": 148.2, "sector": "Consumer Staples"}
+    ],
+    "concentration_flags": []
+  },
+  {
+    "client_id": "C-1004",
+    "name": "David Thompson",
+    "risk_profile": "moderate",
+    "advisor_id": "FA-82",
+    "positions": [
+      {"ticker": "GOOGL", "shares": 800, "cost_basis": 118.9, "sector": "Communication Services"},
+      {"ticker": "XOM", "shares": 900, "cost_basis": 102.7, "sector": "Energy"},
+      {"ticker": "AGG", "shares": 1100, "cost_basis": 99.5, "sector": "Fixed Income"}
+    ],
+    "concentration_flags": []
+  },
+  {
+    "client_id": "C-1005",
+    "name": "Priya Natarajan",
+    "risk_profile": "aggressive",
+    "advisor_id": "FA-77",
+    "positions": [
+      {"ticker": "NVDA", "shares": 900, "cost_basis": 420.1, "sector": "Technology"},
+      {"ticker": "AMD", "shares": 1400, "cost_basis": 112.8, "sector": "Technology"},
+      {"ticker": "META", "shares": 300, "cost_basis": 312.4, "sector": "Communication Services"}
+    ],
+    "concentration_flags": []
+  },
+  {
+    "client_id": "C-1006",
+    "name": "Susan Miller",
+    "risk_profile": "conservative",
+    "advisor_id": "FA-91",
+    "positions": [
+      {"ticker": "AGG", "shares": 4000, "cost_basis": 100.2, "sector": "Fixed Income"},
+      {"ticker": "KO", "shares": 1000, "cost_basis": 56.3, "sector": "Consumer Staples"},
+      {"ticker": "JNJ", "shares": 600, "cost_basis": 161.7, "sector": "Health Care"}
+    ],
+    "concentration_flags": []
+  },
+  {
+    "client_id": "C-1007",
+    "name": "Michael O'Brien",
+    "risk_profile": "moderate",
+    "advisor_id": "FA-91",
+    "positions": [
+      {"ticker": "MSFT", "shares": 500, "cost_basis": 265.1, "sector": "Technology"},
+      {"ticker": "JPM", "shares": 400, "cost_basis": 140.3, "sector": "Financials"},
+      {"ticker": "XOM", "shares": 650, "cost_basis": 108.4, "sector": "Energy"},
+      {"ticker": "PG", "shares": 300, "cost_basis": 151.9, "sector": "Consumer Staples"}
+    ],
+    "concentration_flags": []
+  },
+  {
+    "client_id": "C-1008",
+    "name": "Linda Park",
+    "risk_profile": "aggressive",
+    "advisor_id": "FA-82",
+    "positions": [
+      {"ticker": "TSLA", "shares": 800, "cost_basis": 185.6, "sector": "Consumer Discretionary"},
+      {"ticker": "AAPL", "shares": 450, "cost_basis": 151.2, "sector": "Technology"},
+      {"ticker": "AMZN", "shares": 500, "cost_basis": 133.9, "sector": "Consumer Discretionary"}
+    ],
+    "concentration_flags": []
+  }
+]

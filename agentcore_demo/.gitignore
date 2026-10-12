@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+ui/dist/
+
+# Environment (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
+# AWS / infra outputs
+.aws/
+infra/outputs.json
+infra/build/
+# AgentCore starter-toolkit generated config (contains real account id / ARNs).
+.bedrock_agentcore.yaml
+# UI direct-mode generated config (contains real pool/runtime/registry ids for
+# local dev). Cloud builds inject these as Amplify VITE_* env vars instead.
+ui/src/data/aws-config.generated.ts
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.pem
+*.key

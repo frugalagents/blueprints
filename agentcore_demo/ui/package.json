@@ -1,0 +1,31 @@
+{
+  "name": "advisor-copilot-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-agentcore": "3.1149.0",
+    "@aws-sdk/client-bedrock-agentcore-control": "3.1149.0",
+    "@aws-sdk/client-cloudwatch": "3.1149.0",
+    "@aws-sdk/client-cloudwatch-logs": "3.1149.0",
+    "@aws-sdk/credential-provider-cognito-identity": "3.972.72",
+    "@aws-sdk/credential-providers": "3.1149.0",
+    "amazon-cognito-identity-js": "6.3.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.3"
+  }
+}

@@ -1,0 +1,16 @@
+# Advisor Copilot — Strands agent (AgentCore Runtime) dependencies.
+# Pinned to the versions resolved into the repo venv (.venv) for Phase 2.
+strands-agents==1.59.0
+boto3>=1.35,<2
+# FastAPI HTTP server implementing the AgentCore Runtime contract
+# (GET /ping + POST /invocations SSE) for the local-first agent.
+fastapi==0.121.2
+uvicorn[standard]==0.54.0
+sse-starlette==3.5.0
+pydantic==2.14.0
+# ADOT / OpenTelemetry (CAP-F Observability, task 5.2). The AgentCore starter
+# toolkit's generated Dockerfile also installs aws-opentelemetry-distro and runs
+# the entrypoint under `opentelemetry-instrument`, which emits model + tool spans
+# (input/output/tool-calls/latency/tokens) to CloudWatch GenAI Observability.
+# Pinned here too so the container has ADOT regardless of the build path.
+aws-opentelemetry-distro>=0.18.0,<1.0.0

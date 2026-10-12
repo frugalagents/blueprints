@@ -1,0 +1,6 @@
+# Advisor Copilot — mock data sources + validators.
+pydantic>=2.7,<3
+pyyaml>=6.0,<7
+# Optional: used only when present to strictly validate the OpenAPI schemas.
+# validate_openapi.py falls back to a YAML parse + required-key checks if absent.
+# openapi-spec-validator>=0.7,<1

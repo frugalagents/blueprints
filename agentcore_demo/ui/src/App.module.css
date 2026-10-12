@@ -1,0 +1,165 @@
+/* App shell — fixed top bar + grouped left nav + scrollable main. */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------- top bar -------------------------------- */
+.topbar {
+  height: var(--topbar-h);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-5);
+  background: var(--navy-dark);
+  color: var(--navy-contrast);
+  border-bottom: 1px solid #0b1626;
+}
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+.brandMark {
+  width: 3px;
+  height: 18px;
+  background: var(--gold);
+  border-radius: 2px;
+  align-self: center;
+}
+.brandTitle {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+.brandSub {
+  font-size: var(--fs-xs);
+  color: var(--slate-400);
+  letter-spacing: 0.02em;
+}
+.healthChips {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.healthChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: var(--fs-xs);
+  color: var(--navy-contrast);
+}
+.healthLabel {
+  color: var(--slate-400);
+}
+.healthValue {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.healthDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.dotOk {
+  background: #22c55e;
+}
+.dotWarn {
+  background: #f59e0b;
+}
+.dotBad {
+  background: #ef4444;
+}
+.dotIdle {
+  background: var(--slate-400);
+}
+
+/* --------------------------------- body ----------------------------------- */
+.body {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+/* --------------------------------- nav ------------------------------------ */
+.nav {
+  width: var(--nav-w);
+  flex: 0 0 auto;
+  background: var(--navy);
+  color: var(--navy-contrast);
+  padding: var(--sp-4) var(--sp-3);
+  overflow-y: auto;
+}
+.navGroup {
+  margin-bottom: var(--sp-5);
+}
+.navGroupLabel {
+  padding: 0 var(--sp-3);
+  margin-bottom: var(--sp-2);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+.navList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 8px var(--sp-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  color: var(--slate-300);
+  border-left: 2px solid transparent;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--white);
+}
+.navItemActive {
+  background: rgba(201, 162, 39, 0.14);
+  color: var(--white);
+  border-left-color: var(--gold-bright);
+  font-weight: 600;
+}
+.navCap {
+  margin-left: auto;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--slate-400);
+}
+.navItemActive .navCap {
+  color: var(--gold-bright);
+}
+
+/* --------------------------------- main ----------------------------------- */
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  background: var(--slate-50);
+}
+.page {
+  padding: var(--sp-6);
+  max-width: 1120px;
+  margin: 0 auto;
+}

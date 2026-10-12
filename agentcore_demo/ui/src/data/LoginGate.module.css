@@ -1,0 +1,97 @@
+/* LoginGate — the direct-mode Cognito sign-in screen that blocks the operator
+ * tabs until an AuthSession exists. Only rendered in VITE_DATA_MODE=direct;
+ * the default bff path never mounts this. Consumes the global theme tokens. */
+
+.screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-5);
+  background: var(--navy-dark);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.brandMark {
+  width: 3px;
+  height: 20px;
+  background: var(--gold);
+  border-radius: 2px;
+}
+.brandTitle {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--ink);
+}
+.subtitle {
+  font-size: var(--fs-sm);
+  color: var(--slate-500);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--slate-600);
+  letter-spacing: 0.02em;
+}
+.input {
+  padding: 9px 12px;
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+}
+.input:focus-visible {
+  border-color: var(--gold-bright);
+}
+
+.error {
+  font-size: var(--fs-sm);
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2) var(--sp-3);
+}
+
+.hint {
+  font-size: var(--fs-xs);
+  color: var(--slate-500);
+}

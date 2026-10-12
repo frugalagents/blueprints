@@ -1,0 +1,8 @@
+# Advisor Copilot — Phase 5 DEPLOY-TIME tooling (host venv only; NOT shipped in
+# the runtime container). Pinned to the versions resolved into .venv on install.
+#
+# The AgentCore starter toolkit runs the ARM64 container build in the cloud via
+# CodeBuild (no local Docker here) and creates the Runtime + endpoint. It pulls
+# in the bedrock-agentcore runtime SDK + boto3 as dependencies.
+bedrock-agentcore-starter-toolkit==0.3.14
+bedrock-agentcore==1.24.1

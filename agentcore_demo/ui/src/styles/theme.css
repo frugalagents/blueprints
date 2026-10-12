@@ -1,0 +1,194 @@
+/* ------------------------------------------------------------------------- *
+ * Advisor Copilot — global theme tokens, reset, and base typography.
+ *
+ * This is the single real stylesheet layer that replaces the former
+ * inline-style soup. Component-level styling lives in co-located CSS Modules
+ * (*.module.css) that consume the custom properties defined here.
+ *
+ * Palette: Wealth-management-flavored navy + slate/graphite neutrals with a
+ * restrained muted-gold accent (buttons, active nav, highlights) and semantic
+ * success / danger / warning colors. No real MS logo or mark is used.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  /* --- Brand / primary (navy) --- */
+  --navy: #1a2b4a;
+  --navy-dark: #132038;
+  --navy-contrast: #e8eef7;
+
+  /* --- Accent (restrained muted gold / amber) --- */
+  --gold: #b8860b;
+  --gold-bright: #c9a227;
+  --gold-soft: #f6edd3;
+
+  /* --- Neutrals (slate / graphite) --- */
+  --ink: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --slate-50: #f8fafc;
+  --white: #ffffff;
+
+  /* --- Semantic --- */
+  --success: #15803d;
+  --success-bg: #dcfce7;
+  --danger: #b91c1c;
+  --danger-bg: #fee2e2;
+  --warning: #b45309;
+  --warning-bg: #fef3c7;
+  --info: #1d4ed8;
+  --info-bg: #e0e7ff;
+
+  /* --- Capability accent colors (used by rail + badges) --- */
+  --cap-runtime: #1a2b4a;
+  --cap-gateway: #0e7490;
+  --cap-guardrail: #b45309;
+  --cap-policy: #4338ca;
+  --cap-memory: #6d28d9;
+  --cap-registry: #b8860b;
+  --cap-observability: #0369a1;
+  --cap-evaluation: #15803d;
+
+  /* --- Typography scale --- */
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 14px;
+  --fs-md: 16px;
+  --fs-lg: 20px;
+  --fs-xl: 28px;
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SFMono-Regular", "JetBrains Mono", "Menlo", "Consolas",
+    ui-monospace, monospace;
+
+  /* --- Spacing scale --- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+
+  /* --- Radii / borders / shadow --- */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --border: 1px solid var(--slate-200);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.1);
+
+  /* --- Layout --- */
+  --topbar-h: 52px;
+  --nav-w: 232px;
+}
+
+/* --------------------------- reset / base --------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--slate-50);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+h2 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+code,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: var(--fs-base);
+  color: var(--ink);
+}
+
+/* Visible, consistent keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+}
+
+/* A monospace token for ids / ARNs / tool names (technical audience). */
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--slate-600);
+  word-break: break-all;
+}
+
+/* Thin, unobtrusive scrollbars in the scroll regions. */
+.scroll {
+  overflow: auto;
+}
+.scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--slate-300);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--slate-50);
+}

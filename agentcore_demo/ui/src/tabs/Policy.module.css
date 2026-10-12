@@ -1,0 +1,56 @@
+/* Policy tab (CAP-H) — the Cedar ownership rule card + principal/resource model.
+ * Shares the Operate-zone table/meta styles; this file adds only the rule panel
+ * and the decision badges distinct from the Guardrail tab. */
+
+.ruleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--sp-4);
+  margin: var(--sp-3) 0 var(--sp-4);
+}
+.ruleItem {
+  border: var(--border);
+  border-left: 3px solid var(--cap-policy);
+  border-radius: var(--radius);
+  padding: var(--sp-4);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.ruleLabel {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  color: var(--slate-500);
+}
+.ruleValue {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--navy);
+  margin-top: 4px;
+}
+.ruleValue .mono {
+  font-size: var(--fs-sm);
+}
+.ownedList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: 6px;
+}
+.modelNote {
+  font-size: var(--fs-sm);
+  color: var(--slate-600);
+  line-height: 1.55;
+  margin: var(--sp-2) 0 var(--sp-4);
+}
+.prodNote {
+  font-size: var(--fs-xs);
+  color: var(--slate-500);
+  line-height: 1.5;
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--slate-50);
+  padding: var(--sp-3);
+  margin-top: var(--sp-4);
+}
