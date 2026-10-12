@@ -1,0 +1,33 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "0681357a-f6d4-439d-a31d-a5b83150643d",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "date": "Fri, 09 Oct 2026 17:16:17 GMT",
+      "content-type": "application/json",
+      "content-length": "1290",
+      "connection": "keep-alive",
+      "x-amzn-requestid": "0681357a-f6d4-439d-a31d-a5b83150643d"
+    },
+    "RetryAttempts": 0
+  },
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"employee_id\": \"E102\",\n  \"employee_name\": \"Jordan Example\",\n  \"employer\": \"Harbor Fictional LLC\",\n  \"pay_period\": \"2026-09\",\n  \"currency\": \"USD\",\n  \"gross_pay\": 6100.0,\n  \"total_deductions\": 1220.0,\n  \"net_pay\": 4880.0,\n  \"evidence\": {\n    \"employee_id\": {\n      \"source_page\": 3,\n      \"text\": \"Staff number: E102\"\n    },\n    \"employee_name\": {\n      \"source_page\": 3,\n      \"text\": \"Name: Jordan Example\"\n    },\n    \"employer\": {\n      \"source_page\": 3,\n      \"text\": \"Harbor Fictional LLC\"\n    },\n    \"pay_period\": {\n      \"source_page\": 3,\n      \"text\": \"Payroll month: 2026-09\"\n    },\n    \"currency\": {\n      \"source_page\": 3,\n      \"text\": \"Currency: USD\"\n    },\n    \"gross_pay\": {\n      \"source_page\": 3,\n      \"text\": \"Gross earnings: 6100.00\"\n    },\n    \"total_deductions\": {\n      \"source_page\": 5,\n      \"text\": \"Total deductions: 1220.00\"\n    },\n    \"net_pay\": {\n      \"source_page\": 5,\n      \"text\": \"Net pay: 4880.00\"\n    }\n  }\n}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 3373,
+    "outputTokens": 345,
+    "totalTokens": 3718
+  },
+  "metrics": {
+    "latencyMs": 9558
+  }
+}

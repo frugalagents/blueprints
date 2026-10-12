@@ -1,0 +1,247 @@
+{
+  "status": "done",
+  "matched_fields": 45,
+  "checked_fields": 45,
+  "review_reasons": [
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "checks": [
+    {
+      "record": 1,
+      "field": "source_pages",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "employee_id",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "employee_name",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "employer",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "pay_period",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "currency",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "gross_pay",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "total_deductions",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "net_pay",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "source_pages",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "employee_id",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "employee_name",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "employer",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "pay_period",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "currency",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "gross_pay",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "total_deductions",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "net_pay",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "source_pages",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "employee_id",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "employee_name",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "employer",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "pay_period",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "currency",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "gross_pay",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "total_deductions",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "net_pay",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "source_pages",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "employee_id",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "employee_name",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "employer",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "pay_period",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "currency",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "gross_pay",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "total_deductions",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "net_pay",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "source_pages",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "employee_id",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "employee_name",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "employer",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "pay_period",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "currency",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "gross_pay",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "total_deductions",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "net_pay",
+      "passed": true
+    }
+  ],
+  "ui_checks": [
+    "Source-field click navigates to page 2",
+    "Split changes group count to six and disables JSON download",
+    "Merge restores five groups",
+    "Reviewed groups were extracted live through Bedrock",
+    "PDF upload API accepts the 10-page sample",
+    "Invalid incomplete grouping rejected with HTTP 400"
+  ]
+}

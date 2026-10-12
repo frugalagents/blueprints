@@ -1,0 +1,33 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "af7f0e74-53e2-4317-aa57-263dd7934238",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "date": "Fri, 09 Oct 2026 17:15:51 GMT",
+      "content-type": "application/json",
+      "content-length": "476",
+      "connection": "keep-alive",
+      "x-amzn-requestid": "af7f0e74-53e2-4317-aa57-263dd7934238"
+    },
+    "RetryAttempts": 0
+  },
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"decision\": \"same\",\n  \"evidence\": \"Both pages share identical employer (Northstar Demo Ltd), employee (Alex Sample, E101), pay period (2026-09), and statement reference (DEMO-4). Page numbering confirms continuity: page 1 of 2 followed by page 2 of 2.\"\n}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 2246,
+    "outputTokens": 77,
+    "totalTokens": 2323
+  },
+  "metrics": {
+    "latencyMs": 1877
+  }
+}

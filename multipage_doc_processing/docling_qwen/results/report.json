@@ -1,0 +1,425 @@
+{
+  "page_count": 10,
+  "payslip_count": 5,
+  "calls": [
+    {
+      "task": "extract-1",
+      "source_pages": [
+        1,
+        2
+      ],
+      "input_type": "text"
+    },
+    {
+      "task": "extract-2",
+      "source_pages": [
+        3,
+        4,
+        5
+      ],
+      "input_type": "text"
+    },
+    {
+      "task": "extract-3",
+      "source_pages": [
+        6
+      ],
+      "input_type": "text"
+    },
+    {
+      "task": "extract-4",
+      "source_pages": [
+        7,
+        8
+      ],
+      "input_type": "text"
+    },
+    {
+      "task": "extract-5",
+      "source_pages": [
+        9,
+        10
+      ],
+      "input_type": "text"
+    }
+  ],
+  "usage": [
+    {
+      "inputTokens": 431,
+      "outputTokens": 340,
+      "totalTokens": 771
+    },
+    {
+      "inputTokens": 544,
+      "outputTokens": 345,
+      "totalTokens": 889
+    },
+    {
+      "inputTokens": 353,
+      "outputTokens": 346,
+      "totalTokens": 699
+    },
+    {
+      "inputTokens": 431,
+      "outputTokens": 340,
+      "totalTokens": 771
+    },
+    {
+      "inputTokens": 443,
+      "outputTokens": 348,
+      "totalTokens": 791
+    }
+  ],
+  "boundary_model_calls": 0,
+  "input_type": "text_only",
+  "parser": "docling",
+  "checks": [
+    {
+      "record": 1,
+      "field": "source_pages",
+      "expected": [
+        1,
+        2
+      ],
+      "actual": [
+        1,
+        2
+      ],
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "employee_id",
+      "expected": "E101",
+      "actual": "E101",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "employee_name",
+      "expected": "Alex Sample",
+      "actual": "Alex Sample",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "employer",
+      "expected": "Northstar Demo Ltd",
+      "actual": "Northstar Demo Ltd",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "pay_period",
+      "expected": "2026-08",
+      "actual": "2026-08",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "currency",
+      "expected": "USD",
+      "actual": "USD",
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "gross_pay",
+      "expected": 4200,
+      "actual": 4200.0,
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "total_deductions",
+      "expected": 840,
+      "actual": 840.0,
+      "passed": true
+    },
+    {
+      "record": 1,
+      "field": "net_pay",
+      "expected": 3360,
+      "actual": 3360.0,
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "source_pages",
+      "expected": [
+        3,
+        4,
+        5
+      ],
+      "actual": [
+        3,
+        4,
+        5
+      ],
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "employee_id",
+      "expected": "E102",
+      "actual": "E102",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "employee_name",
+      "expected": "Jordan Example",
+      "actual": "Jordan Example",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "employer",
+      "expected": "Harbor Fictional LLC",
+      "actual": "Harbor Fictional LLC",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "pay_period",
+      "expected": "2026-09",
+      "actual": "2026-09",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "currency",
+      "expected": "USD",
+      "actual": "USD",
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "gross_pay",
+      "expected": 6100,
+      "actual": 6100.0,
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "total_deductions",
+      "expected": 1220,
+      "actual": 1220.0,
+      "passed": true
+    },
+    {
+      "record": 2,
+      "field": "net_pay",
+      "expected": 4880,
+      "actual": 4880.0,
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "source_pages",
+      "expected": [
+        6
+      ],
+      "actual": [
+        6
+      ],
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "employee_id",
+      "expected": "E103",
+      "actual": "E103",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "employee_name",
+      "expected": "Casey Test",
+      "actual": "Casey Test",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "employer",
+      "expected": "Orchard Sample Inc",
+      "actual": "Orchard Sample Inc",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "pay_period",
+      "expected": "2026-09",
+      "actual": "2026-09",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "currency",
+      "expected": "USD",
+      "actual": "USD",
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "gross_pay",
+      "expected": 3500,
+      "actual": 3500.0,
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "total_deductions",
+      "expected": 525,
+      "actual": 525.0,
+      "passed": true
+    },
+    {
+      "record": 3,
+      "field": "net_pay",
+      "expected": 2975,
+      "actual": 2975.0,
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "source_pages",
+      "expected": [
+        7,
+        8
+      ],
+      "actual": [
+        7,
+        8
+      ],
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "employee_id",
+      "expected": "E101",
+      "actual": "E101",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "employee_name",
+      "expected": "Alex Sample",
+      "actual": "Alex Sample",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "employer",
+      "expected": "Northstar Demo Ltd",
+      "actual": "Northstar Demo Ltd",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "pay_period",
+      "expected": "2026-09",
+      "actual": "2026-09",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "currency",
+      "expected": "USD",
+      "actual": "USD",
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "gross_pay",
+      "expected": 4400,
+      "actual": 4400.0,
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "total_deductions",
+      "expected": 880,
+      "actual": 880.0,
+      "passed": true
+    },
+    {
+      "record": 4,
+      "field": "net_pay",
+      "expected": 3520,
+      "actual": 3520.0,
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "source_pages",
+      "expected": [
+        9,
+        10
+      ],
+      "actual": [
+        9,
+        10
+      ],
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "employee_id",
+      "expected": "E104",
+      "actual": "E104",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "employee_name",
+      "expected": "Morgan Demo",
+      "actual": "Morgan Demo",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "employer",
+      "expected": "Harbor Fictional LLC",
+      "actual": "Harbor Fictional LLC",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "pay_period",
+      "expected": "2026-09",
+      "actual": "2026-09",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "currency",
+      "expected": "USD",
+      "actual": "USD",
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "gross_pay",
+      "expected": 5000,
+      "actual": 5000.0,
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "total_deductions",
+      "expected": 1000,
+      "actual": 1000.0,
+      "passed": true
+    },
+    {
+      "record": 5,
+      "field": "net_pay",
+      "expected": 4000,
+      "actual": 4000.0,
+      "passed": true
+    }
+  ],
+  "exact_grouping": true,
+  "all_fields_match": true
+}

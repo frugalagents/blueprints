@@ -148,6 +148,12 @@ See [SECURITY_CHECK.md](./SECURITY_CHECK.md) for the security audit report.
 - Idempotent boto3 infra scripts; all resource IDs live in a gitignored `.env` / `infra/outputs.json`
 - Fully synthetic data. See [agentcore_demo](./agentcore_demo/)
 
+### multipage_doc_processing
+- Split a multi-page PDF into individual payslips and extract structured fields with Qwen3-VL on Amazon Bedrock
+- Two approaches: page images (`qwen_vision`) vs local Docling parsing with text-only extraction (`docling_qwen`)
+- Local review apps with source-page evidence, split/merge corrections and processing-event history; settings via a gitignored `.env`
+- Fully synthetic data. See [multipage_doc_processing](./multipage_doc_processing/)
+
 ---
 
 ## 🛠️ Architecture Patterns

@@ -1,0 +1,33 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "50a06c77-f694-4df7-9108-461a0d959b89",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "date": "Fri, 09 Oct 2026 17:15:41 GMT",
+      "content-type": "application/json",
+      "content-length": "484",
+      "connection": "keep-alive",
+      "x-amzn-requestid": "50a06c77-f694-4df7-9108-461a0d959b89"
+    },
+    "RetryAttempts": 0
+  },
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"decision\": \"same\",\n  \"evidence\": \"Both pages share identical employer (Harbor Fictional LLC), employee (Jordan Example, E102), payroll month (2026-09), and statement reference (DEMO-2). Page numbering confirms continuity: page 1 of 3 followed by page 2 of 3.\"\n}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 2246,
+    "outputTokens": 78,
+    "totalTokens": 2324
+  },
+  "metrics": {
+    "latencyMs": 2039
+  }
+}

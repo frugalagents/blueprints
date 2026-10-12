@@ -1,0 +1,247 @@
+[
+  {
+    "employee_id": "E101",
+    "employee_name": "Alex Sample",
+    "employer": "Northstar Demo Ltd",
+    "pay_period": "2026-08",
+    "currency": "USD",
+    "gross_pay": 4200.0,
+    "total_deductions": 840.0,
+    "net_pay": 3360.0,
+    "evidence": {
+      "employee_id": {
+        "source_page": 1,
+        "text": "Employee ID: E101"
+      },
+      "employee_name": {
+        "source_page": 1,
+        "text": "Name: Alex Sample"
+      },
+      "employer": {
+        "source_page": 1,
+        "text": "Northstar Demo Ltd"
+      },
+      "pay_period": {
+        "source_page": 1,
+        "text": "Pay period: 2026-08"
+      },
+      "currency": {
+        "source_page": 1,
+        "text": "Currency: USD"
+      },
+      "gross_pay": {
+        "source_page": 1,
+        "text": "Gross earnings: 4200.00"
+      },
+      "total_deductions": {
+        "source_page": 2,
+        "text": "Total deductions: 840.00"
+      },
+      "net_pay": {
+        "source_page": 2,
+        "text": "Net pay: 3360.00"
+      }
+    },
+    "source_pages": [
+      1,
+      2
+    ],
+    "review_reasons": []
+  },
+  {
+    "employee_id": "E102",
+    "employee_name": "Jordan Example",
+    "employer": "Harbor Fictional LLC",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 6100.0,
+    "total_deductions": 1220.0,
+    "net_pay": 4880.0,
+    "evidence": {
+      "employee_id": {
+        "source_page": 3,
+        "text": "Staff number: E102"
+      },
+      "employee_name": {
+        "source_page": 3,
+        "text": "Name: Jordan Example"
+      },
+      "employer": {
+        "source_page": 3,
+        "text": "Harbor Fictional LLC"
+      },
+      "pay_period": {
+        "source_page": 3,
+        "text": "Payroll month: 2026-09"
+      },
+      "currency": {
+        "source_page": 3,
+        "text": "Currency: USD"
+      },
+      "gross_pay": {
+        "source_page": 3,
+        "text": "Gross earnings: 6100.00"
+      },
+      "total_deductions": {
+        "source_page": 5,
+        "text": "Total deductions: 1220.00"
+      },
+      "net_pay": {
+        "source_page": 5,
+        "text": "Net pay: 4880.00"
+      }
+    },
+    "source_pages": [
+      3,
+      4,
+      5
+    ],
+    "review_reasons": []
+  },
+  {
+    "employee_id": "E103",
+    "employee_name": "Casey Test",
+    "employer": "Orchard Sample Inc",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 3500.0,
+    "total_deductions": 525.0,
+    "net_pay": 2975.0,
+    "evidence": {
+      "employee_id": {
+        "source_page": 6,
+        "text": "Worker reference: E103"
+      },
+      "employee_name": {
+        "source_page": 6,
+        "text": "Name: Casey Test"
+      },
+      "employer": {
+        "source_page": 6,
+        "text": "Orchard Sample Inc"
+      },
+      "pay_period": {
+        "source_page": 6,
+        "text": "Period ending: 2026-09"
+      },
+      "currency": {
+        "source_page": 6,
+        "text": "Currency: USD"
+      },
+      "gross_pay": {
+        "source_page": 6,
+        "text": "Gross earnings: 3500.00"
+      },
+      "total_deductions": {
+        "source_page": 6,
+        "text": "Total deductions: 525.00"
+      },
+      "net_pay": {
+        "source_page": 6,
+        "text": "Net pay: 2975.00"
+      }
+    },
+    "source_pages": [
+      6
+    ],
+    "review_reasons": []
+  },
+  {
+    "employee_id": "E101",
+    "employee_name": "Alex Sample",
+    "employer": "Northstar Demo Ltd",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 4400.0,
+    "total_deductions": 880.0,
+    "net_pay": 3520.0,
+    "evidence": {
+      "employee_id": {
+        "source_page": 7,
+        "text": "Employee ID: E101"
+      },
+      "employee_name": {
+        "source_page": 7,
+        "text": "Name: Alex Sample"
+      },
+      "employer": {
+        "source_page": 7,
+        "text": "Northstar Demo Ltd"
+      },
+      "pay_period": {
+        "source_page": 7,
+        "text": "Pay period: 2026-09"
+      },
+      "currency": {
+        "source_page": 7,
+        "text": "Currency: USD"
+      },
+      "gross_pay": {
+        "source_page": 7,
+        "text": "Gross earnings: 4400.00"
+      },
+      "total_deductions": {
+        "source_page": 8,
+        "text": "Total deductions: 880.00"
+      },
+      "net_pay": {
+        "source_page": 8,
+        "text": "Net pay: 3520.00"
+      }
+    },
+    "source_pages": [
+      7,
+      8
+    ],
+    "review_reasons": []
+  },
+  {
+    "employee_id": "E104",
+    "employee_name": "Morgan Demo",
+    "employer": "Harbor Fictional LLC",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 5000.0,
+    "total_deductions": 1000.0,
+    "net_pay": 4000.0,
+    "evidence": {
+      "employee_id": {
+        "source_page": 9,
+        "text": "Staff number: E104"
+      },
+      "employee_name": {
+        "source_page": 9,
+        "text": "Name: Morgan Demo"
+      },
+      "employer": {
+        "source_page": 9,
+        "text": "Harbor Fictional LLC"
+      },
+      "pay_period": {
+        "source_page": 9,
+        "text": "Payroll month: 2026-09"
+      },
+      "currency": {
+        "source_page": 9,
+        "text": "Currency: USD"
+      },
+      "gross_pay": {
+        "source_page": 9,
+        "text": "Gross earnings: 5000.00"
+      },
+      "total_deductions": {
+        "source_page": 10,
+        "text": "Total deductions: 1000.00"
+      },
+      "net_pay": {
+        "source_page": 10,
+        "text": "Net pay: 4000.00"
+      }
+    },
+    "source_pages": [
+      9,
+      10
+    ],
+    "review_reasons": []
+  }
+]

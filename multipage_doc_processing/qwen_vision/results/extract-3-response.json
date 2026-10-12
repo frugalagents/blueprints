@@ -1,0 +1,33 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "ac4777e5-2125-4413-8936-6e7df222b468",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "date": "Fri, 09 Oct 2026 17:16:23 GMT",
+      "content-type": "application/json",
+      "content-length": "1280",
+      "connection": "keep-alive",
+      "x-amzn-requestid": "ac4777e5-2125-4413-8936-6e7df222b468"
+    },
+    "RetryAttempts": 0
+  },
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"employee_id\": \"E103\",\n  \"employee_name\": \"Casey Test\",\n  \"employer\": \"Orchard Sample Inc\",\n  \"pay_period\": \"2026-09\",\n  \"currency\": \"USD\",\n  \"gross_pay\": 3500.0,\n  \"total_deductions\": 525.0,\n  \"net_pay\": 2975.0,\n  \"evidence\": {\n    \"employee_id\": {\n      \"source_page\": 6,\n      \"text\": \"Worker reference: E103\"\n    },\n    \"employee_name\": {\n      \"source_page\": 6,\n      \"text\": \"Name: Casey Test\"\n    },\n    \"employer\": {\n      \"source_page\": 6,\n      \"text\": \"Orchard Sample Inc\"\n    },\n    \"pay_period\": {\n      \"source_page\": 6,\n      \"text\": \"Period ending: 2026-09\"\n    },\n    \"currency\": {\n      \"source_page\": 6,\n      \"text\": \"Currency: USD\"\n    },\n    \"gross_pay\": {\n      \"source_page\": 6,\n      \"text\": \"Gross earnings: 3500.00\"\n    },\n    \"total_deductions\": {\n      \"source_page\": 6,\n      \"text\": \"Total deductions: 525.00\"\n    },\n    \"net_pay\": {\n      \"source_page\": 6,\n      \"text\": \"Net pay: 2975.00\"\n    }\n  }\n}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 1209,
+    "outputTokens": 343,
+    "totalTokens": 1552
+  },
+  "metrics": {
+    "latencyMs": 5635
+  }
+}

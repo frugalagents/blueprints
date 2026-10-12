@@ -1,0 +1,436 @@
+[
+  {
+    "sequence": 1,
+    "timestamp": 1791581626.106949,
+    "stage": "render",
+    "title": "Docling parsing PDF locally: layout, text and tables",
+    "source_pages": []
+  },
+  {
+    "sequence": 2,
+    "timestamp": 1791581632.987697,
+    "stage": "render",
+    "title": "Docling page 1: text and tables ready locally",
+    "source_pages": [
+      1
+    ]
+  },
+  {
+    "sequence": 3,
+    "timestamp": 1791581632.991115,
+    "stage": "render",
+    "title": "Docling page 2: text and tables ready locally",
+    "source_pages": [
+      2
+    ]
+  },
+  {
+    "sequence": 4,
+    "timestamp": 1791581632.994925,
+    "stage": "render",
+    "title": "Docling page 3: text and tables ready locally",
+    "source_pages": [
+      3
+    ]
+  },
+  {
+    "sequence": 5,
+    "timestamp": 1791581632.9994292,
+    "stage": "render",
+    "title": "Docling page 4: text and tables ready locally",
+    "source_pages": [
+      4
+    ]
+  },
+  {
+    "sequence": 6,
+    "timestamp": 1791581633.003167,
+    "stage": "render",
+    "title": "Docling page 5: text and tables ready locally",
+    "source_pages": [
+      5
+    ]
+  },
+  {
+    "sequence": 7,
+    "timestamp": 1791581633.006324,
+    "stage": "render",
+    "title": "Docling page 6: text and tables ready locally",
+    "source_pages": [
+      6
+    ]
+  },
+  {
+    "sequence": 8,
+    "timestamp": 1791581633.010496,
+    "stage": "render",
+    "title": "Docling page 7: text and tables ready locally",
+    "source_pages": [
+      7
+    ]
+  },
+  {
+    "sequence": 9,
+    "timestamp": 1791581633.013603,
+    "stage": "render",
+    "title": "Docling page 8: text and tables ready locally",
+    "source_pages": [
+      8
+    ]
+  },
+  {
+    "sequence": 10,
+    "timestamp": 1791581633.016653,
+    "stage": "render",
+    "title": "Docling page 9: text and tables ready locally",
+    "source_pages": [
+      9
+    ]
+  },
+  {
+    "sequence": 11,
+    "timestamp": 1791581633.0196,
+    "stage": "render",
+    "title": "Docling page 10: text and tables ready locally",
+    "source_pages": [
+      10
+    ]
+  },
+  {
+    "sequence": 12,
+    "timestamp": 1791581633.020231,
+    "stage": "render_done",
+    "title": "Local parsing complete; only grouped text will be sent to Qwen",
+    "source_pages": []
+  },
+  {
+    "sequence": 13,
+    "timestamp": 1791581633.148246,
+    "stage": "boundary",
+    "title": "Boundary: same (local_rules)",
+    "source_pages": [
+      1,
+      2
+    ],
+    "evidence": "Matching statement or employee/period with sequential statement pages"
+  },
+  {
+    "sequence": 14,
+    "timestamp": 1791581633.148858,
+    "stage": "boundary",
+    "title": "Boundary: new (local_rules)",
+    "source_pages": [
+      2,
+      3
+    ],
+    "evidence": "Different employee: E101 vs E102"
+  },
+  {
+    "sequence": 15,
+    "timestamp": 1791581633.149241,
+    "stage": "boundary",
+    "title": "Boundary: same (local_rules)",
+    "source_pages": [
+      3,
+      4
+    ],
+    "evidence": "Matching statement or employee/period with sequential statement pages"
+  },
+  {
+    "sequence": 16,
+    "timestamp": 1791581633.149641,
+    "stage": "boundary",
+    "title": "Boundary: same (local_rules)",
+    "source_pages": [
+      4,
+      5
+    ],
+    "evidence": "Matching statement or employee/period with sequential statement pages"
+  },
+  {
+    "sequence": 17,
+    "timestamp": 1791581633.1499908,
+    "stage": "boundary",
+    "title": "Boundary: new (local_rules)",
+    "source_pages": [
+      5,
+      6
+    ],
+    "evidence": "Different employee: E102 vs E103"
+  },
+  {
+    "sequence": 18,
+    "timestamp": 1791581633.150334,
+    "stage": "boundary",
+    "title": "Boundary: new (local_rules)",
+    "source_pages": [
+      6,
+      7
+    ],
+    "evidence": "Different employee: E103 vs E101"
+  },
+  {
+    "sequence": 19,
+    "timestamp": 1791581633.1507041,
+    "stage": "boundary",
+    "title": "Boundary: same (local_rules)",
+    "source_pages": [
+      7,
+      8
+    ],
+    "evidence": "Matching statement or employee/period with sequential statement pages"
+  },
+  {
+    "sequence": 20,
+    "timestamp": 1791581633.151051,
+    "stage": "boundary",
+    "title": "Boundary: new (local_rules)",
+    "source_pages": [
+      8,
+      9
+    ],
+    "evidence": "Different employee: E101 vs E104"
+  },
+  {
+    "sequence": 21,
+    "timestamp": 1791581633.151398,
+    "stage": "boundary",
+    "title": "Boundary: same (local_rules)",
+    "source_pages": [
+      9,
+      10
+    ],
+    "evidence": "Matching statement or employee/period with sequential statement pages"
+  },
+  {
+    "sequence": 22,
+    "timestamp": 1791581633.152551,
+    "stage": "groups",
+    "title": "5 payslip groups assembled",
+    "source_pages": [],
+    "groups": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4,
+        5
+      ],
+      [
+        6
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        9,
+        10
+      ]
+    ]
+  },
+  {
+    "sequence": 23,
+    "timestamp": 1791581633.153224,
+    "stage": "request",
+    "title": "Sending parsed page text and tables to Bedrock Qwen",
+    "source_pages": [
+      1,
+      2
+    ],
+    "task": "extract-1"
+  },
+  {
+    "sequence": 24,
+    "timestamp": 1791581640.742792,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      1,
+      2
+    ],
+    "task": "extract-1",
+    "elapsed_seconds": 7.59,
+    "usage": {
+      "inputTokens": 431,
+      "outputTokens": 340,
+      "totalTokens": 771
+    }
+  },
+  {
+    "sequence": 25,
+    "timestamp": 1791581640.745193,
+    "stage": "validated",
+    "title": "Payslip 1 extracted and checked",
+    "source_pages": [
+      1,
+      2
+    ],
+    "review_reasons": []
+  },
+  {
+    "sequence": 26,
+    "timestamp": 1791581640.748012,
+    "stage": "request",
+    "title": "Sending parsed page text and tables to Bedrock Qwen",
+    "source_pages": [
+      3,
+      4,
+      5
+    ],
+    "task": "extract-2"
+  },
+  {
+    "sequence": 27,
+    "timestamp": 1791581649.187702,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      3,
+      4,
+      5
+    ],
+    "task": "extract-2",
+    "elapsed_seconds": 8.44,
+    "usage": {
+      "inputTokens": 544,
+      "outputTokens": 345,
+      "totalTokens": 889
+    }
+  },
+  {
+    "sequence": 28,
+    "timestamp": 1791581649.1903229,
+    "stage": "validated",
+    "title": "Payslip 2 extracted and checked",
+    "source_pages": [
+      3,
+      4,
+      5
+    ],
+    "review_reasons": []
+  },
+  {
+    "sequence": 29,
+    "timestamp": 1791581649.194276,
+    "stage": "request",
+    "title": "Sending parsed page text and tables to Bedrock Qwen",
+    "source_pages": [
+      6
+    ],
+    "task": "extract-3"
+  },
+  {
+    "sequence": 30,
+    "timestamp": 1791581661.977159,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      6
+    ],
+    "task": "extract-3",
+    "elapsed_seconds": 12.78,
+    "usage": {
+      "inputTokens": 353,
+      "outputTokens": 346,
+      "totalTokens": 699
+    }
+  },
+  {
+    "sequence": 31,
+    "timestamp": 1791581661.979689,
+    "stage": "validated",
+    "title": "Payslip 3 extracted and checked",
+    "source_pages": [
+      6
+    ],
+    "review_reasons": []
+  },
+  {
+    "sequence": 32,
+    "timestamp": 1791581661.9824462,
+    "stage": "request",
+    "title": "Sending parsed page text and tables to Bedrock Qwen",
+    "source_pages": [
+      7,
+      8
+    ],
+    "task": "extract-4"
+  },
+  {
+    "sequence": 33,
+    "timestamp": 1791581669.1669278,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      7,
+      8
+    ],
+    "task": "extract-4",
+    "elapsed_seconds": 7.18,
+    "usage": {
+      "inputTokens": 431,
+      "outputTokens": 340,
+      "totalTokens": 771
+    }
+  },
+  {
+    "sequence": 34,
+    "timestamp": 1791581669.1691892,
+    "stage": "validated",
+    "title": "Payslip 4 extracted and checked",
+    "source_pages": [
+      7,
+      8
+    ],
+    "review_reasons": []
+  },
+  {
+    "sequence": 35,
+    "timestamp": 1791581669.172555,
+    "stage": "request",
+    "title": "Sending parsed page text and tables to Bedrock Qwen",
+    "source_pages": [
+      9,
+      10
+    ],
+    "task": "extract-5"
+  },
+  {
+    "sequence": 36,
+    "timestamp": 1791581675.698755,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      9,
+      10
+    ],
+    "task": "extract-5",
+    "elapsed_seconds": 6.52,
+    "usage": {
+      "inputTokens": 443,
+      "outputTokens": 348,
+      "totalTokens": 791
+    }
+  },
+  {
+    "sequence": 37,
+    "timestamp": 1791581675.701243,
+    "stage": "validated",
+    "title": "Payslip 5 extracted and checked",
+    "source_pages": [
+      9,
+      10
+    ],
+    "review_reasons": []
+  },
+  {
+    "sequence": 38,
+    "timestamp": 1791581675.7076511,
+    "stage": "complete",
+    "title": "Complete: 5 payslips; 5 text-only Bedrock requests",
+    "source_pages": []
+  }
+]

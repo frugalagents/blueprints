@@ -1,0 +1,33 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "281b6aa0-16d9-4e9a-aa1e-d54ac80f32e6",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "date": "Fri, 09 Oct 2026 17:15:49 GMT",
+      "content-type": "application/json",
+      "content-length": "471",
+      "connection": "keep-alive",
+      "x-amzn-requestid": "281b6aa0-16d9-4e9a-aa1e-d54ac80f32e6"
+    },
+    "RetryAttempts": 0
+  },
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"decision\": \"new\",\n  \"evidence\": \"Different employers (Orchard Sample Inc vs Northstar Demo Ltd), different employees (Casey Test vs Alex Sample), different statement references (DEMO-3 vs DEMO-4), and different page numbering (1 of 1 vs 1 of 2).\"\n}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 2246,
+    "outputTokens": 71,
+    "totalTokens": 2317
+  },
+  "metrics": {
+    "latencyMs": 2261
+  }
+}

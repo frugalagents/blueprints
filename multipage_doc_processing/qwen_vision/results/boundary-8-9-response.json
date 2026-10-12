@@ -1,0 +1,33 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "e86e69eb-cadc-4634-8ec9-294c2716231f",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "date": "Fri, 09 Oct 2026 17:15:53 GMT",
+      "content-type": "application/json",
+      "content-length": "504",
+      "connection": "keep-alive",
+      "x-amzn-requestid": "e86e69eb-cadc-4634-8ec9-294c2716231f"
+    },
+    "RetryAttempts": 0
+  },
+  "output": {
+    "message": {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "{\n  \"decision\": \"new\",\n  \"evidence\": \"Different employers (Northstar Demo Ltd vs Harbor Fictional LLC), different employees (Alex Sample vs Morgan Demo), different statement references (DEMO-4 vs DEMO-5), and page numbering indicates separate statements (page 2 of 2 vs page 1 of 2).\"\n}"
+        }
+      ]
+    }
+  },
+  "stopReason": "end_turn",
+  "usage": {
+    "inputTokens": 2246,
+    "outputTokens": 74,
+    "totalTokens": 2320
+  },
+  "metrics": {
+    "latencyMs": 2199
+  }
+}

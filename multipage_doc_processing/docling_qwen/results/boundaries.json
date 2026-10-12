@@ -1,0 +1,83 @@
+[
+  {
+    "pages": [
+      1,
+      2
+    ],
+    "decision": "same",
+    "evidence": "Matching statement or employee/period with sequential statement pages",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      2,
+      3
+    ],
+    "decision": "new",
+    "evidence": "Different employee: E101 vs E102",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      3,
+      4
+    ],
+    "decision": "same",
+    "evidence": "Matching statement or employee/period with sequential statement pages",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      4,
+      5
+    ],
+    "decision": "same",
+    "evidence": "Matching statement or employee/period with sequential statement pages",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      5,
+      6
+    ],
+    "decision": "new",
+    "evidence": "Different employee: E102 vs E103",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      6,
+      7
+    ],
+    "decision": "new",
+    "evidence": "Different employee: E103 vs E101",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      7,
+      8
+    ],
+    "decision": "same",
+    "evidence": "Matching statement or employee/period with sequential statement pages",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      8,
+      9
+    ],
+    "decision": "new",
+    "evidence": "Different employee: E101 vs E104",
+    "method": "local_rules"
+  },
+  {
+    "pages": [
+      9,
+      10
+    ],
+    "decision": "same",
+    "evidence": "Matching statement or employee/period with sequential statement pages",
+    "method": "local_rules"
+  }
+]

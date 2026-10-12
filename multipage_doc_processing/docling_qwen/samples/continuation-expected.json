@@ -1,0 +1,57 @@
+[
+  {
+    "source_pages": [
+      1,
+      2
+    ],
+    "employee_id": "E201",
+    "employee_name": "Riley Sample",
+    "employer": "Lakeside Demo Corp",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 2000,
+    "total_deductions": 400,
+    "net_pay": 1600
+  },
+  {
+    "source_pages": [
+      3
+    ],
+    "employee_id": "E202",
+    "employee_name": "Sam Example",
+    "employer": "Lakeside Demo Corp",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 3000,
+    "total_deductions": 600,
+    "net_pay": 2400
+  },
+  {
+    "source_pages": [
+      4,
+      5
+    ],
+    "employee_id": "E203",
+    "employee_name": "Dana Demo",
+    "employer": "Lakeside Demo Corp",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 4000,
+    "total_deductions": 800,
+    "net_pay": 3200
+  },
+  {
+    "source_pages": [
+      6,
+      7
+    ],
+    "employee_id": "E204",
+    "employee_name": "Quinn Test",
+    "employer": "Lakeside Demo Corp",
+    "pay_period": "2026-09",
+    "currency": "USD",
+    "gross_pay": 3000,
+    "total_deductions": 600,
+    "net_pay": 2400
+  }
+]

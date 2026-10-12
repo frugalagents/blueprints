@@ -1,0 +1,702 @@
+[
+  {
+    "sequence": 1,
+    "timestamp": 1791580708.038668,
+    "stage": "render",
+    "title": "Splitting PDF into page images locally",
+    "source_pages": []
+  },
+  {
+    "sequence": 2,
+    "timestamp": 1791580708.400848,
+    "stage": "render",
+    "title": "Page 1 rendered locally",
+    "source_pages": [
+      1
+    ]
+  },
+  {
+    "sequence": 3,
+    "timestamp": 1791580708.407945,
+    "stage": "render",
+    "title": "Page 2 rendered locally",
+    "source_pages": [
+      2
+    ]
+  },
+  {
+    "sequence": 4,
+    "timestamp": 1791580708.414328,
+    "stage": "render",
+    "title": "Page 3 rendered locally",
+    "source_pages": [
+      3
+    ]
+  },
+  {
+    "sequence": 5,
+    "timestamp": 1791580708.422708,
+    "stage": "render",
+    "title": "Page 4 rendered locally",
+    "source_pages": [
+      4
+    ]
+  },
+  {
+    "sequence": 6,
+    "timestamp": 1791580708.430115,
+    "stage": "render",
+    "title": "Page 5 rendered locally",
+    "source_pages": [
+      5
+    ]
+  },
+  {
+    "sequence": 7,
+    "timestamp": 1791580708.437046,
+    "stage": "render",
+    "title": "Page 6 rendered locally",
+    "source_pages": [
+      6
+    ]
+  },
+  {
+    "sequence": 8,
+    "timestamp": 1791580708.443053,
+    "stage": "render",
+    "title": "Page 7 rendered locally",
+    "source_pages": [
+      7
+    ]
+  },
+  {
+    "sequence": 9,
+    "timestamp": 1791580708.456578,
+    "stage": "render",
+    "title": "Page 8 rendered locally",
+    "source_pages": [
+      8
+    ]
+  },
+  {
+    "sequence": 10,
+    "timestamp": 1791580708.462951,
+    "stage": "render",
+    "title": "Page 9 rendered locally",
+    "source_pages": [
+      9
+    ]
+  },
+  {
+    "sequence": 11,
+    "timestamp": 1791580708.4692962,
+    "stage": "render",
+    "title": "Page 10 rendered locally",
+    "source_pages": [
+      10
+    ]
+  },
+  {
+    "sequence": 12,
+    "timestamp": 1791580708.4700449,
+    "stage": "render_done",
+    "title": "All 10 page images ready; PDF has not been sent to Qwen",
+    "source_pages": []
+  },
+  {
+    "sequence": 13,
+    "timestamp": 1791580708.4707541,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      1,
+      2
+    ],
+    "task": "boundary-1-2"
+  },
+  {
+    "sequence": 14,
+    "timestamp": 1791580711.223818,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      1,
+      2
+    ],
+    "task": "boundary-1-2",
+    "elapsed_seconds": 2.75,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 76,
+      "totalTokens": 2322
+    }
+  },
+  {
+    "sequence": 15,
+    "timestamp": 1791580711.225203,
+    "stage": "boundary",
+    "title": "Boundary decision: same",
+    "source_pages": [
+      1,
+      2
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Northstar Demo Ltd), employee (Alex Sample, E101), pay period (2026-08), statement reference (DEMO-1), and sequential page numbering (page 1 of 2 and page 2 of 2)."
+  },
+  {
+    "sequence": 16,
+    "timestamp": 1791580711.2268841,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      2,
+      3
+    ],
+    "task": "boundary-2-3"
+  },
+  {
+    "sequence": 17,
+    "timestamp": 1791580717.992218,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      2,
+      3
+    ],
+    "task": "boundary-2-3",
+    "elapsed_seconds": 6.76,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 75,
+      "totalTokens": 2321
+    }
+  },
+  {
+    "sequence": 18,
+    "timestamp": 1791580717.993633,
+    "stage": "boundary",
+    "title": "Boundary decision: new",
+    "source_pages": [
+      2,
+      3
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Northstar Demo Ltd vs Harbor Fictional LLC), different employees (Alex Sample vs Jordan Example), different pay periods (2026-08 vs 2026-09), and different statement references (DEMO-1 vs DEMO-2)."
+  },
+  {
+    "sequence": 19,
+    "timestamp": 1791580717.9953332,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      3,
+      4
+    ],
+    "task": "boundary-3-4"
+  },
+  {
+    "sequence": 20,
+    "timestamp": 1791580721.294346,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      3,
+      4
+    ],
+    "task": "boundary-3-4",
+    "elapsed_seconds": 3.3,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 78,
+      "totalTokens": 2324
+    }
+  },
+  {
+    "sequence": 21,
+    "timestamp": 1791580721.296204,
+    "stage": "boundary",
+    "title": "Boundary decision: same",
+    "source_pages": [
+      3,
+      4
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Harbor Fictional LLC), employee (Jordan Example, E102), payroll month (2026-09), and statement reference (DEMO-2). Page numbering confirms continuity: page 1 of 3 followed by page 2 of 3."
+  },
+  {
+    "sequence": 22,
+    "timestamp": 1791580721.2981272,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      4,
+      5
+    ],
+    "task": "boundary-4-5"
+  },
+  {
+    "sequence": 23,
+    "timestamp": 1791580723.906101,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      4,
+      5
+    ],
+    "task": "boundary-4-5",
+    "elapsed_seconds": 2.61,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 108,
+      "totalTokens": 2354
+    }
+  },
+  {
+    "sequence": 24,
+    "timestamp": 1791580723.9076989,
+    "stage": "boundary",
+    "title": "Boundary decision: same",
+    "source_pages": [
+      4,
+      5
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Harbor Fictional LLC), employee (Jordan Example, E102), payroll month (2026-09), statement reference (DEMO-2), and currency (USD). Page 4 explicitly states 'Deductions and net pay appear on the following page,' and page 5 contains those deductions. Page numbering confirms continuity: page 2 of 3 followed by page 3 of 3."
+  },
+  {
+    "sequence": 25,
+    "timestamp": 1791580723.909746,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      5,
+      6
+    ],
+    "task": "boundary-5-6"
+  },
+  {
+    "sequence": 26,
+    "timestamp": 1791580727.1015282,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      5,
+      6
+    ],
+    "task": "boundary-5-6",
+    "elapsed_seconds": 3.19,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 76,
+      "totalTokens": 2322
+    }
+  },
+  {
+    "sequence": 27,
+    "timestamp": 1791580727.1030211,
+    "stage": "boundary",
+    "title": "Boundary decision: new",
+    "source_pages": [
+      5,
+      6
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Harbor Fictional LLC vs. Orchard Sample Inc), different employees (Jordan Example vs. Casey Test), different statement references (DEMO-2 vs. DEMO-3), and different page numbering (page 3 of 3 vs. page 1 of 1)."
+  },
+  {
+    "sequence": 28,
+    "timestamp": 1791580727.104774,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      6,
+      7
+    ],
+    "task": "boundary-6-7"
+  },
+  {
+    "sequence": 29,
+    "timestamp": 1791580729.106409,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      6,
+      7
+    ],
+    "task": "boundary-6-7",
+    "elapsed_seconds": 2.0,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 71,
+      "totalTokens": 2317
+    }
+  },
+  {
+    "sequence": 30,
+    "timestamp": 1791580729.107975,
+    "stage": "boundary",
+    "title": "Boundary decision: new",
+    "source_pages": [
+      6,
+      7
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Orchard Sample Inc vs Northstar Demo Ltd), different employees (Casey Test vs Alex Sample), different statement references (DEMO-3 vs DEMO-4), and different page numbering (1 of 1 vs 1 of 2)."
+  },
+  {
+    "sequence": 31,
+    "timestamp": 1791580729.109822,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      7,
+      8
+    ],
+    "task": "boundary-7-8"
+  },
+  {
+    "sequence": 32,
+    "timestamp": 1791580731.240992,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      7,
+      8
+    ],
+    "task": "boundary-7-8",
+    "elapsed_seconds": 2.13,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 77,
+      "totalTokens": 2323
+    }
+  },
+  {
+    "sequence": 33,
+    "timestamp": 1791580731.242603,
+    "stage": "boundary",
+    "title": "Boundary decision: same",
+    "source_pages": [
+      7,
+      8
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Northstar Demo Ltd), employee (Alex Sample, E101), pay period (2026-09), and statement reference (DEMO-4). Page numbering confirms continuity: page 1 of 2 followed by page 2 of 2."
+  },
+  {
+    "sequence": 34,
+    "timestamp": 1791580731.2446752,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      8,
+      9
+    ],
+    "task": "boundary-8-9"
+  },
+  {
+    "sequence": 35,
+    "timestamp": 1791580733.282094,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      8,
+      9
+    ],
+    "task": "boundary-8-9",
+    "elapsed_seconds": 2.04,
+    "usage": {
+      "inputTokens": 2246,
+      "outputTokens": 74,
+      "totalTokens": 2320
+    }
+  },
+  {
+    "sequence": 36,
+    "timestamp": 1791580733.283783,
+    "stage": "boundary",
+    "title": "Boundary decision: new",
+    "source_pages": [
+      8,
+      9
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Northstar Demo Ltd vs Harbor Fictional LLC), different employees (Alex Sample vs Morgan Demo), different statement references (DEMO-4 vs DEMO-5), and page numbering indicates separate statements (page 2 of 2 vs page 1 of 2)."
+  },
+  {
+    "sequence": 37,
+    "timestamp": 1791580733.2859561,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      9,
+      10
+    ],
+    "task": "boundary-9-10"
+  },
+  {
+    "sequence": 38,
+    "timestamp": 1791580735.879468,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      9,
+      10
+    ],
+    "task": "boundary-9-10",
+    "elapsed_seconds": 2.59,
+    "usage": {
+      "inputTokens": 2247,
+      "outputTokens": 83,
+      "totalTokens": 2330
+    }
+  },
+  {
+    "sequence": 39,
+    "timestamp": 1791580735.881078,
+    "stage": "boundary",
+    "title": "Boundary decision: same",
+    "source_pages": [
+      9,
+      10
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Harbor Fictional LLC), employee (Morgan Demo, E104), payroll month (2026-09), statement reference (DEMO-5), and currency (USD). Page numbering confirms continuity: page 1 of 2 followed by page 2 of 2."
+  },
+  {
+    "sequence": 40,
+    "timestamp": 1791580735.883269,
+    "stage": "groups",
+    "title": "5 payslip groups assembled",
+    "source_pages": [],
+    "groups": [
+      [
+        1,
+        2
+      ],
+      [
+        3,
+        4,
+        5
+      ],
+      [
+        6
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        9,
+        10
+      ]
+    ]
+  },
+  {
+    "sequence": 41,
+    "timestamp": 1791580735.885174,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      1,
+      2
+    ],
+    "task": "extract-1"
+  },
+  {
+    "sequence": 42,
+    "timestamp": 1791580742.805459,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      1,
+      2
+    ],
+    "task": "extract-1",
+    "elapsed_seconds": 6.92,
+    "usage": {
+      "inputTokens": 2291,
+      "outputTokens": 340,
+      "totalTokens": 2631
+    }
+  },
+  {
+    "sequence": 43,
+    "timestamp": 1791580742.8072882,
+    "stage": "validated",
+    "title": "Payslip 1 extracted and checked",
+    "source_pages": [
+      1,
+      2
+    ],
+    "employee": "Alex Sample",
+    "review_reasons": []
+  },
+  {
+    "sequence": 44,
+    "timestamp": 1791580742.809477,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      3,
+      4,
+      5
+    ],
+    "task": "extract-2"
+  },
+  {
+    "sequence": 45,
+    "timestamp": 1791580751.546786,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      3,
+      4,
+      5
+    ],
+    "task": "extract-2",
+    "elapsed_seconds": 8.74,
+    "usage": {
+      "inputTokens": 3373,
+      "outputTokens": 345,
+      "totalTokens": 3718
+    }
+  },
+  {
+    "sequence": 46,
+    "timestamp": 1791580751.5489438,
+    "stage": "validated",
+    "title": "Payslip 2 extracted and checked",
+    "source_pages": [
+      3,
+      4,
+      5
+    ],
+    "employee": "Jordan Example",
+    "review_reasons": []
+  },
+  {
+    "sequence": 47,
+    "timestamp": 1791580751.551313,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      6
+    ],
+    "task": "extract-3"
+  },
+  {
+    "sequence": 48,
+    "timestamp": 1791580760.227467,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      6
+    ],
+    "task": "extract-3",
+    "elapsed_seconds": 8.67,
+    "usage": {
+      "inputTokens": 1209,
+      "outputTokens": 343,
+      "totalTokens": 1552
+    }
+  },
+  {
+    "sequence": 49,
+    "timestamp": 1791580760.2296991,
+    "stage": "validated",
+    "title": "Payslip 3 extracted and checked",
+    "source_pages": [
+      6
+    ],
+    "employee": "Casey Test",
+    "review_reasons": []
+  },
+  {
+    "sequence": 50,
+    "timestamp": 1791580760.23145,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      7,
+      8
+    ],
+    "task": "extract-4"
+  },
+  {
+    "sequence": 51,
+    "timestamp": 1791580768.309376,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      7,
+      8
+    ],
+    "task": "extract-4",
+    "elapsed_seconds": 8.08,
+    "usage": {
+      "inputTokens": 2291,
+      "outputTokens": 340,
+      "totalTokens": 2631
+    }
+  },
+  {
+    "sequence": 52,
+    "timestamp": 1791580768.311604,
+    "stage": "validated",
+    "title": "Payslip 4 extracted and checked",
+    "source_pages": [
+      7,
+      8
+    ],
+    "employee": "Alex Sample",
+    "review_reasons": []
+  },
+  {
+    "sequence": 53,
+    "timestamp": 1791580768.313819,
+    "stage": "request",
+    "title": "Sending page images to Bedrock Qwen",
+    "source_pages": [
+      9,
+      10
+    ],
+    "task": "extract-5"
+  },
+  {
+    "sequence": 54,
+    "timestamp": 1791580775.5273118,
+    "stage": "response",
+    "title": "Qwen response received",
+    "source_pages": [
+      9,
+      10
+    ],
+    "task": "extract-5",
+    "elapsed_seconds": 7.21,
+    "usage": {
+      "inputTokens": 2292,
+      "outputTokens": 348,
+      "totalTokens": 2640
+    }
+  },
+  {
+    "sequence": 55,
+    "timestamp": 1791580775.530427,
+    "stage": "validated",
+    "title": "Payslip 5 extracted and checked",
+    "source_pages": [
+      9,
+      10
+    ],
+    "employee": "Morgan Demo",
+    "review_reasons": []
+  },
+  {
+    "sequence": 56,
+    "timestamp": 1791580775.5330298,
+    "stage": "complete",
+    "title": "Complete: 5 payslips from 10 pages",
+    "source_pages": []
+  }
+]

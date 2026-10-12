@@ -1,0 +1,74 @@
+[
+  {
+    "pages": [
+      1,
+      2
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Northstar Demo Ltd), employee (Alex Sample, E101), pay period (2026-08), statement reference (DEMO-1), and sequential page numbering (page 1 of 2 and page 2 of 2)."
+  },
+  {
+    "pages": [
+      2,
+      3
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Northstar Demo Ltd vs Harbor Fictional LLC), different employees (Alex Sample vs Jordan Example), different pay periods (2026-08 vs 2026-09), different statement references (DEMO-1 vs DEMO-2), and page numbering indicates separate documents (page 2 of 2 vs page 1 of 3)."
+  },
+  {
+    "pages": [
+      3,
+      4
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Harbor Fictional LLC), employee (Jordan Example, E102), payroll month (2026-09), and statement reference (DEMO-2). Page numbering confirms continuity: page 1 of 3 followed by page 2 of 3."
+  },
+  {
+    "pages": [
+      4,
+      5
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Harbor Fictional LLC), employee (Jordan Example, E102), payroll month (2026-09), statement reference (DEMO-2), and sequential page numbering (page 2 of 3 followed by page 3 of 3). The first page also explicitly states deductions and net pay appear on the following page, which matches the content of the second page."
+  },
+  {
+    "pages": [
+      5,
+      6
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Harbor Fictional LLC vs. Orchard Sample Inc), different employees (Jordan Example vs. Casey Test), different statement references (DEMO-2 vs. DEMO-3), and different page numbering (page 3 of 3 vs. page 1 of 1)."
+  },
+  {
+    "pages": [
+      6,
+      7
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Orchard Sample Inc vs Northstar Demo Ltd), different employees (Casey Test vs Alex Sample), different statement references (DEMO-3 vs DEMO-4), and different page numbering (1 of 1 vs 1 of 2)."
+  },
+  {
+    "pages": [
+      7,
+      8
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Northstar Demo Ltd), employee (Alex Sample, E101), pay period (2026-09), and statement reference (DEMO-4). Page numbering confirms continuity: page 1 of 2 followed by page 2 of 2."
+  },
+  {
+    "pages": [
+      8,
+      9
+    ],
+    "decision": "new",
+    "evidence": "Different employers (Northstar Demo Ltd vs Harbor Fictional LLC), different employees (Alex Sample vs Morgan Demo), different statement references (DEMO-4 vs DEMO-5), and page numbering indicates separate statements (page 2 of 2 vs page 1 of 2)."
+  },
+  {
+    "pages": [
+      9,
+      10
+    ],
+    "decision": "same",
+    "evidence": "Both pages share identical employer (Harbor Fictional LLC), employee (Morgan Demo, E104), payroll month (2026-09), statement reference (DEMO-5), and sequential page numbering (page 1 of 2 and page 2 of 2)."
+  }
+]

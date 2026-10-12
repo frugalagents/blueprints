@@ -1,0 +1,7 @@
+{
+  "region": "us-east-1",
+  "inference_profile_arn": "arn:aws:bedrock:REGION:ACCOUNT_ID:application-inference-profile/PROFILE_ID",
+  "foundation_model_id": "qwen.qwen3-vl-235b-a22b",
+  "boundary_window_pages": 2,
+  "training_required": false
+}
