@@ -1,0 +1,19 @@
+{
+  "name": "lambda-web-fn-agentcore-poc",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "POC: an AWS Lambda Web Function that serves a chat UI and invokes an agent running in Amazon Bedrock AgentCore Runtime.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "AWS_LAMBDA_HTTP_ENDPOINT=127.0.0.1:3000 node --env-file-if-exists=.env index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-agentcore": "^3.692.0",
+    "express": "^4.21.2"
+  }
+}

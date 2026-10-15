@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Web Function → AgentCore POC</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #0f1115;
+        --panel: #171a21;
+        --border: #2a2f3a;
+        --accent: #4f8cff;
+        --text: #e6e8ec;
+        --muted: #9aa3b2;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      main {
+        width: 100%;
+        max-width: 760px;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        padding: 16px;
+        gap: 12px;
+      }
+      header h1 { font-size: 1.1rem; margin: 0; }
+      header p { margin: 4px 0 0; color: var(--muted); font-size: 0.85rem; }
+      #log {
+        flex: 1;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        background: var(--panel);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .msg { padding: 10px 12px; border-radius: 10px; white-space: pre-wrap; line-height: 1.4; }
+      .user { align-self: flex-end; background: var(--accent); color: #fff; max-width: 80%; }
+      .agent { align-self: flex-start; background: #222733; max-width: 85%; }
+      .sys { align-self: center; color: var(--muted); font-size: 0.8rem; }
+      form { display: flex; gap: 8px; }
+      input[type="text"] {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        font-size: 1rem;
+      }
+      button {
+        padding: 12px 18px;
+        border: none;
+        border-radius: 10px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      button:disabled { opacity: 0.5; cursor: default; }
+      code { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Lambda Web Function → AgentCore</h1>
+        <p>Type a message. The Web Function invokes your AgentCore agent and streams the reply back.</p>
+      </header>
+
+      <div id="log"></div>
+
+      <form id="form">
+        <input id="input" type="text" placeholder="Ask the agent…" autocomplete="off" />
+        <button id="send" type="submit">Send</button>
+      </form>
+    </main>
+
+    <script>
+      const log = document.getElementById("log");
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const sendBtn = document.getElementById("send");
+
+      // Persist a session id so AgentCore keeps conversation context.
+      let sessionId = sessionStorage.getItem("agentSessionId") || null;
+
+      function addMessage(text, cls) {
+        const el = document.createElement("div");
+        el.className = "msg " + cls;
+        el.textContent = text;
+        log.appendChild(el);
+        log.scrollTop = log.scrollHeight;
+        return el;
+      }
+
+      addMessage("Session started. Ask the agent anything.", "sys");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const message = input.value.trim();
+        if (!message) return;
+
+        addMessage(message, "user");
+        input.value = "";
+        sendBtn.disabled = true;
+
+        const agentEl = addMessage("", "agent");
+
+        try {
+          const res = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message, sessionId }),
+          });
+
+          if (!res.ok || !res.body) {
+            const err = await res.json().catch(() => ({}));
+            agentEl.className = "msg sys";
+            agentEl.textContent = "Error: " + (err.error || res.statusText);
+            return;
+          }
+
+          // Read the SSE stream and parse events manually.
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            const events = buffer.split("\n\n");
+            buffer = events.pop() || "";
+
+            for (const chunk of events) {
+              let eventType = "message";
+              let data = "";
+              for (const line of chunk.split("\n")) {
+                if (line.startsWith("event:")) eventType = line.slice(6).trim();
+                if (line.startsWith("data:")) data += line.slice(5).trim();
+              }
+              if (!data) continue;
+
+              if (eventType === "session") {
+                const parsed = JSON.parse(data);
+                sessionId = parsed.sessionId;
+                sessionStorage.setItem("agentSessionId", sessionId);
+              } else if (eventType === "token") {
+                agentEl.textContent += JSON.parse(data);
+                log.scrollTop = log.scrollHeight;
+              } else if (eventType === "error") {
+                const parsed = JSON.parse(data);
+                agentEl.className = "msg sys";
+                agentEl.textContent = "Error: " + parsed.name + " — " + parsed.message;
+              }
+            }
+          }
+        } catch (err) {
+          agentEl.className = "msg sys";
+          agentEl.textContent = "Request failed: " + err.message;
+        } finally {
+          sendBtn.disabled = false;
+          input.focus();
+        }
+      });
+    </script>
+  </body>
+</html>

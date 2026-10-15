@@ -1,0 +1,27 @@
+flowchart LR
+    subgraph EF["Event Functions"]
+        direction TB
+        E1["Event in →<br/>handler →<br/>response"]
+        E2["Single concurrent<br/>handler"]
+        E3["Wall-clock billing"]
+        E4["Queues, triggers,<br/>batch, cron"]
+    end
+
+    subgraph WF["Web Functions"]
+        direction TB
+        W1["Your port-listening<br/>HTTP server"]
+        W2["Up to 128 concurrent<br/>requests / env"]
+        W3["Active-CPU billing"]
+        W4["APIs, SSR,<br/>AI inference, webhooks"]
+    end
+
+    subgraph MV["MicroVMs"]
+        direction TB
+        M1["Isolated stateful<br/>sandbox"]
+        M2["Customer-managed<br/>lifecycle"]
+        M3["Per-sandbox"]
+        M4["Untrusted / user<br/>generated code"]
+    end
+
+    EF -.->|"same Firecracker isolation"| WF
+    WF -.->|"same Firecracker isolation"| MV

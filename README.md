@@ -154,6 +154,12 @@ See [SECURITY_CHECK.md](./SECURITY_CHECK.md) for the security audit report.
 - Local review apps with source-page evidence, split/merge corrections and processing-event history; settings via a gitignored `.env`
 - Fully synthetic data. See [multipage_doc_processing](./multipage_doc_processing/)
 
+### lambda_web_fn_agentcore
+- AWS Lambda Web Function (plain Express, Node.js) that serves a chat UI and streams replies from an agent on Amazon Bedrock AgentCore Runtime
+- Strands agent deployed with the AgentCore CLI and CDK; the browser never holds AWS credentials
+- Deployment values (account, runtime ARN, function URL) live in a gitignored `.env`
+- See [lambda_web_fn_agentcore](./lambda_web_fn_agentcore/)
+
 ---
 
 ## 🛠️ Architecture Patterns

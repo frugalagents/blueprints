@@ -1,0 +1,27 @@
+flowchart TD
+    subgraph Browser["Browser (UI tier)"]
+        UI["chat.html<br/>vanilla JS + SSE reader"]
+    end
+
+    subgraph Lambda["Lambda Web Function (backend tier) — Node.js 24, Arm64"]
+        SRV["Express server<br/>listens on AWS_LAMBDA_HTTP_ENDPOINT"]
+        R1["GET /  → serve chat UI"]
+        R2["POST /chat → invoke agent + stream"]
+        R3["GET /health"]
+        SRV --- R1
+        SRV --- R2
+        SRV --- R3
+    end
+
+    subgraph AgentCore["Bedrock AgentCore Runtime (agent tier)"]
+        AGENT["Strands agent<br/>Claude Sonnet 5.5"]
+    end
+
+    UI -->|"GET /"| SRV
+    SRV -->|"HTML + JS"| UI
+    UI -->|"POST /chat { message, sessionId }"| R2
+    R2 -->|"InvokeAgentRuntimeCommand<br/>{ agentRuntimeArn, runtimeSessionId, payload }"| AGENT
+    AGENT -->|"text/event-stream chunks"| R2
+    R2 -->|"SSE tokens"| UI
+
+    IAM["Execution role<br/>bedrock-agentcore:InvokeAgentRuntime"] -.->|"no creds in browser"| Lambda

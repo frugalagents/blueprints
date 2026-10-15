@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant B as Browser
+    participant W as Web Function (Express)
+    participant A as AgentCore Runtime
+    participant M as Claude Sonnet 5.5
+
+    B->>W: POST /chat { message, sessionId }
+    Note over W: validate message<br/>build {prompt} payload
+    W->>A: InvokeAgentRuntimeCommand(arn, sessionId, payload)
+    A->>M: stream prompt
+    loop token by token
+        M-->>A: text delta
+        A-->>W: text/event-stream chunk
+        W-->>B: SSE event: token
+    end
+    M-->>A: end_turn
+    A-->>W: stream closes
+    W-->>B: SSE event: done
+    Note over B: UI appends tokens live

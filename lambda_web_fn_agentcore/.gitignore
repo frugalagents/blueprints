@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.venv/
+
+# Build / deploy output
+# Generated deploy package (see "Deploy" in README)
+webfn/
+dist/
+cdk.out/
+.cache/
+.cli/
+
+# Environment-specific config (copy from the *.example.json files)
+.env
+.env.*
+!.env.example
+webfnpoc/agentcore/aws-targets.json
+webfn-invoke-policy.json
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Un-ignore CDK sources (the repo-wide .gitignore ignores lib/)
+!webfnpoc/agentcore/cdk/lib/
